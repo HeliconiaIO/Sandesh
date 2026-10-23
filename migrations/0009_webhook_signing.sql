@@ -1,0 +1,23 @@
+-- Webhook payload signing: the shared secret an endpoint verifies against.
+--
+-- A webhook is an unauthenticated POST arriving at an endpoint the receiver
+-- exposed to the internet. Without a signature the receiver cannot tell a
+-- Sandesh notification from anyone else's POST to the same URL, so the only
+-- safe thing it can do with the payload is ignore it and re-fetch over the
+-- API. PHASE8_PLAN's Pass B put it plainly: signing matters if anyone points
+-- a webhook at anything real.
+--
+-- Stored as the raw secret, not a hash. This is the one credential in Sandesh
+-- that cannot be hashed at rest: HMAC is computed from the key itself, so a
+-- one-way hash would leave nothing to sign with. Accounts keep an Argon2id
+-- hash (0001) precisely because verification only ever needs a comparison;
+-- signing needs the key. The compensating controls are that the API returns
+-- the secret exactly once, on create -- reads report only whether one is set
+-- -- and that it never reaches a log, because `WebhookSecret` renders as
+-- `[redacted]` the way `Secret` does for passwords.
+--
+-- Nullable, and NULL is not a degraded state: an endpoint pointed at a local
+-- test receiver has nothing to spoof, and forcing a secret on it would add a
+-- step to the case Sandesh exists to serve. Unsigned stays the default; a
+-- signature is what you turn on when the receiver is real.
+ALTER TABLE webhook_endpoints ADD COLUMN secret TEXT;

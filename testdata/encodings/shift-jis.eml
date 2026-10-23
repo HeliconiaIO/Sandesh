@@ -1,0 +1,8 @@
+From: enc@example.test
+To: dev@example.test
+Subject: Shift_JIS body
+MIME-Version: 1.0
+Content-Type: text/plain; charset="Shift_JIS"
+Content-Transfer-Encoding: 8bit
+
+日本語のテキストです。

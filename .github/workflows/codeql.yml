@@ -1,0 +1,35 @@
+# Code scanning for the parts of Sandesh CodeQL analyses well: the TypeScript
+# console (XSS around the message-rendering sandbox is SECURITY.md's top web
+# concern) and the workflows themselves. Rust is covered by clippy, cargo-deny
+# and the nightly fuzzers in ci.yml.
+
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '0 4 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [javascript-typescript, actions]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+      - uses: github/codeql-action/analyze@v4

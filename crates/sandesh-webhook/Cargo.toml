@@ -1,0 +1,31 @@
+[package]
+name = "sandesh-webhook"
+description = "Outbound webhook delivery: HTTP client, retry worker, durable outbox drain."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+# ADR-085: this crate reaches `sandesh-core` and no other `sandesh-*` crate.
+# `tests/architecture.rs` asserts that, the way it does for `sandesh-storage`.
+sandesh-core = { path = "../sandesh-core" }
+# hyper rather than reqwest: already in the tree beneath axum, so outbound
+# delivery costs a feature flag rather than a second HTTP stack.
+hyper = { workspace = true }
+hyper-util = { workspace = true }
+http-body-util = { workspace = true }
+tokio = { workspace = true, features = ["time"] }
+tokio-util = { workspace = true }
+tracing = { workspace = true }
+async-trait = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }
+wiremock = { workspace = true }
+tokio-util = { workspace = true }
+async-trait = { workspace = true }
+
+[lints]
+workspace = true

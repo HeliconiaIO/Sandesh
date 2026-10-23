@@ -1,0 +1,12 @@
+From: trunc@example.test
+To: dev@example.test
+Subject: Attachment truncated mid-base64
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="tb"
+
+--tb
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="cut.bin"
+
+QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB

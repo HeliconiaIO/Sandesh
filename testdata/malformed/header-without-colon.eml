@@ -1,0 +1,6 @@
+From: bad@example.test
+To: dev@example.test
+ThisHeaderHasNoColon
+Subject: Header missing its colon
+
+Body.

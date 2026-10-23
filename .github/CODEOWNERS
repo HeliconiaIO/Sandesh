@@ -1,0 +1,9 @@
+# Reviewers requested automatically for each area. Replace the handles with a
+# team (e.g. @HeliconiaIO/sandesh-maintainers) once one exists.
+*                   @hspl-hanak
+/crates/            @hspl-hanak
+/web/               @hspl-hanak @hspl-navki
+/.github/           @hspl-hanak
+/SECURITY.md        @hspl-hanak
+/LICENSE            @hspl-hanak
+/NOTICE             @hspl-hanak

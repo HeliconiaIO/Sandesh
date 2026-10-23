@@ -1,0 +1,8 @@
+From: enc@example.test
+To: dev@example.test
+Subject: KOI8-R body
+MIME-Version: 1.0
+Content-Type: text/plain; charset="KOI8-R"
+Content-Transfer-Encoding: 8bit
+
+Русский текст

@@ -1,0 +1,49 @@
+[package]
+name = "sandesh-api"
+description = "REST and WebSocket adapter for Sandesh. Translates HTTP to core operations."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+sandesh-core = { path = "../sandesh-core" }
+sandesh-events = { path = "../sandesh-events" }
+sandesh-config = { path = "../sandesh-config" }
+axum = { workspace = true }
+base64 = { workspace = true }
+sha2 = { workspace = true }
+getrandom = { workspace = true }
+hex = { workspace = true }
+tower-http = { workspace = true }
+tokio = { workspace = true, features = ["net", "sync", "time", "rt"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+async-trait = { workspace = true }
+tokio-util = { workspace = true }
+# Receives an acceptor the composition root built; never configures TLS. Same
+# arrangement as `sandesh-smtp` and `sandesh-imap` — see
+# `tests/architecture.rs::imap_does_not_duplicate_tls_configuration`, which
+# bans `rustls`/`rcgen` while permitting this.
+tokio-rustls = { workspace = true }
+# Serving over TLS needs the connection builder axum's own `serve` wraps.
+# Already in the tree as axum's dependency; declared here to use it directly.
+hyper = { workspace = true }
+hyper-util = { workspace = true }
+tower-service = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+time = { workspace = true }
+uuid = { workspace = true }
+futures-util = { workspace = true }
+utoipa = { workspace = true }
+rust-embed = { workspace = true }
+mime_guess = { workspace = true }
+image = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }
+
+[lints]
+workspace = true

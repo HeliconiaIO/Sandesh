@@ -1,0 +1,12 @@
+From: outer@example.test
+To: dev@example.test
+Subject: message/rfc822 nesting
+MIME-Version: 1.0
+Content-Type: message/rfc822
+
+Content-Type: message/rfc822
+
+From: inner@example.test
+Subject: Innermost
+
+Core.

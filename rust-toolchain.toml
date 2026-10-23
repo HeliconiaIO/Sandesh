@@ -1,0 +1,11 @@
+# The Rust release every build uses: local, CI and contributors alike.
+#
+# CI runs clippy with `-D warnings`, so a floating `stable` turned every Rust
+# release into a possible CI break with no code change (1.99 added
+# `assert_is_empty` and failed 28 tests' lints). Upgrading is now a commit:
+# bump the version here and fix whatever the new clippy finds.
+# `rust-version` in Cargo.toml is the separate, older minimum we support.
+[toolchain]
+channel = "1.99.1"
+profile = "minimal"
+components = ["rustfmt", "clippy", "llvm-tools-preview"]

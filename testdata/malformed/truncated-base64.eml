@@ -1,0 +1,7 @@
+From: Alice <alice@example.test>
+Subject: Truncated base64
+MIME-Version: 1.0
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+
+VGhpcyBiYXNlNjQgcGF5bG9hZCBpcyB0cnVuY2F0ZW

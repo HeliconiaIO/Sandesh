@@ -1,0 +1,17 @@
+From: Alice <alice@example.test>
+To: Bob <bob@example.test>
+Subject: Alternative parts
+Date: Tue, 01 Sep 2026 12:02:00 +0000
+Message-ID: <alt-003@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="alt-boundary"
+
+--alt-boundary
+Content-Type: text/plain; charset=utf-8
+
+Plain version of the message.
+--alt-boundary
+Content-Type: text/html; charset=utf-8
+
+<p>HTML version of the message.</p>
+--alt-boundary--

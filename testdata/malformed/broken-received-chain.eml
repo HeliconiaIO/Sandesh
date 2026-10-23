@@ -1,0 +1,14 @@
+Received: this is not a received field at all
+Received: from
+Received: from relay.example by mx.example with ESMTP id Z9; Not A Real Date
+Received: from a.example by b.example; Tue, 01 Jul 2025 10:00:05 +0000
+Received: from c.example by d.example; Tue, 01 Jul 2025 10:00:30 +0000
+DKIM-Signature: v=1; a=; d=; s=; h=; bh=; b=
+Authentication-Results:
+Received-SPF:
+X-Spam-Status:
+From: chaos@example.test
+To: dev@example.test
+Subject: Malformed Received chain
+
+Every header analysis clause here is truncated, empty or unparseable.

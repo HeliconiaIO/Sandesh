@@ -1,0 +1,43 @@
+[package]
+name = "sandesh-desktop"
+description = "Tauri desktop shell: embeds the Sandesh engine in-process and opens a WebView on it."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[[bin]]
+name = "sandesh-desktop"
+path = "src/main.rs"
+
+[dependencies]
+# The one crate permitted to depend on the composition root (ADR-092). The shell
+# wires nothing itself: it starts the same `Application` the CLI does, and
+# `tests/architecture.rs` asserts this is the only such exception.
+sandesh-app = { path = "../sandesh-app" }
+sandesh-config = { path = "../sandesh-config" }
+sandesh-core = { path = "../sandesh-core" }
+
+tauri = { workspace = true }
+notify-rust = { workspace = true }
+tokio = { workspace = true, features = ["rt-multi-thread", "macros"] }
+# The engine hands back a `CancellationToken`; the shell holds it to stop the
+# listeners when the window closes.
+tokio-util = { workspace = true }
+tracing = { workspace = true }
+
+[dev-dependencies]
+# Dev-only, and deliberately so: the notifier consumes `EventSource`, a core
+# port, so the shell never links the bus at runtime — `tests/architecture.rs`
+# asserts that over *runtime* dependencies. The tests drive the real bus rather
+# than a stub, because what is worth testing is the subscription the shell
+# actually makes.
+sandesh-events = { path = "../sandesh-events" }
+
+[build-dependencies]
+tauri-build = { workspace = true }
+
+[lints]
+workspace = true

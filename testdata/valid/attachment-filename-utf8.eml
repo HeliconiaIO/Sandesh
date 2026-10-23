@@ -1,0 +1,18 @@
+From: sender@example.test
+To: dev@example.test
+Subject: Attachment with a UTF-8 filename
+Date: Tue, 09 Sep 2026 12:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="fn"
+
+--fn
+Content-Type: text/plain
+
+See attachment.
+--fn
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="=?UTF-8?B?5aCx5ZGKLnBkZg==?="
+
+cmVwb3J0IGJ5dGVz
+--fn--

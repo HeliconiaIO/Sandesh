@@ -1,0 +1,20 @@
+From: Alice <alice@example.test>
+To: Bob <bob@example.test>
+Subject: Inline image
+Date: Tue, 01 Sep 2026 12:06:00 +0000
+Message-ID: <inline-007@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="rel-boundary"
+
+--rel-boundary
+Content-Type: text/html; charset=utf-8
+
+<p>Logo: <img src="cid:logo-1"></p>
+--rel-boundary
+Content-Type: image/png; name="logo.png"
+Content-Disposition: inline; filename="logo.png"
+Content-ID: <logo-1>
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==
+--rel-boundary--

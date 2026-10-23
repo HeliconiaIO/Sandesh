@@ -1,0 +1,227 @@
+/*
+ * Import and export (Phase 8 A5).
+ *
+ * Every value is a token from `styles/tokens.css`. A new view inside an
+ * established system, so the work is coherence rather than a new identity:
+ * borders not shadows, the 8px grid, one accent, motion under 160ms.
+ *
+ * The signature is the link between the two cards — a rule, a badge, a rule —
+ * which draws the round trip the view's guarantee depends on. It is the only
+ * ornament here, and it is load-bearing: it says the two operations are one
+ * reversible pair rather than two unrelated forms. Below 640px it rotates to
+ * sit between the stacked cards, so the relationship survives the narrow
+ * layout instead of disappearing with it.
+ */
+
+.transfer {
+  display: flex;
+  flex-direction: column;
+  /* `.shell__main` is a flex row: claim a share rather than sizing to content. */
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-base);
+  overflow-y: auto;
+}
+
+/* --- The bar ------------------------------------------------------------ */
+
+.transfer__bar {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-surface);
+}
+
+.transfer__title {
+  margin: 0;
+  font-size: var(--text-title);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.transfer__subtitle {
+  margin: var(--space-1) 0 0;
+  max-width: 68ch;
+  font-size: var(--text-chrome);
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+}
+
+.transfer__subtitle code {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--text-primary);
+}
+
+/* --- The pair ----------------------------------------------------------- */
+
+.transfer__body {
+  padding: var(--space-5) var(--space-4);
+}
+
+.transfer__pair {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-3);
+  max-width: 820px;
+}
+
+.transfer__card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+}
+
+.transfer__card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+}
+
+.transfer__card-title {
+  margin: 0;
+  font-size: var(--text-title);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.transfer__card-note {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-chrome);
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+}
+
+.transfer__label {
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--text-tertiary);
+}
+
+.transfer__select {
+  width: 100%;
+  height: var(--row-height);
+  padding: 0 var(--space-2);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: var(--text-chrome);
+}
+
+.transfer__select:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+
+/* The action sits at the card's foot, so both cards' buttons line up however
+   tall their controls are. */
+.transfer__action {
+  margin-top: auto;
+  justify-content: center;
+  /* An `<a>` and a `<label>` wearing `.button`: restore what the class assumes
+     of a real button element. */
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* The file input is driven by its label, but must stay reachable by keyboard
+   and to assistive technology — so it is moved out of sight, never hidden. */
+.transfer__file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.transfer__file:focus-visible + .transfer__action {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+
+/* --- The link: the signature -------------------------------------------- */
+
+.transfer__link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) 0;
+}
+
+.transfer__link-rule {
+  flex: 1;
+  width: var(--border-width);
+  background: var(--border);
+}
+
+.transfer__link-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: var(--border-width) solid var(--accent-border);
+  border-radius: 50%;
+  background: var(--accent-muted);
+  color: var(--accent);
+}
+
+/* --- The result --------------------------------------------------------- */
+
+.transfer__result {
+  max-width: 820px;
+  margin: var(--space-3) 0 0;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  font-size: var(--text-chrome);
+  line-height: var(--leading-normal);
+}
+
+.transfer__result--ok {
+  border-color: var(--accent-border);
+  background: var(--ok-muted);
+  color: var(--text-primary);
+}
+
+.transfer__result--error {
+  border-color: var(--error);
+  background: var(--error-muted);
+  color: var(--text-primary);
+}
+
+/* --- Narrow ------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .transfer__pair {
+    flex-direction: column;
+  }
+
+  /* The link turns with the layout: horizontal between stacked cards, so the
+     round trip it draws still reads. */
+  .transfer__link {
+    flex-direction: row;
+    padding: 0 var(--space-4);
+  }
+
+  .transfer__link-rule {
+    width: auto;
+    height: var(--border-width);
+  }
+}

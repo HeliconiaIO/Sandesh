@@ -1,0 +1,62 @@
+.connection-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-3);
+}
+
+.connection-details__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+}
+
+.connection-details__label {
+  width: 44px;
+  flex: none;
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+  letter-spacing: var(--tracking-label);
+  text-align: left;
+}
+
+.connection-details__value {
+  flex: 1;
+  /*
+   * A flex item's default `min-width: auto` refuses to shrink below its own
+   * content, and the data directory is a long unbreakable path — so on a phone
+   * it pushed the copy button 70px off-screen, past the point where it could
+   * be tapped at all. The value truncates instead; the full string is what the
+   * copy button beside it is for.
+   */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--text-primary);
+  text-align: left;
+}
+
+.connection-details__off {
+  flex: 1;
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+  text-align: left;
+}
+
+.connection-details__note {
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+}
+
+.connection-details--compact {
+  max-width: 320px;
+}

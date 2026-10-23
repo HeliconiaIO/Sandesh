@@ -1,0 +1,325 @@
+/*
+ * Webhooks and the outbox (Phase 8 A2).
+ *
+ * Every value is a token from `styles/tokens.css`. A new view inside an
+ * established system, so the work is coherence rather than a new identity:
+ * borders not shadows, the 8px grid, one accent, motion under 160ms.
+ *
+ * The one deliberate signature is the status rail down the left edge of each
+ * outbox row — a 2px bar in the semantic colour. It earns its place because
+ * status is the single fact the view exists to convey, and a colour bar is
+ * readable in peripheral vision while scanning a list for the one that failed.
+ * It is doubled by the text label rather than replaced by it, so the meaning
+ * never depends on colour alone.
+ */
+
+.webhooks {
+  display: flex;
+  flex-direction: column;
+  /* `.shell__main` is a flex row: claim a share rather than sizing to content,
+     or the split below collapses to its tallest pane. */
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-base);
+}
+
+/* --- The bar ------------------------------------------------------------ */
+
+.webhooks__bar {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-surface);
+}
+
+.webhooks__title {
+  margin: 0;
+  font-size: var(--text-title);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.webhooks__subtitle {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-chrome);
+  color: var(--text-secondary);
+}
+
+/* --- The split ---------------------------------------------------------- */
+
+.webhooks__split {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.webhooks__rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: var(--list-width);
+  flex-shrink: 0;
+  padding: var(--space-4);
+  overflow-y: auto;
+  border-right: var(--border-width) solid var(--border);
+  background: var(--bg-surface);
+}
+
+.webhooks__outbox {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+
+.webhooks__heading {
+  margin: 0;
+  font-size: var(--text-micro);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-label);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* --- Registration ------------------------------------------------------- */
+
+.webhooks__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.webhooks__label {
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+}
+
+.webhooks__input {
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--text-primary);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+}
+
+.webhooks__input:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -1px;
+}
+
+.webhooks__formError {
+  margin: 0;
+  font-size: var(--text-micro);
+  color: var(--error);
+}
+
+/* --- The endpoint list -------------------------------------------------- */
+
+.webhooks__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.webhooks__endpoint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+}
+
+.webhooks__url {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--text-primary);
+}
+
+.webhooks__remove {
+  display: flex;
+  padding: var(--space-1);
+  color: var(--text-tertiary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--motion-fast) ease, background var(--motion-fast) ease;
+}
+
+.webhooks__remove:hover {
+  color: var(--error);
+  background: var(--error-muted);
+}
+
+.webhooks__remove:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+
+/* --- The outbox --------------------------------------------------------- */
+
+.outbox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.outbox__row {
+  /* The signature: a status rail, doubled by the text label so meaning never
+     rests on colour alone. 3px rather than 2px — at 2px it read as a hairline
+     border in the light theme rather than as a status, which is the one thing
+     this view exists to convey. Checked in a real browser in both themes. */
+  border-left: 3px solid var(--border-strong);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--bg-surface);
+  border-top: var(--border-width) solid var(--border);
+  border-right: var(--border-width) solid var(--border);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.outbox__row--delivered {
+  border-left-color: var(--ok);
+}
+
+.outbox__row--pending {
+  border-left-color: var(--warn);
+}
+
+.outbox__row--failed {
+  border-left-color: var(--error);
+}
+
+.outbox__summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-ui);
+  font-size: var(--text-chrome);
+  text-align: left;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.outbox__summary:hover {
+  background: var(--bg-overlay);
+}
+
+.outbox__summary:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+.outbox__status {
+  flex-shrink: 0;
+  min-width: 72px;
+  font-size: var(--text-micro);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-label);
+}
+
+.outbox__status--delivered {
+  color: var(--ok);
+}
+
+.outbox__status--pending {
+  color: var(--warn);
+}
+
+.outbox__status--failed {
+  color: var(--error);
+}
+
+.outbox__what {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--text-secondary);
+}
+
+.outbox__attempts,
+.outbox__when {
+  flex-shrink: 0;
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+}
+
+.outbox__error {
+  margin: 0;
+  padding: 0 var(--space-3) var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--error);
+}
+
+.outbox__payload {
+  margin: 0;
+  padding: var(--space-3);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  line-height: var(--leading-mono);
+  color: var(--text-secondary);
+  background: var(--bg-base);
+  border-top: var(--border-width) solid var(--border);
+}
+
+/* --- Narrow ------------------------------------------------------------- */
+
+/* The rail becomes a band above the outbox rather than disappearing: both
+   halves are needed to answer the view's question, and the Phase 4 defect
+   this system already fixed was a pane that vanished with no replacement. */
+@media (max-width: 768px) {
+  .webhooks__split {
+    flex-direction: column;
+  }
+
+  .webhooks__rail {
+    width: auto;
+    border-right: none;
+    border-bottom: var(--border-width) solid var(--border);
+  }
+}
+
+@media (max-width: 640px) {
+  .webhooks__bar {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .webhooks__rail,
+  .webhooks__outbox {
+    padding: var(--space-3);
+  }
+
+  .outbox__summary {
+    min-height: var(--touch-target-min, 44px);
+  }
+
+  .webhooks__button {
+    min-height: var(--touch-target-dense, 36px);
+  }
+}

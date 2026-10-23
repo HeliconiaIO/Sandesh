@@ -1,0 +1,7 @@
+From: nob@example.test
+To: dev@example.test
+Subject: multipart with no boundary parameter
+MIME-Version: 1.0
+Content-Type: multipart/mixed
+
+There is no boundary, so there are no parts to find.

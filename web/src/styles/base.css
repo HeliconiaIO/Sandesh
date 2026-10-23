@@ -1,0 +1,188 @@
+/*
+ * Self-hosted variable fonts. Sandesh runs offline from a single static binary
+ * (ADR-095), so the typefaces in §10 must be bundled and embedded rather than
+ * fetched from a CDN — a font request that fails is a font that was never
+ * really specified. These are variable faces, so the whole usable weight range
+ * costs one file each.
+ */
+/*
+ * The combined stylesheet carries every unicode subset. `unicode-range` means
+ * a browser downloads only the subsets it actually needs to render, so the
+ * non-latin files cost nothing at runtime for a latin UI — and the binary is
+ * served from localhost, where the one-time transfer is free.
+ */
+@import '@fontsource-variable/space-grotesk';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+
+@import './tokens.css';
+@import './pills.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  min-height: 100dvh;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: var(--text-chrome);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/*
+ * One focus style for the whole application. `:focus-visible` rather than
+ * `:focus` so a mouse click does not leave a ring behind, while every keyboard
+ * path stays visibly traceable — the accessibility floor from §11.
+ */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+  border-radius: var(--radius-sm);
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+  touch-action: manipulation;
+}
+
+/* Suppress duplicate native search cancel button across webkit browsers */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none !important;
+  display: none !important;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  touch-action: manipulation;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  touch-action: manipulation;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code,
+pre,
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-variant-ligatures: none;
+}
+
+/* Visible only to screen readers; used for live regions and icon labels. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* A skip link that stays out of the way until focused. */
+.skip-link {
+  position: absolute;
+  left: var(--space-2);
+  top: -100px;
+  z-index: var(--z-modal);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--accent);
+  border-radius: var(--radius);
+  transition: top var(--motion-fast) var(--ease);
+}
+
+.skip-link:focus {
+  top: var(--space-2);
+}
+
+::selection {
+  background: var(--accent-muted);
+}
+
+/*
+ * Touch ergonomics (§11, WCAG 2.5.8).
+ *
+ * The 44px floor had been applied control by control, so it held on the routes
+ * someone remembered and not elsewhere: on a phone the Compose button, the
+ * preview viewport toggles and every copy button measured 22-26px. Keying it
+ * to `pointer: coarse` fixes the class of bug rather than the instances, and
+ * costs a mouse user nothing because it never applies to them.
+ *
+ * `-dense` (36px) is the floor for controls packed into a scrolling strip,
+ * where a full 44px would push the row off the screen it is meant to fit.
+ */
+@media (pointer: coarse) {
+  button:not(.theme-toggle):not(.icon-button):not(.shell__nav-toggle),
+  a[role='button'],
+  [role='tab'],
+  input[type='checkbox'],
+  input[type='radio'],
+  select {
+    min-height: var(--touch-target-dense);
+  }
+
+  .shell__compose-btn,
+  .nav-item {
+    min-height: var(--touch-target-min);
+  }
+}
+
+/* Scrollbars that match the surface rather than the OS default. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}

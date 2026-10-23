@@ -1,0 +1,111 @@
+/* Natural height: the Headers tab wraps this and the analysis panel in one
+   scroller, so a second scrolling box here would nest two scrollbars.
+   `min-height: 0` is required, not cosmetic — without it this flex child
+   refuses to shrink below its table's height, overflows the panel, and pushes
+   the whole document taller than the viewport, leaving dead space under the
+   app. */
+.headers {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.headers__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-surface);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+}
+
+.headers__count {
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+}
+
+.headers__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-micro);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.headers__table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.headers__table thead th {
+  text-align: left;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.headers__table thead th:first-child {
+  width: 180px;
+}
+
+.headers__table thead th:last-child {
+  width: 34px;
+}
+
+.headers__name {
+  padding: var(--space-1) var(--space-3);
+  text-align: left;
+  vertical-align: top;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-medium);
+  color: var(--accent);
+  word-break: break-all;
+}
+
+.headers__value {
+  padding: var(--space-1) var(--space-3);
+  vertical-align: top;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.headers__table tbody tr {
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.headers__table tbody tr:hover {
+  background: var(--bg-overlay);
+}
+
+.headers__action {
+  padding: var(--space-1);
+  vertical-align: top;
+}
+
+.headers__empty {
+  padding: var(--space-4);
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 640px) {
+  .headers__table thead th:first-child {
+    width: 110px;
+  }
+
+  .headers__name,
+  .headers__value {
+    padding: var(--space-1) var(--space-2);
+  }
+}

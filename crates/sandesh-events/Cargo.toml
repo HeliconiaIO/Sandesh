@@ -1,0 +1,27 @@
+[package]
+name = "sandesh-events"
+description = "In-process event bus for Sandesh domain events."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+sandesh-core = { path = "../sandesh-core" }
+tokio = { workspace = true, features = ["sync"] }
+thiserror = { workspace = true }
+async-trait = { workspace = true }
+tracing = { workspace = true }
+# The log-capture layer (Phase 7 A6). `registry` is what makes a `Layer`
+# composable with the fmt layer the composition root already installs.
+tracing-subscriber = { workspace = true, features = ["registry"] }
+# RFC 3339 timestamps on captured lines, using the workspace formatter the
+# API already uses rather than a second calendar implementation.
+time = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt-multi-thread", "macros", "time"] }
+
+[lints]
+workspace = true

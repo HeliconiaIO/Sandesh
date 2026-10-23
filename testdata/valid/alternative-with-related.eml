@@ -1,0 +1,26 @@
+From: sender@example.test
+To: dev@example.test
+Subject: alternative wrapping related
+Date: Tue, 09 Sep 2026 12:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="alt"
+
+--alt
+Content-Type: text/plain
+
+Plain fallback.
+--alt
+Content-Type: multipart/related; boundary="rel"
+
+--rel
+Content-Type: text/html
+
+<p><img src="cid:i@e"></p>
+--rel
+Content-Type: image/png
+Content-ID: <i@e>
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==
+--rel--
+--alt--

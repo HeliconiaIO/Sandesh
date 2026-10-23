@@ -1,0 +1,22 @@
+From: friend@gmail.example.test
+To: dev@example.test
+Subject: Re: lunch
+Date: Tue, 9 Sep 2026 12:15:02 +0100
+Message-ID: <CAJ1a2b3c4d5e6f7g8h9i0j+klmnop@mail.gmail.example.test>
+In-Reply-To: <CAJ0z9y8x7w6v5u4@mail.gmail.example.test>
+References: <CAJ0z9y8x7w6v5u4@mail.gmail.example.test>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="000000000000a1b2c30619f4e5d6"
+
+--000000000000a1b2c30619f4e5d6
+Content-Type: text/plain; charset="UTF-8"
+
+Sounds good.
+
+On Tue, 9 Sep 2026 at 12:00, Dev <dev@example.test> wrote:
+> Lunch at one?
+--000000000000a1b2c30619f4e5d6
+Content-Type: text/html; charset="UTF-8"
+
+<div dir="ltr">Sounds good.</div>
+--000000000000a1b2c30619f4e5d6--

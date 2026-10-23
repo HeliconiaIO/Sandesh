@@ -1,0 +1,229 @@
+# The workspace root is also a (library-less) package, so that workspace-level
+# integration tests in `tests/` have a home. `tests/architecture.rs` lives here
+# because it reasons about the whole dependency graph and belongs to no single
+# crate.
+[package]
+name = "sandesh"
+description = "Sandesh workspace root; hosts cross-crate integration tests."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+# `cargo run` from the workspace root starts Sandesh. Without this the root
+# package has no binary and the command fails with a resolution error, which is
+# a poor first experience for the one command the README tells people to run.
+default-run = "sandesh"
+
+[lib]
+path = "src/lib.rs"
+
+# The root package re-exports the binary so `cargo run` works from the
+# workspace root; the real implementation lives in `sandesh-app`.
+[dependencies]
+sandesh-app = { path = "crates/sandesh-app" }
+
+[dev-dependencies]
+sandesh-core = { path = "crates/sandesh-core" }
+sandesh-storage = { path = "crates/sandesh-storage" }
+sandesh-smtp = { path = "crates/sandesh-smtp" }
+sandesh-proto = { path = "crates/sandesh-proto" }
+sandesh-config = { path = "crates/sandesh-config" }
+sandesh-app = { path = "crates/sandesh-app" }
+sandesh-api = { path = "crates/sandesh-api" }
+tokio = { workspace = true, features = ["rt-multi-thread", "macros", "net", "time", "io-util"] }
+tokio-util = { workspace = true }
+tempfile = { workspace = true }
+serde_json = { workspace = true }
+tokio-tungstenite = { workspace = true }
+futures-util = { workspace = true }
+base64 = { workspace = true }
+tokio-rustls = { workspace = true }
+# A real endpoint for the webhook end-to-end test to arrive at (Phase 8 A2).
+wiremock = { workspace = true }
+
+[[bin]]
+name = "sandesh"
+path = "src/main.rs"
+
+[lints]
+workspace = true
+
+[workspace]
+resolver = "3"
+members = [
+    "crates/sandesh-core",
+    "crates/sandesh-storage",
+    "crates/sandesh-config",
+    "crates/sandesh-proto",
+    "crates/sandesh-smtp",
+    "crates/sandesh-imap",
+    "crates/sandesh-events",
+    "crates/sandesh-api",
+    "crates/sandesh-app",
+    "crates/sandesh-pop3",
+    "crates/sandesh-webhook",
+    "crates/sandesh-desktop",
+    "xtask",
+]
+
+# The libFuzzer harness is deliberately not a member. `tests/architecture.rs`
+# walks the resolved dependency graph from `cargo metadata`, and a fuzz crate
+# would put `libfuzzer-sys` and `arbitrary` into it; the targets also need a
+# nightly toolchain, which `cargo check --workspace --all-targets` does not
+# have. `fuzz/Cargo.toml` explains both. Its own checks still run on stable, via
+# `cargo test --manifest-path fuzz/Cargo.toml`.
+exclude = ["fuzz"]
+
+# Crates are added by the phase that implements them (see docs/ROADMAP.md).
+# `sandesh-imap` arrived with Phase 5 and `sandesh-pop3` with Phase 6. No
+# placeholder crate is ever added ahead of its phase: an empty crate would add
+# workspace noise without adding structure, and tests/architecture.rs verifies
+# dependency direction from real manifests rather than directory names, so an
+# absent crate cannot make a rule pass vacuously.
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.94"
+license = "Apache-2.0"
+repository = "https://github.com/HeliconiaIO/Sandesh"
+homepage = "https://github.com/HeliconiaIO/Sandesh"
+
+[workspace.dependencies]
+# --- core (no runtime, no I/O) ---
+mail-parser = "0.11"
+thiserror = "2"
+uuid = { version = "1", features = ["v7"] }
+time = { version = "0.3", features = ["formatting", "macros", "parsing"] }
+sha2 = "0.11"
+# `hmac` is the RustCrypto HMAC used to sign webhook payloads (ADR-102). It is
+# a pure function over bytes with no I/O and no runtime, which is why signing
+# can live in the core beside the retry policy rather than in the transport.
+hmac = "0.13"
+# `getrandom` draws the webhook signing secret from the OS CSPRNG. Already in
+# the tree beneath `argon2`; declared here so the one place that mints a key
+# does so deliberately rather than reaching for whatever RNG is nearby.
+getrandom = "0.3"
+hex = "0.4"
+async-trait = "0.1"
+
+# --- storage ---
+sqlx = { version = "0.9", default-features = false, features = [
+    "runtime-tokio", "sqlite", "migrate", "macros",
+] }
+tokio = { version = "1", features = ["rt", "sync", "fs", "macros"] }
+tokio-util = { version = "0.7", default-features = false }
+tracing = { version = "0.1", default-features = false, features = ["std", "attributes"] }
+tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt", "env-filter", "ansi"] }
+
+# --- api (HTTP/WebSocket adapter) ---
+# axum 0.8 with only what we use: `ws` for the event stream, `json` for bodies,
+# `http1` for the server, `tokio` for the runtime glue. No multipart, no macros.
+axum = { version = "0.8", default-features = false, features = [
+    "http1", "json", "query", "tokio", "ws",
+] }
+tower-http = { version = "0.6", default-features = false, features = ["cors", "limit", "trace"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+futures-util = { version = "0.3", default-features = false, features = ["std", "sink"] }
+
+# --- API contract generation (Phase 4) ---
+# utoipa derives the OpenAPI document from the same Rust types the handlers
+# already use, so the contract cannot drift from the implementation without a
+# compile error or a CI diff. `axum_extras` teaches it axum's extractors;
+# `time` matches the workspace timestamp crate. No second HTTP framework.
+# Default features stay on: utoipa's own schema module requires them.
+utoipa = { version = "5", features = ["axum_extras", "macros", "time"] }
+
+# --- static assets (Phase 4) ---
+# The built Web UI is embedded in the binary (ROADMAP Phase 4), so `cargo run`
+# serves a complete application with no separate asset directory to deploy and
+# no absolute path baked into the build. `mime_guess` maps a file extension to
+# its Content-Type; both are small, widely used and add no runtime.
+rust-embed = { version = "8", default-features = false, features = ["interpolate-folder-path"] }
+mime_guess = { version = "2", default-features = false }
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp"] }
+
+# --- authentication and TLS (Phase 4.5) ---
+# `argon2` is the RustCrypto implementation of the password hash the OWASP
+# guidance recommends; it brings `password-hash`, whose verifier is
+# constant-time. `subtle` supplies constant-time equality for the few
+# comparisons that are not password hashes.
+argon2 = { version = "0.6", default-features = false, features = ["alloc", "password-hash", "rand_core", "getrandom"] }
+subtle = { version = "2", default-features = false }
+base64 = { version = "0.23", default-features = false, features = ["alloc"] }
+
+# `rustls` rather than OpenSSL: no C toolchain, memory-safe, and the only TLS
+# stack the rest of the async ecosystem assumes. `ring` is the default provider
+# and needs no system library. `rcgen` generates the self-signed certificate a
+# local developer tool must produce for itself.
+rustls = { version = "0.23", default-features = false, features = ["std", "ring", "tls12", "logging"] }
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12", "logging"] }
+
+# --- serving HTTPS (Phase 4.5, ADR-075) ---
+# Already present transitively as axum's own HTTP machinery; declared so
+# `sandesh-api` can drive a connection over a TLS stream, which `axum::serve`
+# (which owns its TCP accept loop) cannot do.
+# The `client` features are Phase 8 A2 (ADR-085): `sandesh-webhook` dials out.
+# hyper is reused rather than adding `reqwest`, because it is already in the
+# tree beneath axum -- a second HTTP stack would be a large new dependency for
+# a POST with a timeout.
+hyper = { version = "1", default-features = false, features = ["http1", "server", "client"] }
+hyper-util = { version = "0.1", default-features = false, features = ["tokio", "server", "http1", "client", "client-legacy"] }
+http-body-util = "0.1"
+# The `Service` trait itself, to hand the router to hyper one connection at a
+# time. Already in the tree beneath axum and tower-http.
+tower-service = { version = "0.3", default-features = false }
+rcgen = { version = "0.14", default-features = false, features = ["ring", "pem"] }
+
+# --- desktop (Phase 9) ---
+# Only `sandesh-desktop` uses these, and only that crate may depend on
+# `sandesh-app` (ADR-092). `default-features = false` keeps the shell to the
+# window and event loop: Tauri's default feature set pulls in a custom protocol
+# handler and asset embedding this shell deliberately does not use, because the
+# engine serves the UI itself.
+tauri = { version = "2", default-features = false, features = [
+    "wry",
+    # A2: the tray icon and its menu. `image-png` decodes the same icon the
+    # window uses, so the tray does not need a second asset.
+    "tray-icon",
+    "image-png",
+] }
+# Desktop notifications over the freedesktop D-Bus spec, which is what Linux
+# notification daemons implement. Chosen over Tauri's notification plugin: that
+# plugin exists to let *frontend JavaScript* raise notifications through the IPC
+# bridge, and this shell raises them from Rust on an event-bus subscription, so
+# the bridge, its permissions file and its capability wiring would all be
+# machinery in service of nothing.
+# `z` (zbus) rather than `d` (libdbus): zbus is pure Rust, so a distributed
+# binary needs no libdbus-1 development package on the build machine and no
+# matching shared library on the user's.
+notify-rust = { version = "4", default-features = false, features = ["z"] }
+tauri-build = { version = "2", default-features = false }
+
+# --- dev ---
+tempfile = "3"
+# Already in the tree via axum's `ws` feature, so pinning the same version adds
+# no new dependency — it just gives the tests a real WebSocket *client* to drive
+# the server with, rather than hand-rolling the handshake and framing.
+tokio-tungstenite = { version = "0.29", default-features = false, features = ["connect"] }
+# A real HTTP server to point a webhook at, so retry and failure are asserted
+# against something that actually returns 500 rather than against a mock trait.
+wiremock = "0.6"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_debug_implementations = "warn"
+
+[workspace.lints.clippy]
+all = { level = "deny", priority = -1 }
+todo = "deny"
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+
+[profile.dev]
+# Storage tests create many small SQLite databases; opt-level 1 keeps them brisk.
+opt-level = 1

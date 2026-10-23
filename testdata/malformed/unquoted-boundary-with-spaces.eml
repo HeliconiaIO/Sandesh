@@ -1,0 +1,11 @@
+From: bad@example.test
+To: dev@example.test
+Subject: Unquoted boundary containing a space
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary=has space here
+
+--has space here
+Content-Type: text/plain
+
+Part.
+--has space here--

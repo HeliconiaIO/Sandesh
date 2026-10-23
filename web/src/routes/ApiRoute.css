@@ -1,0 +1,522 @@
+/**
+ * The API reference and console (Phase 7 A5).
+ *
+ * A two-pane layout matching the Traces view: the operation list is the index,
+ * the detail pane is the work. Every colour comes from tokens.css, so both
+ * themes follow without a second palette here.
+ */
+
+.api-console {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: var(--list-width) 1fr;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ---- The operation list ---- */
+
+.api-console__list {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  border-right: var(--border-width) solid var(--border);
+  background: var(--bg-surface);
+}
+
+.api-console__list-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.api-console__filter {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--text-chrome);
+  color: var(--text-primary);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+}
+
+.api-console__filter:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -1px;
+}
+
+.api-console__count {
+  flex-shrink: 0;
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.api-console__operations {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.api-console__operation {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-ui);
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: var(--border-width) solid var(--border);
+  cursor: pointer;
+}
+
+.api-console__operation:hover {
+  background: var(--bg-overlay);
+}
+
+.api-console__operation--active {
+  background: var(--bg-selected);
+}
+
+.api-console__operation:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+/* The method badge. Colour distinguishes read from write, which is the
+   distinction that matters when running a request against real data. */
+.api-console__method {
+  flex-shrink: 0;
+  min-width: 52px;
+  padding: 2px var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-semibold);
+  text-align: center;
+  border-radius: var(--radius-sm);
+}
+
+.api-console__method--get {
+  color: var(--info);
+  background: var(--info-muted);
+}
+
+.api-console__method--post {
+  color: var(--ok);
+  background: var(--ok-muted);
+}
+
+.api-console__method--put,
+.api-console__method--patch {
+  color: var(--warn);
+  background: var(--warn-muted);
+}
+
+.api-console__method--delete {
+  color: var(--error);
+  background: var(--error-muted);
+}
+
+.api-console__path {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.api-console__operation--active .api-console__path {
+  color: var(--text-primary);
+}
+
+/* ---- The detail pane ---- */
+
+.api-console__detail {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-5);
+}
+
+.api-console__message {
+  max-width: 640px;
+  padding: var(--space-5);
+}
+
+.api-console__header {
+  margin-bottom: var(--space-5);
+}
+
+.api-console__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.api-console__title-path {
+  font-family: var(--font-mono);
+  font-size: var(--text-title);
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+.api-console__description {
+  /* No `pre-wrap`: `describe()` has already split the text into lines, so
+     preserving newlines too would double every gap. */
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-body);
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+}
+
+.api-console__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.api-console__request,
+.api-console__response {
+  padding: var(--space-4);
+}
+
+/* ---- The request builder ---- */
+
+.api-console__group {
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  border: none;
+}
+
+.api-console__legend {
+  padding: 0;
+  margin-bottom: var(--space-2);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-semibold);
+  color: var(--text-tertiary);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+}
+
+.api-console__field {
+  display: block;
+  margin-bottom: var(--space-3);
+}
+
+.api-console__label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+  font-size: var(--text-chrome);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+}
+
+.api-console__hint {
+  flex-basis: 100%;
+  font-size: var(--text-micro);
+  font-weight: var(--weight-normal);
+  line-height: var(--leading-normal);
+  color: var(--text-tertiary);
+}
+
+.api-console__type {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-normal);
+  color: var(--text-tertiary);
+}
+
+.api-console__required {
+  font-size: var(--text-micro);
+  font-weight: var(--weight-normal);
+  color: var(--warn);
+}
+
+.api-console__input,
+.api-console__body {
+  width: 100%;
+  padding: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--text-primary);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+}
+
+.api-console__body {
+  line-height: var(--leading-mono);
+  resize: vertical;
+}
+
+.api-console__input:focus-visible,
+.api-console__body:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -1px;
+}
+
+.api-console__url {
+  padding: var(--space-3);
+  margin-bottom: var(--space-3);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+}
+
+.api-console__url-value {
+  display: block;
+  margin-top: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--accent);
+  word-break: break-all;
+}
+
+.api-console__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.api-console__blocked {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-chrome);
+  color: var(--warn);
+}
+
+/* ---- The response ---- */
+
+.api-console__outcome {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.api-console__status {
+  padding: 2px var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-sm);
+}
+
+.api-console__status--ok {
+  color: var(--ok);
+  background: var(--ok-muted);
+}
+
+.api-console__status--warn {
+  color: var(--warn);
+  background: var(--warn-muted);
+}
+
+.api-console__status--error {
+  color: var(--error);
+  background: var(--error-muted);
+}
+
+.api-console__status--info {
+  color: var(--info);
+  background: var(--info-muted);
+}
+
+.api-console__meta {
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.api-console__payload {
+  max-height: 420px;
+  padding: var(--space-3);
+  margin: 0;
+  overflow: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  line-height: var(--leading-mono);
+  color: var(--text-primary);
+  background: var(--bg-base);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+}
+
+.api-console__placeholder {
+  margin: 0;
+  font-size: var(--text-chrome);
+  color: var(--text-tertiary);
+}
+
+.api-console__documented {
+  padding-top: var(--space-4);
+  margin-top: var(--space-4);
+  border-top: var(--border-width) solid var(--border);
+}
+
+.api-console__subtitle {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-semibold);
+  color: var(--text-tertiary);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+}
+
+.api-console__responses {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-chrome);
+  color: var(--text-secondary);
+}
+
+.api-console__responses li {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.api-console__response-status {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.api-console__back-btn {
+  display: none;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 6px var(--space-2);
+  margin-bottom: var(--space-3);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  color: var(--text-primary);
+  font-size: var(--text-chrome);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  min-height: var(--touch-target-dense, 36px);
+  align-self: flex-start;
+}
+
+.api-console__back-btn:hover {
+  background: var(--bg-overlay);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+@media (max-width: 1280px) and (min-width: 768px) {
+  .api-console {
+    grid-template-columns: 280px 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .api-console {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1;
+    min-width: 0;
+    grid-template-columns: none;
+    grid-template-rows: none;
+  }
+
+  .api-console__list {
+    border-right: none;
+    width: 100%;
+    max-width: 100%;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .api-console__operation {
+    min-height: var(--touch-target-min, 44px);
+    width: 100%;
+  }
+
+  .api-console__detail {
+    width: 100%;
+    max-width: 100%;
+    flex: 1;
+    min-width: 0;
+    padding: var(--space-3);
+  }
+
+  .api-console__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .api-console__back-btn {
+    display: inline-flex;
+  }
+
+  .api-console--has-selection .api-console__list {
+    display: none;
+  }
+
+  .api-console:not(.api-console--has-selection) .api-console__detail {
+    display: none;
+  }
+}
+
+/* Descriptions come from Rust doc comments and carry light markdown; these
+   style the two constructs `describe()` renders. */
+.api-console__doc-heading {
+  margin: var(--space-3) 0 var(--space-1);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-semibold);
+  color: var(--text-tertiary);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+}
+
+.api-console__doc-code {
+  padding: 1px var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--text-primary);
+  background: var(--bg-raised);
+  border-radius: var(--radius-sm);
+}
+
+/* A single centred pane for the loading and failure states, which replace the
+   whole two-column layout rather than sitting inside it. */
+.api-console--message {
+  display: block;
+  padding: var(--space-6) var(--space-4);
+  overflow-y: auto;
+}
+
+.api-console__no-match {
+  padding: var(--space-4) var(--space-3);
+  margin: 0;
+  font-size: var(--text-chrome);
+  color: var(--text-tertiary);
+  text-align: center;
+}

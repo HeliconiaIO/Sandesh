@@ -1,0 +1,6 @@
+From: Alice <alice@example.test>
+Subject: Broken Content-Type
+MIME-Version: 1.0
+Content-Type: this is not a valid media type ;;; charset=
+
+Body following a malformed Content-Type header.

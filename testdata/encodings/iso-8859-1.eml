@@ -1,0 +1,9 @@
+From: Alice <alice@example.test>
+To: Bob <bob@example.test>
+Subject: Latin-1 body
+Date: Tue, 01 Sep 2026 12:12:00 +0000
+Message-ID: <latin1-013@example.test>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+
+Café naïve résumé

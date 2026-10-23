@@ -1,0 +1,51 @@
+/* --- Injected-fault indicator (ADR-084) ---------------------------------- */
+
+/*
+ * Shaped like `.connection` so the two read as one family of status chips in
+ * the header, but deliberately not identical: this one carries a solid border
+ * at full strength, because unlike a connection state it is never the resting
+ * condition. If it is on screen, something has been switched on by hand.
+ */
+.fault {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 28px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--warn);
+  background: var(--warn-muted);
+  border: var(--border-width) solid var(--warn);
+  box-sizing: border-box;
+  line-height: 1;
+}
+
+.fault__icon {
+  flex: none;
+}
+
+/*
+ * The count sits in its own pill so "Faults on 3" cannot be misread as a
+ * sentence, and so the number stays legible when the label is scanned past.
+ */
+.fault__count {
+  padding: 0 5px;
+  border-radius: calc(var(--radius) / 1.5);
+  background: var(--warn);
+  color: var(--bg-base);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--weight-semibold);
+}
+
+/*
+ * Below the narrow breakpoint the header is tight, so the label drops and the
+ * icon plus count carries the meaning. The screen-reader text is unaffected,
+ * so nothing is lost for anyone who cannot see the icon.
+ */
+@media (max-width: 640px) {
+  .fault__label {
+    display: none;
+  }
+}

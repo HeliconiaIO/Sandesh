@@ -1,0 +1,8 @@
+From: enc@example.test
+To: dev@example.test
+Subject: Explicit 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Strictly seven-bit ASCII content.

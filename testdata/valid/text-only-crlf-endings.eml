@@ -1,0 +1,10 @@
+From: sender@example.test
+To: dev@example.test
+Subject: Canonical CRLF throughout
+Date: Tue, 09 Sep 2026 12:00:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+
+Line one.
+Line two.
+Line three.

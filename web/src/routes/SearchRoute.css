@@ -1,0 +1,182 @@
+.search-page {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+.search-page__list {
+  width: var(--list-width);
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--bg-surface);
+  border-right: var(--border-width) solid var(--border);
+}
+
+.search-page__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-surface);
+  flex: none;
+}
+
+.search-page__header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.search-page__title {
+  margin: 0;
+  font-size: var(--text-title);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.01em;
+}
+
+.search-page__plan {
+  padding: 4px var(--space-2);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-guide {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.search-guide__title {
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.search-guide__desc {
+  font-size: var(--text-chrome);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.search-guide__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.search-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--motion-fast) var(--ease);
+}
+
+.search-chip:hover {
+  background: var(--bg-overlay);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/*
+ * The quick-filter pills are shared with the mailbox filter bar, so their
+ * appearance lives in `styles/pills.css` (loaded by `base.css`) rather than
+ * here: route stylesheets are code-split, and a route-owned rule is absent
+ * until that route mounts.
+ */
+
+/* Suppress native browser search cancel button */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none !important;
+  display: none !important;
+}
+
+.mail__filter-clear {
+  position: absolute;
+  right: var(--space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  background: var(--bg-overlay);
+  color: var(--text-tertiary);
+  border-radius: var(--radius-full, 9999px);
+  cursor: pointer;
+  transition: all var(--motion-fast) var(--ease);
+}
+
+.mail__filter-clear:hover {
+  color: var(--text-primary);
+  background: var(--bg-raised);
+}
+
+/* Tablet (769px - 1024px): compact side-by-side */
+@media (min-width: 768px) and (max-width: 1280px) {
+  .search-page__list {
+    width: 280px;
+  }
+}
+
+/* Mobile (< 768px): Native Master-Detail navigation */
+@media (max-width: 768px) {
+  .search-page {
+    flex-direction: column;
+    position: relative;
+  }
+
+  .search-page__list {
+    width: 100%;
+    flex: 1;
+    max-height: none;
+    border-right: none;
+  }
+
+  .mail--has-selection .search-page__list {
+    display: none;
+  }
+
+  .mail--has-selection .mail__detail {
+    display: flex;
+    width: 100%;
+    flex: 1;
+  }
+
+  .mail__bulk-toolbar {
+    padding: 6px var(--space-2);
+  }
+
+  .mail__bulk-actions .button--sm {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+}

@@ -1,0 +1,267 @@
+/* Header analysis panel (Phase 7 A3).
+   The signature element is the route timeline: a single hairline spine with
+   numbered hops, and the inter-hop delay set in the right gutter so the slow
+   hop is findable by scanning one column. */
+
+.analysis {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.analysis__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.analysis__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+  color: var(--text-secondary);
+}
+
+.analysis__heading-icon {
+  color: var(--text-tertiary);
+}
+
+.analysis__count {
+  padding: 0 var(--space-2);
+  border-radius: 999px;
+  background: var(--bg-raised);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+}
+
+.analysis__note {
+  margin: 0;
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+  max-width: 68ch;
+}
+
+/* The caveat is load-bearing, not fine print: it is the reason nothing in this
+   panel is styled as a verdict. It gets a rule rather than a colour, because a
+   coloured callout beside authentication results reads as a status of its own. */
+.analysis__note--caveat {
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--accent);
+  color: var(--text-secondary);
+}
+
+.analysis__timeline {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Three columns: marker, hop, delay. The hop column is capped rather than
+   elastic so the delay sits beside what it measures instead of drifting to the
+   far edge of a wide inspector; `justify-content` keeps the whole row left, so
+   the hops stay aligned under the markers. */
+.analysis__hop {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  max-width: 78ch;
+}
+
+.analysis__hop + .analysis__hop {
+  border-top: var(--border-width) solid var(--border);
+}
+
+/* The spine. The marker is numbered because the hops genuinely are a sequence
+   and the order carries the meaning of the whole section. */
+.analysis__hop-index {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: var(--border-width) solid var(--border);
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.analysis__hop-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.analysis__hop-route {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--text-primary);
+}
+
+/* The arrow points down: the timeline reads top to bottom, and an arrow that
+   pointed right would fight the column it sits in. */
+.analysis__hop-arrow {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.analysis__host {
+  word-break: break-all;
+}
+
+.analysis__hop-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+}
+
+.analysis__hop-raw {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* The one number worth scanning for: a slow hop is the whole reason to open
+   this view, so it is set in the body size, not the caption size. */
+.analysis__delay {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* A backwards gap means the relays' clocks disagree. It is marked because it
+   is a finding, not because it is an error on this server's part. */
+.analysis__delay--backwards {
+  color: var(--text-primary);
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+.analysis__claims {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Rows sharing one rule rather than a stack of cards: these are short claims,
+   and five boxes weighed more than the content inside them. */
+.analysis__claim,
+.analysis__signature {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2) 0;
+  border-top: var(--border-width) solid var(--border);
+}
+
+.analysis__claim-method {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  font-weight: var(--weight-medium);
+  color: var(--accent);
+}
+
+.analysis__claim-said {
+  font-size: var(--text-micro);
+  color: var(--text-secondary);
+}
+
+.analysis__claim-host {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+/* No green, no red. The result is quoted, not endorsed — colouring it would
+   assert a validity this panel explicitly does not check. */
+.analysis__claim-result {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+}
+
+.analysis__detail {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--text-tertiary);
+  word-break: break-word;
+}
+
+.analysis__props {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+  font-size: var(--text-micro);
+}
+
+.analysis__prop {
+  display: contents;
+}
+
+.analysis__props dt {
+  color: var(--text-tertiary);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+}
+
+.analysis__props dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+.analysis__blank {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.analysis__empty {
+  padding: var(--space-4);
+  margin: 0;
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+  border-bottom: var(--border-width) solid var(--border);
+  max-width: 68ch;
+}
+
+/* Narrow: the delay moves under the hop rather than squeezing the route. */
+@media (max-width: 640px) {
+  .analysis__hop {
+    grid-template-columns: auto 1fr;
+  }
+
+  .analysis__delay {
+    grid-column: 2;
+    padding-top: 0;
+  }
+}

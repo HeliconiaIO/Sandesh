@@ -1,0 +1,29 @@
+From: Alice <alice@example.test>
+To: Bob <bob@example.test>
+Subject: Several attachments
+Date: Tue, 01 Sep 2026 12:07:00 +0000
+Message-ID: <multi-008@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="many"
+
+--many
+Content-Type: text/plain; charset=utf-8
+
+Three files attached.
+--many
+Content-Type: text/csv; name="data.csv"
+Content-Disposition: attachment; filename="data.csv"
+
+id,name
+1,first
+--many
+Content-Type: application/json; name="config.json"
+Content-Disposition: attachment; filename="config.json"
+
+{"key": "value"}
+--many
+Content-Type: text/plain; name="readme.txt"
+Content-Disposition: attachment; filename="readme.txt"
+
+Read me.
+--many--

@@ -1,0 +1,4 @@
+# `cargo xtask ...` as an alias for the automation crate, so the generation
+# command in the README is one obvious thing to type from anywhere in the tree.
+[alias]
+xtask = "run --package xtask --"

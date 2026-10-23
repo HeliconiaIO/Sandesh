@@ -1,0 +1,19 @@
+From: sender@example.test
+To: dev@example.test
+Subject: multipart/signed envelope
+Date: Tue, 09 Sep 2026 12:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="sig"
+
+--sig
+Content-Type: text/plain
+
+Signed content.
+--sig
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+RedactedFixtureSignature
+-----END PGP SIGNATURE-----
+--sig--

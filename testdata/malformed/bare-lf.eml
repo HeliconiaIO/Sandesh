@@ -1,0 +1,6 @@
+From: Alice <alice@example.test>
+Subject: Bare line feeds
+Content-Type: text/plain
+
+This message uses bare LF rather than CRLF.
+Storage must preserve it exactly.

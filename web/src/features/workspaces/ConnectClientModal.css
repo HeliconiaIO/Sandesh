@@ -1,0 +1,398 @@
+/*
+ * ConnectClientModal.css
+ * Styles for the client connection and code snippet modal.
+ */
+
+.connect-modal {
+  max-width: 760px;
+  width: 95%;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.connect-modal__body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  overflow-y: auto;
+}
+
+.connect-modal__summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: var(--space-2);
+  background: var(--bg-raised);
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  border: var(--border-width) solid var(--border);
+}
+
+.connect-modal__summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.connect-modal__summary-label {
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+}
+
+.connect-modal__summary-value {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-chrome);
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.connect-modal__auth-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  width: fit-content;
+}
+
+.connect-modal__auth-badge--required {
+  background: rgba(227, 179, 65, 0.15);
+  color: var(--warn);
+  border: var(--border-width) solid rgba(227, 179, 65, 0.3);
+}
+
+.connect-modal__auth-badge--optional {
+  background: rgba(63, 185, 80, 0.15);
+  color: var(--ok);
+  border: var(--border-width) solid rgba(63, 185, 80, 0.3);
+}
+
+.connect-modal__cred-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-micro);
+  color: var(--text-secondary);
+}
+
+.connect-modal__cred-banner-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  line-height: 1.4;
+}
+
+.connect-modal__cred-banner-info strong {
+  color: var(--text-primary);
+}
+
+.connect-modal__cred-banner-info code {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  background: var(--accent-subtle);
+  padding: 1px 4px;
+  border-radius: var(--radius-xs);
+}
+
+.connect-modal__cred-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.connect-modal__tabs {
+  display: flex;
+  gap: var(--space-1);
+  border-bottom: var(--border-width) solid var(--border);
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.connect-modal__tab {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-chrome);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  transition: all var(--motion-fast) var(--ease);
+}
+
+.connect-modal__tab:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.connect-modal__tab--active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.connect-modal__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.connect-modal__panel-desc {
+  font-size: var(--text-chrome);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: var(--leading-normal);
+}
+
+.connect-modal__snippet-card {
+  position: relative;
+  background: #0d1117;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.connect-modal__snippet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: var(--border-width) solid rgba(255, 255, 255, 0.08);
+  font-size: var(--text-micro);
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+}
+
+.connect-modal__snippet-code {
+  margin: 0;
+  padding: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  line-height: 1.5;
+  color: #e6edf3;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.connect-modal__odoo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+@media (max-width: 640px) {
+  .connect-modal__odoo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.connect-modal__odoo-box {
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.connect-modal__odoo-title {
+  font-size: var(--text-chrome);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.connect-modal__odoo-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--text-micro);
+  padding: 4px 0;
+  border-bottom: 1px dashed var(--border);
+}
+
+.connect-modal__odoo-field:last-child {
+  border-bottom: none;
+}
+
+.connect-modal__odoo-key {
+  color: var(--text-secondary);
+}
+
+.connect-modal__odoo-val {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* Direct Credentials & Password Manager Card */
+.connect-modal__creds-card {
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.connect-modal__creds-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.connect-modal__creds-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-chrome);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.connect-modal__toggle-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-micro);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.connect-modal__toggle-row input {
+  cursor: pointer;
+}
+
+.connect-modal__creds-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+@media (max-width: 640px) {
+  .connect-modal__creds-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.connect-modal__field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.connect-modal__field-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+}
+
+.connect-modal__acc-select {
+  padding: 2px 6px;
+  font-size: 11px;
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+}
+
+.connect-modal__field-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px 8px;
+}
+
+.connect-modal__field-input-wrap:focus-within {
+  border-color: var(--accent);
+}
+
+.connect-modal__field-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  color: var(--text-primary);
+  min-width: 0;
+}
+
+.connect-modal__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 2px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition);
+}
+
+.connect-modal__icon-btn:hover {
+  color: var(--text-primary);
+}
+
+.connect-modal__save-btn {
+  white-space: nowrap;
+  padding: 2px 8px;
+  font-size: 11px;
+  min-height: 22px;
+}
+
+.connect-modal__save-feedback {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--ok);
+  font-weight: var(--weight-medium);
+}
+
+.connect-modal__save-error {
+  font-size: 11px;
+  color: var(--error);
+}
+
+.connect-modal__hint {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+}
+

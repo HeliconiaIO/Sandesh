@@ -1,0 +1,442 @@
+/*
+ * Protocol traces (Phase 7 A2).
+ *
+ * Every value here is a token from `styles/tokens.css`. This is a new view
+ * inside an established system, so the work is coherence, not a new identity:
+ * borders rather than shadows, the 8px grid, one accent, motion under 160ms.
+ *
+ * The one deliberate signature is `.dialogue` — the transcript set as a
+ * two-column exchange with a directional gutter. It earns its place because
+ * direction is *recorded data* (capture writes `C:`/`S:`/`*`), not decoration
+ * added here, and because "who said what, in what order" is the only question
+ * this view exists to answer.
+ */
+
+.traces {
+  display: flex;
+  flex-direction: column;
+  /* `.shell__main` is a flex row, so this must claim its share rather than
+     size to content — without it the split below collapses to the height of
+     whichever pane is taller and the transcript scrolls in a letterbox. */
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-base);
+}
+
+/* --- The bar ------------------------------------------------------------ */
+
+.traces__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-surface);
+}
+
+.traces__title {
+  margin: 0;
+  font-size: var(--text-title);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.traces__filters {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.traces__filter {
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-ui);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-label);
+  color: var(--text-secondary);
+  background: transparent;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: color var(--motion-fast) var(--ease),
+    background var(--motion-fast) var(--ease),
+    border-color var(--motion-fast) var(--ease);
+}
+
+.traces__filter:hover {
+  color: var(--text-primary);
+  background: var(--bg-overlay);
+}
+
+.traces__filter[aria-pressed='true'] {
+  color: var(--accent);
+  background: var(--accent-muted);
+  border-color: var(--accent-border);
+}
+
+/* --- Layout ------------------------------------------------------------- */
+
+.traces__split {
+  display: grid;
+  grid-template-columns: var(--list-width) 1fr;
+  min-height: 0;
+  flex: 1;
+}
+
+.traces__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  border-right: var(--border-width) solid var(--border);
+  background: var(--bg-surface);
+}
+
+.traces__placeholder,
+.traces__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-7) var(--space-4);
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: var(--text-chrome);
+}
+
+.traces__empty {
+  flex: 1;
+}
+
+.traces__empty h2 {
+  margin: 0;
+  font-size: var(--text-title);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+}
+
+.traces__empty p,
+.traces__placeholder p {
+  margin: 0;
+  max-width: 46ch;
+  line-height: var(--leading-normal);
+}
+
+/* --- A row -------------------------------------------------------------- */
+
+.trace-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: var(--row-height);
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-ui);
+  font-size: var(--text-chrome);
+  color: var(--text-secondary);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-bottom: var(--border-width) solid var(--border);
+  cursor: pointer;
+  transition: background var(--motion-fast) var(--ease);
+}
+
+.trace-row:hover {
+  background: var(--bg-overlay);
+}
+
+.trace-row--selected {
+  background: var(--bg-selected);
+  color: var(--text-primary);
+}
+
+/*
+ * The protocol tag carries a semantic colour, not a decorative one: at a
+ * glance the question is "which server was this?", and three protocols is
+ * few enough that colour answers faster than reading.
+ */
+.trace-row__protocol {
+  flex: none;
+  width: 42px;
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+}
+
+.trace-row__protocol--smtp {
+  color: var(--accent);
+}
+
+.trace-row__protocol--imap {
+  color: var(--ok);
+}
+
+.trace-row__protocol--pop3 {
+  color: var(--warn);
+}
+
+.trace-row__peer {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+}
+
+.trace-row__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: none;
+}
+
+.trace-row__tls {
+  padding: 0 var(--space-1);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--ok);
+  background: var(--ok-muted);
+  border-radius: var(--radius-sm);
+}
+
+.trace-row__time {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- The transcript ----------------------------------------------------- */
+
+.trace {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-4);
+}
+
+.trace__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin: 0 0 var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.trace__facts dt {
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--text-tertiary);
+}
+
+.trace__facts dd {
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--text-primary);
+}
+
+/*
+ * The signature. A protocol exchange is a conversation, so it is set as one:
+ * a fixed gutter carrying the direction, and the line itself in mono. The
+ * client column is tinted and the server column is not, which means an
+ * unanswered command — the shape of most protocol bugs — is visible as a gap
+ * in the alternation rather than something to read for.
+ */
+.dialogue {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  line-height: var(--leading-mono);
+}
+
+.dialogue__line {
+  display: grid;
+  grid-template-columns: var(--space-5) 1fr;
+  gap: var(--space-2);
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.dialogue__marker {
+  color: var(--text-tertiary);
+  text-align: center;
+  user-select: none;
+}
+
+.dialogue__text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.dialogue__line--client {
+  background: var(--accent-muted);
+}
+
+.dialogue__line--client .dialogue__marker {
+  color: var(--accent);
+}
+
+.dialogue__line--client .dialogue__text {
+  color: var(--text-primary);
+}
+
+.dialogue__line--server .dialogue__text {
+  color: var(--text-secondary);
+}
+
+/* A note is the server narrating itself — a STARTTLS upgrade, a timeout. It
+   is not protocol traffic, so it is set apart rather than in the exchange. */
+.dialogue__line--note {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.trace__truncated {
+  margin: var(--space-4) 0 0;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-ui);
+  font-size: var(--text-micro);
+  color: var(--warn);
+  background: var(--warn-muted);
+  border-radius: var(--radius);
+}
+
+/* --- Narrow ------------------------------------------------------------- */
+
+.trace__back-btn {
+  display: none;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 6px var(--space-2);
+  margin-bottom: var(--space-3);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  color: var(--text-primary);
+  font-size: var(--text-chrome);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  min-height: var(--touch-target-dense, 36px);
+  align-self: flex-start;
+}
+
+.trace__back-btn:hover {
+  background: var(--bg-overlay);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+@media (max-width: 1280px) and (min-width: 768px) {
+  .traces__split {
+    grid-template-columns: 280px 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .traces__bar {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .traces__filter {
+    min-height: var(--touch-target-dense, 36px);
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .trace-row {
+    min-height: var(--touch-target-min, 44px);
+  }
+
+  .traces__split {
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: none;
+    grid-template-rows: none;
+  }
+
+  .traces__list {
+    border-right: none;
+    width: 100%;
+    flex: 1;
+  }
+
+  .traces__placeholder {
+    display: none;
+  }
+
+  .trace {
+    width: 100%;
+    flex: 1;
+    padding: var(--space-3);
+  }
+
+  .trace__back-btn {
+    display: inline-flex;
+  }
+
+  .traces--has-selection .traces__list {
+    display: none;
+  }
+
+  .traces:not(.traces--has-selection) .trace {
+    display: none;
+  }
+}
+
+/* An in-flight connection (Phase 7 Pass B). The transcript of an open socket
+   grows as the client speaks, so the view has to say which rows are still
+   moving — otherwise a half-finished conversation reads as a broken one. */
+.trace-row__live {
+  padding: 0 var(--space-1);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-semibold);
+  color: var(--ok);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  background: var(--ok-muted);
+  border-radius: var(--radius-sm);
+}
+
+.trace__live-note {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-chrome);
+  color: var(--text-secondary);
+  background: var(--ok-muted);
+  border-radius: var(--radius);
+}
+
+.trace__live-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--ok);
+  border-radius: 50%;
+}
+
+/* Positions the shared state components (States.tsx). They replaced a local
+   `TracesEmpty` that rendered every case the same way — so a failed request
+   carried no role="alert" and offered no retry, while "tracing is off" looked
+   identical to "something broke". */
+.traces__state {
+  padding: var(--space-6) var(--space-4);
+}

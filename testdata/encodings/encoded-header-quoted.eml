@@ -1,0 +1,7 @@
+From: enc@example.test
+To: dev@example.test
+Subject: =?ISO-8859-1?Q?Caf=E9_=2D_quoted=2Dprintable_word?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Body.

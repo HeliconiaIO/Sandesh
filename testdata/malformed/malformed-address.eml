@@ -1,0 +1,6 @@
+From: not an address at all
+To: <>
+Subject: Unparseable addresses
+MIME-Version: 1.0
+
+Lenient parsing must still store this.

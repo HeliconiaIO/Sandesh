@@ -1,0 +1,22 @@
+Received: from mta.example.net (mta.example.net [198.51.100.24])
+	by mx.example.test with ESMTPS id 4a1b2c3d
+	for <dev@example.test>; Tue, 09 Sep 2026 11:40:12 +0000 (UTC)
+Received: from app-01.internal (localhost [127.0.0.1])
+	by mta.example.net with ESMTP id 9f8e7d6c;
+	Tue, 09 Sep 2026 11:40:09 +0000 (UTC)
+Authentication-Results: mx.example.test;
+	dkim=pass header.i=@example.net header.s=selector1;
+	spf=pass (mx.example.test: domain of bounce@example.net designates
+	198.51.100.24 as permitted sender) smtp.mailfrom=bounce@example.net;
+	dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=example.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=example.net;
+	s=selector1; t=1788950412; bh=2jmj7l5rSw0yVb+vlWAYkK/YBwk=;
+	h=From:To:Subject:Date; b=RedactedSignatureValueForFixtureUseOnly==
+From: alerts@example.net
+To: dev@example.test
+Subject: Signed and authenticated message
+Date: Tue, 09 Sep 2026 11:40:05 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+This message carries DKIM, SPF and DMARC results for header analysis.

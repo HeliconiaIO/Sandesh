@@ -1,0 +1,8 @@
+From: enc@example.test
+To: dev@example.test
+Subject: windows-1252 smart quotes
+MIME-Version: 1.0
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
+
+It’s a “smart quote” test – en dash.

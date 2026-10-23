@@ -1,0 +1,174 @@
+.delivery {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--space-4);
+}
+
+.delivery__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.delivery__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+  color: var(--text-secondary);
+}
+
+.delivery__count {
+  padding: 0 var(--space-2);
+  border-radius: 999px;
+  background: var(--bg-raised);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+}
+
+/* Label/value pairs. The label column is sized to the longest label so the
+   values line up; below the narrow breakpoint the pairs stack instead. */
+.delivery__grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  font-size: var(--text-body);
+}
+
+.delivery__grid dt {
+  color: var(--text-tertiary);
+  font-size: var(--text-micro);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  padding-top: 2px;
+}
+
+.delivery__grid dd {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--text-primary);
+  min-width: 0;
+}
+
+.delivery__grid code {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  overflow-wrap: anywhere;
+}
+
+.delivery__addresses {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.delivery__muted {
+  color: var(--text-tertiary);
+}
+
+.delivery__note {
+  color: var(--text-tertiary);
+  font-size: var(--text-micro);
+}
+
+.delivery__empty {
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: var(--text-body);
+}
+
+.delivery__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-body);
+}
+
+.delivery__table th {
+  text-align: left;
+  padding: var(--space-2);
+  border-bottom: var(--border-width) solid var(--border);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+}
+
+.delivery__table td {
+  padding: var(--space-2);
+  border-bottom: var(--border-width) solid var(--border);
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.delivery__outcome {
+  display: inline-block;
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+}
+
+/* Outcome colour carries meaning, so it is paired with the text label rather
+   than replacing it — colour alone would fail WCAG 1.4.1. */
+.delivery__outcome--delivered {
+  background: var(--ok-muted);
+  color: var(--ok);
+}
+
+.delivery__outcome--catch_all {
+  background: var(--warn-muted);
+  color: var(--warn);
+}
+
+.delivery__outcome--rejected {
+  background: var(--error-muted);
+  color: var(--error);
+}
+
+.delivery__reason {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 640px) {
+  .delivery__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-1) 0;
+  }
+
+  .delivery__grid dd {
+    margin-bottom: var(--space-2);
+  }
+}
+
+/* The keyword a rule added (Phase 8 A3).
+ *
+ * Styled as a tag rather than as plain code: it is a value that now exists on
+ * the message and can be searched for, not a transcript fragment. Uses the
+ * accent tokens rather than a semantic colour, because an applied rule is
+ * neither good nor bad news — it is simply what was configured. */
+.delivery__keyword {
+  padding: 1px var(--space-2);
+  font-size: var(--text-micro);
+  color: var(--accent);
+  background: var(--accent-muted);
+  border: var(--border-width) solid var(--accent-border);
+  border-radius: var(--radius-sm);
+}

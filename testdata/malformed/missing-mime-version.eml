@@ -1,0 +1,9 @@
+From: Alice <alice@example.test>
+Subject: No MIME-Version
+Content-Type: multipart/mixed; boundary="b"
+
+--b
+Content-Type: text/plain
+
+Multipart without the required MIME-Version header.
+--b--

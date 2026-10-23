@@ -1,0 +1,179 @@
+.messages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+  outline-offset: -2px;
+  /* The positioning context for virtualised rows. */
+  position: relative;
+}
+
+/* Holds the full scroll height so the scrollbar describes the whole list, not
+   just the mounted window. It has no content and is hidden from the a11y tree. */
+.messages__spacer {
+  width: 100%;
+  pointer-events: none;
+}
+
+/*
+ * Rows are compact by design (§12): the list exists to scan many test messages
+ * at once. Two lines rather than one because sender and subject are both
+ * needed to identify a message, and truncating either defeats the scan.
+ */
+/* Absolutely positioned and translated into place by the virtualiser: each row
+   sits over the spacer rather than in flow, so only the visible window exists
+   in the DOM. `left`/`right` rather than a width, so the row still tracks the
+   scroll container when a scrollbar appears. */
+.message-row {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background var(--motion-fast) var(--ease),
+    border-left-color var(--motion-fast) var(--ease);
+}
+
+.message-row:hover {
+  background: var(--bg-overlay);
+}
+
+.message-row--selected {
+  background: var(--bg-selected);
+  border-left-color: var(--accent);
+}
+
+.message-row--selected:hover {
+  background: var(--bg-selected);
+}
+
+.message-row:active {
+  background: var(--bg-overlay);
+}
+
+.message-row--selected:active {
+  background: var(--bg-selected);
+}
+
+/* The unread marker is a shape, reinforced by weight below — not colour alone. */
+.message-row__marker {
+  width: 6px;
+  height: 6px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: transparent;
+  flex: none;
+  transition: background var(--motion-fast) var(--ease);
+}
+
+.message-row--unread .message-row__marker {
+  background: var(--accent);
+  box-shadow: 0 0 4px var(--accent);
+}
+
+.message-row--selected .message-row__marker {
+  background: var(--accent);
+}
+
+.message-row__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.message-row__top,
+.message-row__bottom {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.message-row__from {
+  font-size: var(--text-chrome);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.message-row--unread .message-row__from {
+  color: var(--text-primary);
+}
+
+.message-row__age {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.message-row__subject {
+  font-size: var(--text-chrome);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.message-row--unread .message-row__subject {
+  font-weight: var(--weight-semibold);
+}
+
+.message-row__nosubject {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.message-row__badges {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: none;
+}
+
+.message-row__size {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.message-row__placements {
+  display: flex;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-tertiary);
+}
+
+.badge--warn {
+  color: var(--warn);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 5px;
+  height: 16px;
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-micro);
+  color: var(--text-secondary);
+}

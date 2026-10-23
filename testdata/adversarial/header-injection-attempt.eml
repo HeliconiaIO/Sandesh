@@ -1,0 +1,6 @@
+From: inject@example.test
+To: dev@example.test
+Subject: =?UTF-8?Q?ok=0D=0ABcc:_victim=40example=2Etest?=
+MIME-Version: 1.0
+
+The decoded subject must not become a header.

@@ -1,0 +1,5 @@
+From: Alice <alice@example.test>
+Subject: Raw 8-bit éèê in header
+Content-Type: text/plain
+
+Header above contains raw 8-bit bytes.

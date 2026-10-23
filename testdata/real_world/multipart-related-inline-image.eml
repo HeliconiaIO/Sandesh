@@ -1,0 +1,19 @@
+From: news@example.test
+To: dev@example.test
+Subject: Newsletter with inline logo
+Message-ID: <news-2026-09-09@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="rel-boundary"; type="text/html"
+
+--rel-boundary
+Content-Type: text/html; charset=utf-8
+
+<p>Logo: <img src="cid:logo@example.test" alt="logo"></p>
+--rel-boundary
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-ID: <logo@example.test>
+Content-Disposition: inline; filename="logo.png"
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==
+--rel-boundary--

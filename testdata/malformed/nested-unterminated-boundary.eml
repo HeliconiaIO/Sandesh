@@ -1,0 +1,14 @@
+From: bad@example.test
+To: dev@example.test
+Subject: Inner boundary never closed
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="out"
+
+--out
+Content-Type: multipart/mixed; boundary="in"
+
+--in
+Content-Type: text/plain
+
+Inner part.
+--out--

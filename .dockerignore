@@ -1,0 +1,31 @@
+# Build context exclusions.
+#
+# `target/` is the one that matters: it reaches tens of gigabytes, and without
+# this every `docker build` would upload all of it to the daemon before reading
+# the first line of the Dockerfile.
+
+target/
+fuzz/target/
+web/node_modules/
+web/dist/
+.git/
+.github/
+
+# Artifacts of local runs, never inputs to a build.
+*.db
+*.db-shm
+*.db-wal
+data/
+blobs/
+*.log
+
+# Documentation and editor state: the image needs none of it — except the
+# OpenAPI contract, which `web/src/api/openapi.test.ts` imports and `tsc -b`
+# therefore type-checks as part of `npm run build`. It is a build input, not
+# documentation, however much its path suggests otherwise.
+docs/*
+!docs/openapi.json
+*.md
+!README.md
+.vscode/
+.idea/

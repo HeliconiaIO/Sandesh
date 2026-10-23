@@ -1,0 +1,9 @@
+From: enc@example.test
+To: dev@example.test
+Subject: Quoted-printable body
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Caf=C3=A9 =E2=80=94 soft line break here =
+and the line continues.

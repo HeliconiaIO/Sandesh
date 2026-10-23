@@ -1,0 +1,308 @@
+/*
+ * Design tokens (UI_UX_DIRECTION.md §10).
+ *
+ * Every colour, space, radius, duration and BREAKPOINT in Sandesh is defined
+ * here and nowhere else. A component that hardcodes `#1a1a1a`, `12px` or
+ * `max-width: 900px` has broken the contract: both themes are first-class and
+ * every pane collapses on one shared scale, so a literal value is a bug that
+ * only shows up in the theme — or at the width — its author was not using.
+ *
+ * The palette is a cool graphite foundation with ONE interaction accent.
+ * Semantic colours (ok / warn / error / info) are reserved for meaning — a
+ * console that colours decoratively can no longer use colour to signal.
+ */
+
+:root {
+  /* --- Type -------------------------------------------------------------- */
+  /*
+   * Three roles, deliberately distinct. The display face is mechanical rather
+   * than neutral: this is an instrument, and its chrome should not read like a
+   * document. Body stays a workhorse grotesque for long prose. Monospace is
+   * used generously — this is a tool for reading protocol data.
+   */
+  --font-display: 'Space Grotesk Variable', 'Space Grotesk', 'Inter Variable',
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-ui: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace,
+    SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --text-chrome: 13px;   /* nav, toolbars, labels */
+  --text-body: 14px;     /* message content */
+  --text-mono: 12.5px;   /* headers, raw, MIME */
+  --text-micro: 11px;    /* badges, counts */
+  --text-title: 15px;
+  --text-display: 19px;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-mono: 1.6;
+
+  /*
+   * Chrome labels are set in the display face, uppercase, with tracking. This
+   * is the one typographic mannerism in the system; it marks structural labels
+   * (section headings, pane titles, table captions) as machine-addressable
+   * rather than prose.
+   */
+  --tracking-label: 0.08em;
+  --tracking-tight: -0.01em;
+
+  /* --- Space: an 8px grid, with 4px available for dense controls --------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* --- Shape: restrained. Borders and background steps, never shadows. --- */
+  --radius-sm: 3px;
+  --radius: 4px;
+  --radius-lg: 6px;
+  --border-width: 1px;
+
+  /* --- Fixed metrics ----------------------------------------------------- */
+  --row-height: 32px;
+  --header-height: 44px;
+  --sidebar-width: 216px;
+  --list-width: 340px;
+
+  /* --- Touch & Ergonomics (WCAG 2.5.8) ----------------------------------- */
+  --touch-target-min: 44px;
+  --touch-target-dense: 36px;
+
+  /* --- Viewport & Safe Areas -------------------------------------------- */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+
+  /* --- Motion: functional only, 120-160ms ------------------------------- */
+  --motion-fast: 120ms;
+  --motion: 160ms;
+  --ease: cubic-bezier(0.2, 0, 0.2, 1);
+
+  --z-sticky: 10;
+  --z-banner: 40;
+  --z-toast: 50;
+  --z-modal: 60;
+}
+
+/*
+ * --- File-type icon hues --------------------------------------------------
+ *
+ * The second exception, and a narrow one. These tint the file-type icon on an
+ * attachment so a long list can be scanned by shape and colour together. They
+ * do not violate "colour is reserved for meaning" (§10) or "no information by
+ * colour alone" (§11), because the icon's glyph and the file's extension both
+ * state the type already — the hue only makes the row faster to find.
+ *
+ * They live here because the same eight values had been copied into three
+ * files, and already disagreed: the viewer defined five of the eight, so an
+ * attachment could change colour between the list and the preview.
+ *
+ * Nothing else may use these. A status, a badge or a control takes its colour
+ * from the semantic tokens above.
+ */
+:root {
+  --filetype-pdf: #f43f5e;
+  --filetype-spreadsheet: #22c55e;
+  --filetype-audio: #0ea5e9;
+  --filetype-video: #ec4899;
+  --filetype-json: #eab308;
+  --filetype-code: #a855f7;
+  --filetype-archive: #f59e0b;
+  --filetype-image: #38bdf8;
+}
+
+/*
+ * --- Theme swatches -------------------------------------------------------
+ *
+ * The one legitimate exception to "a component never hardcodes a colour": the
+ * theme picker draws a miniature of BOTH themes at once, so it cannot use the
+ * live tokens — those only ever resolve to the theme currently applied.
+ *
+ * They are still defined here rather than in the component, because the whole
+ * point of a preview is that it matches the thing it previews. Left in the
+ * component they silently kept painting the old palette after the real one
+ * changed, and the picker advertised a product that no longer existed.
+ * Any edit to the palette above must be mirrored here.
+ */
+:root {
+  --swatch-dark-base: #0b1012;
+  --swatch-dark-surface: #10171a;
+  --swatch-dark-raised: #151f23;
+  --swatch-dark-border: #1f2c31;
+  --swatch-dark-accent: #38bec9;
+
+  --swatch-light-base: #ffffff;
+  --swatch-light-surface: #eef2f3;
+  --swatch-light-raised: #e6edee;
+  --swatch-light-border: #d3dcde;
+  --swatch-light-accent: #0c6a77;
+}
+
+/*
+ * --- Breakpoints (UI_UX_DIRECTION §4) ------------------------------------
+ *
+ * The documented responsive contract, and the ONLY widths any media query in
+ * this codebase may use:
+ *
+ *   >= 1280px   three panes: nav + list + detail
+ *   768-1280px  two panes: list + detail, nav as an off-canvas drawer
+ *   < 768px     single pane with stack navigation
+ *
+ * Two narrower steps exist for chrome only — they thin the header and hide
+ * secondary affordances, they never change the pane count.
+ *
+ * Custom media queries are not yet baseline CSS, so these are recorded here as
+ * documentation and written literally at each @media. The literal values are
+ * permitted ONLY where they match this table; anything else is drift. Keep
+ * `npm run lint:breakpoints` (scripts/check-breakpoints.mjs) passing.
+ *
+ *   --bp-pane-detail : 1280px
+ *   --bp-pane-list   :  768px
+ *   --bp-chrome      :  640px
+ *   --bp-chrome-tight:  480px
+ */
+
+/*
+ * Dark is the default (§10). Both themes define the same token names, so no
+ * component ever branches on the theme.
+ *
+ * The foundation is a cool graphite with a blue-green cast rather than the
+ * blue-violet of a generic "developer dark". Each background step is a real,
+ * perceptible level so panes read as stacked planes without a single shadow.
+ */
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg-base: #0b1012;        /* the window behind everything */
+  --bg-surface: #10171a;     /* panes */
+  --bg-raised: #151f23;      /* rows, cards, inputs */
+  --bg-overlay: #1b272c;     /* hover */
+  --bg-selected: #16323a;    /* the selected row — accent-tinted, not blue */
+
+  --border: #1f2c31;
+  --border-strong: #2e3f46;
+
+  --text-primary: #e4ecee;
+  --text-secondary: #94a7ad;
+  /*
+   * Tertiary is the de-emphasised tier, and it is tuned to the WORST case: the
+   * hover background (--bg-overlay), not the pane behind it. Both themes had
+   * set it purely by eye and it measured 3.4-4.25:1 against the surfaces it
+   * actually landed on — under the 4.5 floor §11 requires, on every timestamp,
+   * log target and caption in the product. These values clear 4.5 against
+   * every background level while staying visibly quieter than --text-secondary.
+   */
+  --text-tertiary: #7b9098;
+  --text-inverse: #0b1012;
+
+  /*
+   * The single interaction accent: a cyan-leaning teal. Deliberately distinct
+   * in hue from --info below, so "this is interactive" and "this is an
+   * informational signal" can never be confused — they were near-identical
+   * blues before.
+   */
+  --accent: #38bec9;
+  --accent-hover: #5ad3dd;
+  --accent-muted: rgba(56, 190, 201, 0.14);
+  --accent-border: rgba(56, 190, 201, 0.42);
+
+  /* Semantic. Never decorative. */
+  --ok: #3fb950;
+  --ok-muted: rgba(63, 185, 80, 0.14);
+  --warn: #d6a02a;
+  --warn-muted: rgba(214, 160, 42, 0.14);
+  --error: #f85149;
+  --error-muted: rgba(248, 81, 73, 0.14);
+  --info: #6ea8fe;
+  --info-muted: rgba(110, 168, 254, 0.14);
+
+  --focus-ring: var(--accent);
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg-base: #eef2f3;
+  --bg-surface: #ffffff;
+  --bg-raised: #f4f7f8;
+  --bg-overlay: #e6edee;
+  --bg-selected: #d7eef1;
+
+  --border: #d3dcde;
+  --border-strong: #b3c0c4;
+
+  --text-primary: #121a1c;
+  --text-secondary: #4d5f64;
+  /*
+   * Tertiary is the de-emphasised tier, and it is tuned to the WORST case: the
+   * hover background (--bg-overlay), not the pane behind it. Both themes had
+   * set it purely by eye and it measured 3.4-4.25:1 against the surfaces it
+   * actually landed on — under the 4.5 floor §11 requires, on every timestamp,
+   * log target and caption in the product. These values clear 4.5 against
+   * every background level while staying visibly quieter than --text-secondary.
+   */
+  --text-tertiary: #596b71;
+  --text-inverse: #ffffff;
+
+  /*
+   * Teal darkens for AA contrast (§11). This is the same hue as the dark
+   * theme's accent, not a different colour with the same name.
+   *
+   * Tuned to the WORST case — the colour's own `--*-muted` tint over
+   * `--bg-raised`, not over white. A status colour is most often painted ON its
+   * tint (`.connection`, log badges, callouts), and that tint sits on a pane
+   * rather than on the page, which costs roughly 0.6 of the ratio rather than
+   * the 0.3 that modelling it against white suggests.
+   *
+   * The previous values were set against white alone. Measured against the
+   * surface they are actually used on, four of the five were below AA — accent
+   * 4.17, ok 4.23, warn 4.28 and error 3.89 — and none of it was visible to
+   * inspection, because white was the only background anyone checked. All five
+   * now clear 4.6:1 there, a deliberate margin so rounding cannot flip one.
+   *
+   * This is the same worst-case rule `--text-tertiary` above already follows,
+   * and `e2e/a11y.spec.ts` measures it in a real engine rather than trusting it.
+   */
+  --accent: #0c6a77;
+  --accent-hover: #0a5f6a;
+  --accent-muted: rgba(12, 106, 119, 0.10);
+  --accent-border: rgba(12, 106, 119, 0.40);
+
+  --ok: #176e2c;
+  --ok-muted: rgba(23, 110, 44, 0.10);
+  --warn: #835800;
+  --warn-muted: rgba(131, 88, 0, 0.10);
+  --error: #b81e29;
+  --error-muted: rgba(184, 30, 41, 0.10);
+  --info: #1d59c4;
+  --info-muted: rgba(29, 89, 196, 0.10);
+
+  --focus-ring: var(--accent);
+}
+
+/* Motion is functional, so removing it costs nothing but the flourish. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+    --motion: 0ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,7 @@
+From: bad@example.test
+To: dev@example.test
+Date: not-a-date-at-all
+Subject: Bad Date header
+MIME-Version: 1.0
+
+Body.

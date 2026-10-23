@@ -1,0 +1,7 @@
+From: bad@example.test
+To: dev@example.test
+Subject: Invalid UTF-8 sequences
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+valid then Ã(  ¡ invalid
