@@ -1,0 +1,23 @@
+From: collide@example.test
+To: dev@example.test
+Subject: Colliding boundaries
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="sep"
+
+--sep
+Content-Type: multipart/alternative; boundary="sep1"
+
+--sep1
+Content-Type: text/plain
+
+Inner plain.
+--sep1
+Content-Type: text/html
+
+<p>Inner html.</p>
+--sep1--
+--sep
+Content-Type: text/plain
+
+Outer trailing part.
+--sep--

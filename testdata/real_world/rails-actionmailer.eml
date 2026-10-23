@@ -1,0 +1,20 @@
+Date: Tue, 09 Sep 2026 11:31:55 +0000
+From: notifications@example.test
+To: dev@example.test
+Message-ID: <68bfd21b3c9a1_1c4f2a3b4c5d@web-01.mail>
+Subject: Weekly digest
+Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="--==_mimepart_68bfd21b3c9a1_1c4f2a3b4c"
+Content-Transfer-Encoding: 7bit
+
+----==_mimepart_68bfd21b3c9a1_1c4f2a3b4c
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+Your weekly digest: 3 new items.
+----==_mimepart_68bfd21b3c9a1_1c4f2a3b4c
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+<h1>Weekly digest</h1><p>3 new items.</p>
+----==_mimepart_68bfd21b3c9a1_1c4f2a3b4c--

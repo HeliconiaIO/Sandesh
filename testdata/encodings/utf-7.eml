@@ -1,0 +1,8 @@
+From: enc@example.test
+To: dev@example.test
+Subject: UTF-7 body
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-7"
+Content-Transfer-Encoding: 7bit
+
+Hi Mom +Jjo-!  A+ImIDkQ. is UTF-7.

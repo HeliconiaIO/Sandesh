@@ -1,0 +1,17 @@
+From: cyc@example.test
+To: dev@example.test
+Subject: Parts referencing each other by CID
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="cy"
+
+--cy
+Content-Type: text/html
+Content-ID: <a@e>
+
+<img src="cid:b@e">
+--cy
+Content-Type: text/html
+Content-ID: <b@e>
+
+<img src="cid:a@e">
+--cy--

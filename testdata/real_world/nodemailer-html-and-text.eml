@@ -1,0 +1,20 @@
+From: "App" <no-reply@app.example.test>
+To: dev@example.test
+Subject: Verify your email address
+Message-ID: <b1c9e0a4-6f2d-4e31-9a77-0c1f2e3d4a5b@app.example.test>
+Date: Tue, 09 Sep 2026 11:02:41 +0000
+MIME-Version: 1.0
+X-Mailer: nodemailer (6.9.14; +https://nodemailer.com/)
+Content-Type: multipart/alternative; boundary="--_NmP-8c0d1e2f3a4b5c6d-Part_1"
+
+----_NmP-8c0d1e2f3a4b5c6d-Part_1
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Please confirm your address by visiting=0D=0Ahttps://app.example.test/verify=3Ftoken=3Dredacted
+----_NmP-8c0d1e2f3a4b5c6d-Part_1
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<div><p>Please <a href=3D"https://app.example.test/verify">confirm</a>.</p></div>
+----_NmP-8c0d1e2f3a4b5c6d-Part_1--

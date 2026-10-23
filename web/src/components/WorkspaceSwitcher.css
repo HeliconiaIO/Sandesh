@@ -1,0 +1,254 @@
+/*
+ * Workspace switcher in header chrome.
+ *
+ * Provides instant visibility into the active database and allows 1-click
+ * switching between isolated environments from any view.
+ */
+
+.workspace-switcher {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+}
+
+.workspace-switcher__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 28px;
+  padding: 0 var(--space-2);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: var(--text-chrome);
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all var(--motion-fast) var(--ease);
+  max-width: 200px;
+}
+
+.workspace-switcher__trigger:hover {
+  background: var(--bg-overlay);
+  border-color: var(--accent-border);
+}
+
+.workspace-switcher__trigger[aria-expanded='true'] {
+  background: var(--bg-surface);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.workspace-switcher__icon {
+  color: var(--accent);
+  flex: none;
+}
+
+.workspace-switcher__label {
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+  letter-spacing: var(--tracking-label);
+  line-height: 1;
+}
+
+.workspace-switcher__name {
+  font-weight: var(--weight-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.workspace-switcher__chevron {
+  color: var(--text-tertiary);
+  flex: none;
+  transition: transform var(--motion-fast) var(--ease);
+}
+
+.workspace-switcher__trigger[aria-expanded='true'] .workspace-switcher__chevron {
+  transform: rotate(180deg);
+}
+
+/* --- Dropdown menu ------------------------------------------------------ */
+
+.workspace-switcher__dropdown {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  right: 0;
+  width: 280px;
+  max-height: 360px;
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: var(--z-modal);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: ws-dropdown-in var(--motion-fast) var(--ease);
+}
+
+@keyframes ws-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.workspace-switcher__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-raised);
+}
+
+.workspace-switcher__heading {
+  font-size: var(--text-micro);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-label);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.workspace-switcher__list {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-1);
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.workspace-switcher__item-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--motion-fast) var(--ease);
+}
+
+.workspace-switcher__item-btn:hover {
+  background: var(--bg-overlay);
+}
+
+.workspace-switcher__item-btn--active {
+  background: var(--bg-selected);
+  color: var(--text-primary);
+}
+
+.workspace-switcher__item-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+
+.workspace-switcher__item-title {
+  font-size: var(--text-chrome);
+  font-weight: var(--weight-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workspace-switcher__item-meta {
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+}
+
+.workspace-switcher__active-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-micro);
+  font-weight: var(--weight-semibold);
+  color: var(--ok);
+  background: rgba(63, 185, 80, 0.12);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  flex: none;
+}
+
+.workspace-switcher__footer {
+  padding: var(--space-1);
+  border-top: var(--border-width) solid var(--border);
+  background: var(--bg-raised);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.workspace-switcher__manage-link {
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: all var(--motion-fast) var(--ease);
+}
+
+.workspace-switcher__manage-link:hover {
+  background: var(--bg-overlay);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.workspace-switcher__manage-link svg {
+  flex-shrink: 0;
+}
+
+.workspace-switcher__link-arrow {
+  margin-left: auto;
+  opacity: 0.5;
+}
+
+@media (max-width: 640px) {
+  .workspace-switcher__label {
+    display: none;
+  }
+}
+
+/*
+ * Small mobile screens (< 480px).
+ *
+ * The header's status cluster is `flex: none` — deliberately, so the controls
+ * and the connection state are never compressed away — which means anything
+ * added to it must earn its width at every breakpoint or the header overflows.
+ * The switcher's 200px trigger did not, and pushed the theme toggle 25px off a
+ * 375px viewport, clipping the control it sits next to. Hiding the switcher
+ * would strand the workspace it names, so the trigger shrinks to its icon and
+ * a short name instead, which is `e2e/a11y.spec.ts`'s 375px assertion.
+ */
+@media (max-width: 480px) {
+  .workspace-switcher__trigger {
+    max-width: 104px;
+    gap: var(--space-1);
+    padding: 0 var(--space-1);
+  }
+}

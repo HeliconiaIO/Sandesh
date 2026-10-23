@@ -1,0 +1,231 @@
+/**
+ * The log stream (Phase 7 A6).
+ *
+ * A terminal-shaped view: monospace, dense rows, newest at the bottom. Colour
+ * is carried by the level badge alone — a log where whole rows are tinted is
+ * harder to scan, not easier, because nothing stands out when everything is
+ * coloured.
+ */
+
+.logs {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+/* ---- Toolbar ---- */
+
+.logs__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-surface);
+}
+
+.logs__control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.logs__control-label {
+  font-size: var(--text-micro);
+  font-weight: var(--weight-semibold);
+  color: var(--text-tertiary);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+}
+
+.logs__select,
+.logs__input {
+  padding: var(--space-1) var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--text-chrome);
+  color: var(--text-primary);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+}
+
+.logs__select:focus-visible,
+.logs__input:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -1px;
+}
+
+.logs__status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-chrome);
+  color: var(--text-secondary);
+}
+
+.logs__dot {
+  width: 7px;
+  height: 7px;
+  background: var(--text-tertiary);
+  border-radius: 50%;
+}
+
+.logs__dot--live {
+  background: var(--ok);
+}
+
+.logs__count {
+  margin-left: auto;
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Loading, empty and failure states use the shared components (States.tsx),
+   so they carry the same role="status"/role="alert" semantics and retry
+   affordance as the rest of the console. This only positions them. */
+.logs__state {
+  padding: var(--space-5) var(--space-4);
+}
+
+/* ---- The stream ---- */
+
+.logs__viewport {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background: var(--bg-base);
+}
+
+.logs__empty {
+  padding: var(--space-6) var(--space-4);
+  margin: 0;
+  font-size: var(--text-chrome);
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+.logs__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  line-height: var(--leading-mono);
+}
+
+.logs__row:hover {
+  background: var(--bg-overlay);
+}
+
+.logs__row td {
+  padding: 2px var(--space-2);
+  vertical-align: top;
+}
+
+.logs__time {
+  width: 1%;
+  white-space: nowrap;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.logs__level {
+  width: 1%;
+}
+
+.logs__badge {
+  display: inline-block;
+  min-width: 44px;
+  padding: 0 var(--space-1);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-semibold);
+  text-align: center;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+}
+
+.logs__badge--error {
+  color: var(--error);
+  background: var(--error-muted);
+}
+
+.logs__badge--warn {
+  color: var(--warn);
+  background: var(--warn-muted);
+}
+
+.logs__badge--info {
+  color: var(--info);
+  background: var(--info-muted);
+}
+
+.logs__badge--debug,
+.logs__badge--trace {
+  color: var(--text-tertiary);
+  background: var(--bg-raised);
+}
+
+.logs__target {
+  width: 1%;
+  max-width: 200px;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logs__message {
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+/* Structured fields are context, not the message; muted so the message reads
+   first and the fields are there when wanted. */
+.logs__fields {
+  color: var(--text-tertiary);
+}
+
+/* ---- Jump to newest ---- */
+
+.logs__jump {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 30%);
+}
+
+@media (max-width: 640px) {
+  .logs__toolbar {
+    padding: var(--space-2) var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .logs__control {
+    flex: 1 1 calc(50% - var(--space-2));
+    min-width: 120px;
+  }
+
+  .logs__select,
+  .logs__input {
+    min-height: var(--touch-target-dense, 36px);
+  }
+
+  .logs__status {
+    width: 100%;
+    order: 10;
+  }
+
+  .logs__target {
+    display: none;
+  }
+
+  .logs__count {
+    margin-left: 0;
+  }
+}

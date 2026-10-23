@@ -1,0 +1,30 @@
+[package]
+name = "sandesh-smtp"
+description = "SMTP server adapter for Sandesh. Ingress only; never relays."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+sandesh-core = { path = "../sandesh-core" }
+sandesh-proto = { path = "../sandesh-proto" }
+tokio-rustls = { workspace = true }
+sandesh-config = { path = "../sandesh-config" }
+tokio = { workspace = true, features = ["net", "io-util", "time", "sync", "rt"] }
+tokio-util = { workspace = true }
+async-trait = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt-multi-thread", "macros", "io-util"] }
+sandesh-storage = { path = "../sandesh-storage" }
+sqlx = { workspace = true }
+tempfile = { workspace = true }
+base64 = { workspace = true }
+rustls = { workspace = true }
+
+[lints]
+workspace = true

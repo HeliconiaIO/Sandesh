@@ -1,0 +1,22 @@
+Date: Tue, 9 Sep 2026 11:14:02 +0000
+To: dev@example.test
+From: shop@example.test
+Subject: Your invoice #10482
+Message-ID: <Qk9tYWlsZXI.10482@shop.example.test>
+X-Mailer: PHPMailer 6.9.1 (https://github.com/PHPMailer/PHPMailer)
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="b1_a3f9c2d18e7b4056a1c2d3e4f5069788"
+
+--b1_a3f9c2d18e7b4056a1c2d3e4f5069788
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+
+Invoice attached. Total: 42.00 EUR
+--b1_a3f9c2d18e7b4056a1c2d3e4f5069788
+Content-Type: application/pdf; name="invoice-10482.pdf"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="invoice-10482.pdf"
+
+JVBERi0xLjQKJcfsj6IKMSAwIG9iago8PC9UeXBlL0NhdGFsb2c+PgplbmRvYmoK
+dHJhaWxlcgo8PC9Sb290IDEgMCBSPj4KJSVFT0YK
+--b1_a3f9c2d18e7b4056a1c2d3e4f5069788--

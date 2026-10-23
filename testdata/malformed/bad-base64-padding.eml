@@ -1,0 +1,8 @@
+From: bad@example.test
+To: dev@example.test
+Subject: base64 with wrong padding
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: base64
+
+SGVsbG8gd29ybGQ=====

@@ -1,0 +1,14 @@
+Received: from unknown (HELO dubious.example.net) (203.0.113.9)
+	by mx.example.test; Tue, 09 Sep 2026 11:45:00 +0000
+X-Spam-Checker-Version: SpamAssassin 4.0.0 (2022-12-13) on mx.example.test
+X-Spam-Flag: YES
+X-Spam-Level: ******
+X-Spam-Status: Yes, score=6.4 required=5.0 tests=BAYES_99,HTML_MESSAGE,
+	MISSING_HEADERS,URI_TRUNCATED autolearn=no autolearn_force=no version=4.0.0
+From: "Winner" <prize@dubious.example.net>
+To: dev@example.test
+Subject: *****SPAM***** You may already have won
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+
+Claim your prize at a suspicious URL.

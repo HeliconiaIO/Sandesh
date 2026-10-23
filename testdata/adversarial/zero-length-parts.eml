@@ -1,0 +1,20 @@
+From: empty@example.test
+To: dev@example.test
+Subject: Empty parts
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="zz"
+
+--zz
+Content-Type: text/plain
+
+
+--zz
+Content-Type: text/plain
+
+
+--zz
+Content-Type: application/octet-stream
+Content-Disposition: attachment; filename="nothing.bin"
+
+
+--zz--

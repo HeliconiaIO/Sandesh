@@ -1,0 +1,327 @@
+From: edge@example.test
+To: dev@example.test
+Subject: Nesting exactly at the depth limit
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="d0"
+
+--d0
+Content-Type: multipart/mixed; boundary="d1"
+
+--d1
+Content-Type: multipart/mixed; boundary="d2"
+
+--d2
+Content-Type: multipart/mixed; boundary="d3"
+
+--d3
+Content-Type: multipart/mixed; boundary="d4"
+
+--d4
+Content-Type: multipart/mixed; boundary="d5"
+
+--d5
+Content-Type: multipart/mixed; boundary="d6"
+
+--d6
+Content-Type: multipart/mixed; boundary="d7"
+
+--d7
+Content-Type: multipart/mixed; boundary="d8"
+
+--d8
+Content-Type: multipart/mixed; boundary="d9"
+
+--d9
+Content-Type: multipart/mixed; boundary="d10"
+
+--d10
+Content-Type: multipart/mixed; boundary="d11"
+
+--d11
+Content-Type: multipart/mixed; boundary="d12"
+
+--d12
+Content-Type: multipart/mixed; boundary="d13"
+
+--d13
+Content-Type: multipart/mixed; boundary="d14"
+
+--d14
+Content-Type: multipart/mixed; boundary="d15"
+
+--d15
+Content-Type: multipart/mixed; boundary="d16"
+
+--d16
+Content-Type: multipart/mixed; boundary="d17"
+
+--d17
+Content-Type: multipart/mixed; boundary="d18"
+
+--d18
+Content-Type: multipart/mixed; boundary="d19"
+
+--d19
+Content-Type: multipart/mixed; boundary="d20"
+
+--d20
+Content-Type: multipart/mixed; boundary="d21"
+
+--d21
+Content-Type: multipart/mixed; boundary="d22"
+
+--d22
+Content-Type: multipart/mixed; boundary="d23"
+
+--d23
+Content-Type: multipart/mixed; boundary="d24"
+
+--d24
+Content-Type: multipart/mixed; boundary="d25"
+
+--d25
+Content-Type: multipart/mixed; boundary="d26"
+
+--d26
+Content-Type: multipart/mixed; boundary="d27"
+
+--d27
+Content-Type: multipart/mixed; boundary="d28"
+
+--d28
+Content-Type: multipart/mixed; boundary="d29"
+
+--d29
+Content-Type: multipart/mixed; boundary="d30"
+
+--d30
+Content-Type: multipart/mixed; boundary="d31"
+
+--d31
+Content-Type: multipart/mixed; boundary="d32"
+
+--d32
+Content-Type: multipart/mixed; boundary="d33"
+
+--d33
+Content-Type: multipart/mixed; boundary="d34"
+
+--d34
+Content-Type: multipart/mixed; boundary="d35"
+
+--d35
+Content-Type: multipart/mixed; boundary="d36"
+
+--d36
+Content-Type: multipart/mixed; boundary="d37"
+
+--d37
+Content-Type: multipart/mixed; boundary="d38"
+
+--d38
+Content-Type: multipart/mixed; boundary="d39"
+
+--d39
+Content-Type: multipart/mixed; boundary="d40"
+
+--d40
+Content-Type: multipart/mixed; boundary="d41"
+
+--d41
+Content-Type: multipart/mixed; boundary="d42"
+
+--d42
+Content-Type: multipart/mixed; boundary="d43"
+
+--d43
+Content-Type: multipart/mixed; boundary="d44"
+
+--d44
+Content-Type: multipart/mixed; boundary="d45"
+
+--d45
+Content-Type: multipart/mixed; boundary="d46"
+
+--d46
+Content-Type: multipart/mixed; boundary="d47"
+
+--d47
+Content-Type: multipart/mixed; boundary="d48"
+
+--d48
+Content-Type: multipart/mixed; boundary="d49"
+
+--d49
+Content-Type: multipart/mixed; boundary="d50"
+
+--d50
+Content-Type: multipart/mixed; boundary="d51"
+
+--d51
+Content-Type: multipart/mixed; boundary="d52"
+
+--d52
+Content-Type: multipart/mixed; boundary="d53"
+
+--d53
+Content-Type: multipart/mixed; boundary="d54"
+
+--d54
+Content-Type: multipart/mixed; boundary="d55"
+
+--d55
+Content-Type: multipart/mixed; boundary="d56"
+
+--d56
+Content-Type: multipart/mixed; boundary="d57"
+
+--d57
+Content-Type: multipart/mixed; boundary="d58"
+
+--d58
+Content-Type: multipart/mixed; boundary="d59"
+
+--d59
+Content-Type: multipart/mixed; boundary="d60"
+
+--d60
+Content-Type: multipart/mixed; boundary="d61"
+
+--d61
+Content-Type: multipart/mixed; boundary="d62"
+
+--d62
+Content-Type: multipart/mixed; boundary="d63"
+
+--d63
+Content-Type: text/plain
+
+Floor.
+
+--d63--
+
+--d62--
+
+--d61--
+
+--d60--
+
+--d59--
+
+--d58--
+
+--d57--
+
+--d56--
+
+--d55--
+
+--d54--
+
+--d53--
+
+--d52--
+
+--d51--
+
+--d50--
+
+--d49--
+
+--d48--
+
+--d47--
+
+--d46--
+
+--d45--
+
+--d44--
+
+--d43--
+
+--d42--
+
+--d41--
+
+--d40--
+
+--d39--
+
+--d38--
+
+--d37--
+
+--d36--
+
+--d35--
+
+--d34--
+
+--d33--
+
+--d32--
+
+--d31--
+
+--d30--
+
+--d29--
+
+--d28--
+
+--d27--
+
+--d26--
+
+--d25--
+
+--d24--
+
+--d23--
+
+--d22--
+
+--d21--
+
+--d20--
+
+--d19--
+
+--d18--
+
+--d17--
+
+--d16--
+
+--d15--
+
+--d14--
+
+--d13--
+
+--d12--
+
+--d11--
+
+--d10--
+
+--d9--
+
+--d8--
+
+--d7--
+
+--d6--
+
+--d5--
+
+--d4--
+
+--d3--
+
+--d2--
+
+--d1--
+
+--d0--

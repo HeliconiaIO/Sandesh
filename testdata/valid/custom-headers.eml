@@ -1,0 +1,14 @@
+From: Alice <alice@example.test>
+To: Bob <bob@example.test>
+Subject: Custom headers
+Date: Tue, 01 Sep 2026 12:08:00 +0000
+Message-ID: <custom-009@example.test>
+Received: from relay1.example.test by mx.example.test; Tue, 01 Sep 2026 12:08:00 +0000
+Received: from client.example.test by relay1.example.test; Tue, 01 Sep 2026 12:07:59 +0000
+X-Sandesh-Test: fixture
+X-Priority: 1
+List-Unsubscribe: <https://example.test/unsub>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Message with custom and repeated headers.

@@ -1,0 +1,7 @@
+From: bad@example.test
+To: dev@example.test
+Subject: Mixed CRLF and LF
+MIME-Version: 1.0
+
+First line.
+Second line.

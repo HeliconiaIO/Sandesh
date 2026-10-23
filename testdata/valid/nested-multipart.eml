@@ -1,0 +1,26 @@
+From: Alice <alice@example.test>
+To: Bob <bob@example.test>
+Subject: Nested structure
+Date: Tue, 01 Sep 2026 12:04:00 +0000
+Message-ID: <nested-005@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="outer"
+
+--outer
+Content-Type: multipart/alternative; boundary="inner"
+
+--inner
+Content-Type: text/plain; charset=utf-8
+
+Nested plain text.
+--inner
+Content-Type: text/html; charset=utf-8
+
+<p>Nested HTML.</p>
+--inner--
+--outer
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="tail.txt"
+
+Tail attachment.
+--outer--

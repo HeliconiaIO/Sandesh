@@ -1,0 +1,27 @@
+[package]
+name = "sandesh-core"
+description = "Sandesh canonical mail domain model. No protocol, HTTP, or database dependency."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+# ARCHITECTURE.md §3.2 permits exactly these in the core.
+# mail-parser: MIME parsing is domain logic; the crate has no I/O and no runtime.
+# async-trait: proc-macro producing Pin<Box<dyn Future>>; pulls in NO async runtime.
+mail-parser = { workspace = true }
+thiserror = { workspace = true }
+uuid = { workspace = true }
+time = { workspace = true }
+sha2 = { workspace = true }
+# Signing a webhook payload is a pure computation over bytes, so it belongs
+# beside the retry policy rather than in the crate that owns the socket.
+hmac = { workspace = true }
+hex = { workspace = true }
+subtle = { workspace = true }
+async-trait = { workspace = true }
+
+[lints]
+workspace = true

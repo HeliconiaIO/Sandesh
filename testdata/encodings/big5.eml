@@ -1,0 +1,8 @@
+From: enc@example.test
+To: dev@example.test
+Subject: Big5 body
+MIME-Version: 1.0
+Content-Type: text/plain; charset="Big5"
+Content-Transfer-Encoding: 8bit
+
+繁體中文內容

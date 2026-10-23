@@ -1,0 +1,91 @@
+# libFuzzer harness for every parser that consumes untrusted input
+# (TESTING_STRATEGY §9, ROADMAP "Outstanding before Phase 7" gap 3).
+#
+# This package is DELIBERATELY NOT a workspace member, and the workspace root
+# excludes it. Two reasons, both load-bearing:
+#
+#  1. `tests/architecture.rs` walks the *resolved* dependency graph reported by
+#     `cargo metadata`. A fuzz crate inside the workspace would put
+#     `libfuzzer-sys` and `arbitrary` into that graph, where they are noise at
+#     best and, since the fuzz targets depend on `sandesh-core` directly, a
+#     source of false positives at worst.
+#  2. The targets need `-Z sanitizer=address` and a nightly toolchain. Keeping
+#     them out of the workspace means `cargo check --workspace --all-targets`
+#     on stable — the CI gate everyone runs — never tries to build them.
+#
+# Run one with:
+#     cargo +nightly fuzz run smtp_command
+[package]
+name = "sandesh-fuzz"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+# Standing alone rather than joining the workspace above it. See the header.
+[workspace]
+
+# Target names stay snake_case. `cargo-fuzz` addresses a target by its binary
+# name — `cargo fuzz run mime_parser` — and every corpus and artifact directory
+# is named after it, so renaming to satisfy a cosmetic lint would rename the
+# command in every doc and CI matrix entry too.
+[workspace.lints.cargo]
+non_kebab_case_bins = "allow"
+
+[package.metadata]
+cargo-fuzz = true
+
+[lints]
+workspace = true
+
+[lib]
+name = "sandesh_fuzz"
+path = "src/lib.rs"
+
+[dependencies]
+libfuzzer-sys = "0.4"
+sandesh-core = { path = "../crates/sandesh-core" }
+sandesh-smtp = { path = "../crates/sandesh-smtp" }
+sandesh-imap = { path = "../crates/sandesh-imap" }
+sandesh-pop3 = { path = "../crates/sandesh-pop3" }
+
+# Fuzzing wants optimised code with debug assertions left on: the whole point is
+# to reach a panic, and `debug_assert!` is where several invariants are stated.
+[profile.release]
+debug = true
+debug-assertions = true
+overflow-checks = true
+
+[[bin]]
+name = "mime_parser"
+path = "fuzz_targets/mime_parser.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "smtp_command"
+path = "fuzz_targets/smtp_command.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "imap_command"
+path = "fuzz_targets/imap_command.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "pop3_command"
+path = "fuzz_targets/pop3_command.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "search_query"
+path = "fuzz_targets/search_query.rs"
+test = false
+doc = false
+bench = false

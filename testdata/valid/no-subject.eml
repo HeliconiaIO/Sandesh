@@ -1,0 +1,5 @@
+From: sender@example.test
+To: dev@example.test
+MIME-Version: 1.0
+
+A message with no Subject header at all.

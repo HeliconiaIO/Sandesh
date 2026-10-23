@@ -1,0 +1,6 @@
+From: sender@example.test
+To: Team: dev@example.test, ops@example.test;
+Subject: RFC 5322 group address
+MIME-Version: 1.0
+
+A group address list.

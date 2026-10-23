@@ -1,0 +1,1120 @@
+.viewer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--bg-surface);
+}
+
+.viewer__header {
+  padding: var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+  flex: none;
+}
+
+.viewer__headline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.viewer__back-btn {
+  display: none;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 6px var(--space-2);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  color: var(--text-primary);
+  font-size: var(--text-chrome);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  flex: none;
+}
+
+.viewer__back-btn:hover {
+  background: var(--bg-overlay);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+
+
+.viewer__subject {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  /*
+   * `flex: 1` resolves to `flex-basis: 0`, which made the subject start from
+   * nothing and take only what the toolbar left over — so the most important
+   * text on the screen wrapped to two lines while seven buttons sat on one.
+   * A real basis lets it claim its width first and the toolbar shrink instead.
+   */
+  flex: 1 1 24ch;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.viewer__actions {
+  display: flex;
+  gap: var(--space-2);
+  /*
+   * Shrinkable, not fixed: the toolbar wraps its own buttons onto a second row
+   * before it will squeeze the subject beside it. Actions stay reachable and
+   * the subject stays readable, which is the right order of priority.
+   */
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .viewer__back-btn {
+    display: inline-flex;
+  }
+
+  .viewer__headline {
+    flex-wrap: wrap;
+  }
+}
+
+/*
+ * Seven wrapped buttons cost three rows — about 140px — before any of the
+ * message showed, on a tablet as much as on a phone. One scrolling row costs
+ * 40px and keeps every action reachable, matching how the tab strip and the
+ * filter pills already behave below the three-pane threshold, so the gesture
+ * is the same everywhere it is needed.
+ */
+@media (max-width: 1280px) {
+  .viewer__actions {
+    width: 100%;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+    mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+  }
+
+  .viewer__actions::-webkit-scrollbar {
+    display: none;
+  }
+
+  .viewer__actions > * {
+    flex: none;
+  }
+}
+
+/* Move-to-folder picker ---------------------------------------------------- */
+
+.viewer__move-wrap {
+  position: relative;
+}
+
+.viewer__move-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 49;
+}
+
+.viewer__move-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 50;
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  min-width: 180px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viewer__move-search-wrap {
+  padding: 2px 2px var(--space-1) 2px;
+  border-bottom: var(--border-width) solid var(--border);
+  margin-bottom: 2px;
+}
+
+.viewer__move-search {
+  width: 100%;
+  height: 24px;
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: var(--text-micro);
+  font-family: var(--font-ui);
+  padding: 0 var(--space-1);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.viewer__move-search:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.viewer__move-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-bottom: 2px;
+}
+
+.viewer__move-group-title {
+  font-size: 10px;
+  font-weight: var(--weight-semibold);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--text-tertiary);
+  padding: var(--space-1) var(--space-2) 2px var(--space-2);
+}
+
+.viewer__move-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 0 var(--space-2);
+  height: 26px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: var(--text-chrome);
+  font-family: var(--font-ui);
+  color: var(--text-primary);
+  border-radius: var(--radius);
+  transition: background var(--motion-fast) var(--ease);
+  white-space: nowrap;
+}
+
+.viewer__move-item:hover {
+  background: var(--bg-overlay);
+}
+
+.viewer__move-branch {
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+  opacity: 0.7;
+  margin-right: -2px;
+}
+
+.viewer__move-empty {
+  padding: var(--space-2);
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+.viewer__envelope {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-2) var(--space-4);
+  background: var(--bg-raised);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+}
+
+.viewer__envelope-item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.viewer__envelope-item--id {
+  grid-column: 1 / -1;
+  border-top: var(--border-width) solid var(--border);
+  padding-top: var(--space-1);
+}
+
+.viewer__envelope dt {
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+  width: 44px;
+  flex: none;
+}
+
+.viewer__envelope dd {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  color: var(--text-primary);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.viewer__addr {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viewer__id {
+  color: var(--text-secondary);
+  font-size: var(--text-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viewer__placements {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.viewer__placements-label {
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+}
+
+.chip--mailbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  height: 22px;
+  font-size: var(--text-micro);
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-weight: var(--weight-medium);
+}
+
+.chip--mailbox .chip__icon {
+  color: var(--text-tertiary);
+}
+
+.chip--mailbox.chip--current {
+  border-color: var(--accent-border);
+  background: var(--accent-muted);
+  color: var(--accent);
+}
+
+.chip--mailbox.chip--current .chip__icon {
+  color: var(--accent);
+}
+
+.chip__uid {
+  margin-left: var(--space-1);
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+}
+
+.viewer__diagnostics {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.diagnostic {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-micro);
+  border-left: 2px solid var(--border-strong);
+}
+
+.diagnostic strong {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: var(--tracking-label);
+  margin-right: var(--space-1);
+}
+
+.diagnostic--warning {
+  background: var(--warn-muted);
+  color: var(--warn);
+  border-left-color: var(--warn);
+}
+
+.diagnostic--error {
+  background: var(--error-muted);
+  color: var(--error);
+  border-left-color: var(--error);
+}
+
+.diagnostic--info {
+  background: var(--info-muted);
+  color: var(--info);
+  border-left-color: var(--info);
+}
+
+/* --- Tabs --------------------------------------------------------------- */
+
+.viewer__tabs {
+  display: flex;
+  gap: var(--space-1);
+  padding: 0 var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-surface);
+  flex: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  /*
+   * Seven tabs need ~670px and a phone has 375, so the strip scrolls. With the
+   * scrollbar hidden that was invisible: Delivery and Attachments looked as if
+   * they did not exist rather than as if they were further along. The fade is
+   * the only thing telling a phone user the row continues.
+   */
+  mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+}
+
+@media (min-width: 1280px) {
+  /* Everything fits at three-pane widths, so there is nothing to hint at. */
+  .viewer__tabs {
+    mask-image: none;
+  }
+}
+
+.viewer__tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.viewer__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-chrome);
+  color: var(--text-secondary);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all var(--motion-fast) var(--ease);
+  white-space: nowrap;
+  min-height: var(--touch-target-dense, 36px);
+  flex-shrink: 0;
+}
+
+.viewer__tab:hover {
+  color: var(--text-primary);
+}
+
+.viewer__tab--active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: var(--weight-medium);
+}
+
+.viewer__tab-count {
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: var(--bg-raised);
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+  border: var(--border-width) solid var(--border);
+}
+
+.viewer__panel {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.viewer__panel > * {
+  min-height: 0;
+}
+
+/* The Headers tab stacks the analysis above the flat table. Both are natural
+   height inside one scroller, rather than each trying to fill the panel.
+
+   `contain` is load-bearing. With two stacked children this scroller was sized
+   by their combined intrinsic height, which propagated up the flex chain and
+   made the document taller than the viewport — leaving a band of dead space
+   below the app that the page could scroll into. Containment states what a
+   scroll container should already promise: nothing inside it may influence the
+   size of anything outside it. */
+.viewer__headers {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  contain: size layout;
+}
+
+/* --- Preview ------------------------------------------------------------ */
+
+.viewer__text-container {
+  padding: var(--space-4);
+  overflow: auto;
+  flex: 1;
+}
+
+.viewer__text {
+  margin: 0;
+  padding: var(--space-4);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  line-height: var(--leading-mono);
+  color: var(--text-primary);
+  /* Wrap long lines but preserve every space and break the message contains. */
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-width: 860px;
+}
+
+.viewer__html {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.viewer__html-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-surface);
+  flex: none;
+  flex-wrap: wrap;
+}
+
+.viewer__viewport-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.viewer__viewport-switch {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  padding: 2px;
+  gap: 2px;
+}
+
+.viewer__viewport-extras {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.viewer__dimension-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  height: 22px;
+  font-size: 10.5px;
+  color: var(--text-tertiary);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.02em;
+}
+
+.viewport-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  height: 22px;
+  font-size: var(--text-micro);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  transition: all var(--motion-fast) var(--ease);
+}
+
+.viewport-btn:hover {
+  color: var(--text-primary);
+}
+
+.viewport-btn--active {
+  background: var(--bg-surface);
+  color: var(--accent);
+  font-weight: var(--weight-medium);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.viewport-btn--rotate {
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+}
+
+.viewer__html-note {
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+}
+
+.viewer__html-stage {
+  flex: 1;
+  min-height: 0;
+  transition: all var(--motion) var(--ease);
+}
+
+.viewer__html-stage--desktop {
+  display: flex;
+  justify-content: center;
+  background: var(--bg-surface);
+  overflow: hidden;
+  padding: 0;
+}
+
+.viewer__html-stage--tablet,
+.viewer__html-stage--mobile {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: var(--bg-base);
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 16px 16px;
+  overflow: auto;
+  padding: var(--space-5) var(--space-4) 48px;
+}
+
+.viewer__html-frame {
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Virtual Device Mockups (Mobile & Tablet) --------------------------- */
+
+.viewer__device {
+  position: relative;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  transition: width var(--motion) var(--ease), height var(--motion) var(--ease);
+}
+
+/* Mobile device styling */
+.viewer__device--mobile.viewer__device--portrait {
+  width: 390px;
+  height: 800px;
+}
+
+.viewer__device--mobile.viewer__device--landscape {
+  width: 800px;
+  height: 390px;
+}
+
+/*
+ * The device mockups below are the one place literal colours are correct.
+ * A phone chassis and the white screen behind a message are depicted physical
+ * objects, not app chrome: the bezel is dark because bezels are dark, and the
+ * message renders on white because that is what a mail client would show. If
+ * these followed the theme, the light theme would draw a white phone around a
+ * message and the preview would stop predicting anything. Everything OUTSIDE
+ * the mockup still uses tokens.
+ */
+.viewer__device--mobile .viewer__device-bezel {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background: #181d24;
+  padding: 12px;
+  border-radius: 46px;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 24px 48px -12px rgba(0, 0, 0, 0.45),
+    0 4px 12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.viewer__device--mobile.viewer__device--landscape .viewer__device-bezel {
+  border-radius: 38px;
+  padding: 10px;
+}
+
+.viewer__device--mobile .viewer__device-screen {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  background: #ffffff;
+  border-radius: 34px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.viewer__device--mobile.viewer__device--landscape .viewer__device-screen {
+  border-radius: 28px;
+}
+
+.viewer__device--mobile .viewer__device-notch {
+  position: absolute;
+  top: 19px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  pointer-events: none;
+  transition: all var(--motion) var(--ease);
+}
+
+.viewer__device-notch-island {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 86px;
+  height: 20px;
+  background: #000000;
+  border-radius: 12px;
+  padding-right: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: all var(--motion) var(--ease);
+}
+
+.viewer__device-notch-island::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0d1728;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* In landscape mode, the camera island rotates to the left bezel edge vertically */
+.viewer__device--mobile.viewer__device--landscape .viewer__device-notch {
+  top: 50%;
+  left: 17px;
+  transform: translateY(-50%);
+}
+
+.viewer__device--mobile.viewer__device--landscape .viewer__device-notch-island {
+  width: 20px;
+  height: 86px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-right: 0;
+  padding-top: 6px;
+}
+
+.viewer__device--mobile.viewer__device--portrait .viewer__device-content {
+  padding-bottom: 16px;
+  box-sizing: border-box;
+}
+
+.viewer__device--mobile.viewer__device--landscape .viewer__device-content {
+  padding: 0 12px 14px 28px;
+  box-sizing: border-box;
+}
+
+.viewer__device--mobile.viewer__device--landscape .viewer__device-home-indicator {
+  bottom: 6px;
+  width: 140px;
+}
+
+.viewer__device-status-bar {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1f2328;
+  background: transparent;
+  flex: none;
+  user-select: none;
+  z-index: 10;
+  position: relative;
+}
+
+.viewer__device--landscape .viewer__device-status-bar {
+  display: none;
+}
+
+.viewer__device-time {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.viewer__device-status-icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.viewer__device-signal {
+  display: inline-block;
+  width: 13px;
+  height: 9px;
+  background:
+    linear-gradient(to right,
+      #1f2328 0, #1f2328 2px, transparent 2px, transparent 3px,
+      #1f2328 3px, #1f2328 5px, transparent 5px, transparent 6px,
+      #1f2328 6px, #1f2328 8px, transparent 8px, transparent 9px,
+      #1f2328 9px, #1f2328 11px
+    );
+}
+
+.viewer__device-wifi {
+  display: inline-block;
+  width: 11px;
+  height: 8px;
+  border-top: 2px solid #1f2328;
+  border-radius: 6px 6px 0 0;
+  position: relative;
+}
+
+.viewer__device-battery {
+  display: inline-block;
+  width: 18px;
+  height: 9px;
+  border: 1.5px solid #1f2328;
+  border-radius: 3px;
+  position: relative;
+  padding: 1px;
+  box-sizing: border-box;
+}
+
+.viewer__device-battery::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: 2px;
+  width: 1.5px;
+  height: 3px;
+  background: #1f2328;
+  border-radius: 0 1px 1px 0;
+}
+
+.viewer__device-battery::before {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 100%;
+  background: #1f2328;
+  border-radius: 1px;
+}
+
+/* Tablet device styling */
+.viewer__device--tablet.viewer__device--portrait {
+  width: 768px;
+  height: 960px;
+}
+
+.viewer__device--tablet.viewer__device--landscape {
+  width: 960px;
+  height: 768px;
+}
+
+.viewer__device--tablet .viewer__device-bezel {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background: #181d24;
+  padding: 14px;
+  border-radius: 32px;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 24px 48px -12px rgba(0, 0, 0, 0.45),
+    0 4px 12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.viewer__device--tablet .viewer__device-camera-dot {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #0d1728;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 0 2px #2563eb;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.viewer__device--tablet .viewer__device-screen {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Common device content and home indicator */
+.viewer__device-content {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.viewer__device-content iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  background: #ffffff;
+}
+
+.viewer__device-home-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 4px;
+  border-radius: 2px;
+  background: #1f2328;
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.viewer__device--tablet .viewer__device-home-indicator {
+  width: 140px;
+  bottom: 8px;
+}
+
+.viewer__notice {
+  padding: var(--space-4);
+  color: var(--text-secondary);
+  font-size: var(--text-chrome);
+}
+
+/* --- MIME + Raw split --------------------------------------------------- */
+
+.viewer__split {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) 1fr;
+  height: 100%;
+  min-height: 0;
+}
+
+.viewer__split-tree {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  border-right: var(--border-width) solid var(--border);
+  padding: var(--space-2) 0;
+}
+
+.viewer__split-raw {
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 1280px) {
+  .viewer__split {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    overflow-y: auto;
+  }
+
+  .viewer__split-tree {
+    border-right: none;
+    border-bottom: var(--border-width) solid var(--border);
+  }
+}
+
+/* --- Inline Attachments Strip (in Preview Panel) ------------------------ */
+
+.viewer__attachments-strip {
+  border-top: var(--border-width) solid var(--border);
+  background: var(--bg-surface);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: none;
+}
+
+.viewer__attachments-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.viewer__attachments-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--text-secondary);
+}
+
+.viewer__attachments-view-all {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--text-micro);
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.viewer__attachments-view-all:hover {
+  color: var(--text-primary);
+}
+
+.viewer__attachments-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  overflow-x: auto;
+}
+
+.viewer__attachment-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  max-width: 240px;
+  min-width: 140px;
+  transition: background var(--motion-fast) var(--ease), border-color var(--motion-fast) var(--ease);
+}
+
+.viewer__attachment-card:hover {
+  background: var(--bg-overlay);
+  border-color: var(--border-strong);
+}
+
+.viewer__attachment-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-base);
+  border: var(--border-width) solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex: none;
+}
+
+.viewer__attachment-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.viewer__attachment-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.viewer__attachment-badge--image {
+  color: var(--filetype-image);
+}
+
+.viewer__attachment-badge--pdf {
+  color: var(--filetype-pdf);
+}
+
+.viewer__attachment-badge--spreadsheet {
+  color: var(--filetype-spreadsheet);
+}
+
+.viewer__attachment-badge--code {
+  color: var(--filetype-code);
+}
+
+.viewer__attachment-badge--archive {
+  color: var(--filetype-archive);
+}
+
+.viewer__attachment-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.viewer__attachment-name {
+  font-size: var(--text-micro);
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.viewer__attachment-size {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+}
+
+.viewer__attachment-download-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  text-decoration: none;
+  flex: none;
+  transition: color var(--motion-fast) var(--ease), background var(--motion-fast) var(--ease);
+}
+
+.viewer__attachment-download-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-overlay);
+}
+

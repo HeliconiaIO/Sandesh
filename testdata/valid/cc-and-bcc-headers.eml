@@ -1,0 +1,8 @@
+From: sender@example.test
+To: dev@example.test, second@example.test
+Cc: watcher@example.test
+Bcc: hidden@example.test
+Subject: Recipients across To, Cc and Bcc
+MIME-Version: 1.0
+
+Envelope recipients are what actually route.

@@ -1,0 +1,11 @@
+From: Alice <alice@example.test>
+To: Bob <bob@example.test>
+Subject: Unicode body
+Date: Tue, 01 Sep 2026 12:10:00 +0000
+Message-ID: <unicode-011@example.test>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Japanese: こんにちは
+Arabic: مرحبا
+Emoji: 📧 💌

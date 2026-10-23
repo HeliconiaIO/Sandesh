@@ -1,0 +1,9 @@
+From: sender@example.test
+To: dev@example.test
+Subject: Reply-To and Sender
+Date: Tue, 09 Sep 2026 12:00:00 +0000
+MIME-Version: 1.0
+Reply-To: replies@example.test
+Sender: agent@example.test
+
+Body.

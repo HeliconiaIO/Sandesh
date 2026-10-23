@@ -1,0 +1,37 @@
+[package]
+name = "sandesh-pop3"
+description = "POP3 (RFC 1939, RFC 2449, RFC 2595, RFC 5034) protocol adapter."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+# Inward-only: the domain model, the shared transport/SASL/TLS substrate, and
+# configuration. No SQL, no HTTP, no database driver — `tests/architecture.rs`
+# enforces this, and the POP3 adapter reaches storage exclusively through the
+# ports `sandesh-core` defines.
+[dependencies]
+sandesh-core = { path = "../sandesh-core" }
+sandesh-proto = { path = "../sandesh-proto" }
+sandesh-config = { path = "../sandesh-config" }
+thiserror = { workspace = true }
+tokio = { workspace = true, features = ["net", "io-util", "sync", "time"] }
+tokio-rustls = { workspace = true }
+tracing = { workspace = true }
+
+[lints]
+workspace = true
+
+# Integration tests drive a real POP3 server over a real TCP socket, with a
+# real rustls handshake. `sandesh-storage` appears here only as a *test*
+# dependency: the library itself must never see SQL, which
+# `tests/architecture.rs` asserts against the runtime closure.
+[dev-dependencies]
+sandesh-storage = { path = "../sandesh-storage" }
+tokio = { workspace = true, features = ["rt-multi-thread", "macros", "net", "time", "io-util", "sync"] }
+rustls = { workspace = true }
+base64 = { workspace = true }
+tempfile = { workspace = true }
+sqlx = { workspace = true }

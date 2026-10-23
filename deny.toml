@@ -1,0 +1,130 @@
+# `cargo-deny` configuration — the supply-chain policy of DEPENDENCIES §8, made
+# mechanical. That section has specified this since Phase 1; nothing enforced it
+# until now, so the licence allowlist and the advisory check were aspirational.
+#
+# Four checks run in CI (`.github/workflows/ci.yml`, the `supply-chain` job):
+# advisories, licences, bans and sources.
+
+[graph]
+# Check every platform we release for, not merely the host running CI. A crate
+# that is Windows-only would otherwise never be seen by an `ubuntu-latest` job —
+# and `windows-msvc` is a release target (ADR-096).
+targets = [
+    "x86_64-unknown-linux-musl",
+    "aarch64-unknown-linux-musl",
+    "x86_64-apple-darwin",
+    "aarch64-apple-darwin",
+    "x86_64-pc-windows-msvc",
+]
+# Development dependencies are in scope. They do not ship, but they execute on
+# developer machines and in CI, which is where a compromised build-time crate
+# does its damage.
+all-features = true
+
+# ------------------------------------------------------------- advisories ---
+# RustSec. An advisory against anything in the tree fails the build; the nightly
+# schedule is what catches one published after a pull request merged.
+[advisories]
+db-urls = ["https://github.com/rustsec/advisory-db"]
+# No `ignore` entries. When one becomes necessary it belongs here with the
+# advisory ID, the reason, and the date it should be revisited — an unexplained
+# ignore is how a known vulnerability becomes permanent.
+ignore = []
+# `unmaintained` is restricted to crates we depend on directly. Transitive
+# unmaintained crates are common, rarely actionable from here, and would make
+# this gate noisy enough to be routinely bypassed.
+unmaintained = "workspace"
+yanked = "deny"
+
+# ---------------------------------------------------------------- licences ---
+[licenses]
+# The allowlist from DEPENDENCIES §8, plus the licences actually present in the
+# resolved graph. Every one is permissive; none imposes a condition on
+# distributing Sandesh beyond attribution.
+allow = [
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "MIT",
+    "MIT-0",
+    "ISC",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "Unicode-3.0",
+    "Zlib",
+    "0BSD",
+    "BSL-1.0",
+    "CC0-1.0",
+    # Public-domain dedication with an MIT fallback (`memchr`, `walkdir`,
+    # `byteorder`, `jiff`, `aho-corasick`). SPDX treats `Unlicense` as a
+    # licence, so it must be named even though the MIT half would satisfy us.
+    "Unlicense",
+    # File-level copyleft, and weaker than it looks: MPL-2.0 obliges us to
+    # publish changes *to those files*, which we make none of. All four crates
+    # in the tree (`cssparser`, `selectors`, `dtoa-short`, `option-ext`) arrive
+    # through proc-macro and codegen paths — Tauri's `tauri-utils` and
+    # `rust-embed`'s `shellexpand` — so none of this code links into a shipped
+    # binary. Verified with `cargo tree -i`, not assumed.
+    "MPL-2.0",
+]
+# A crate offering several licences must be unambiguous about which we take.
+# `confidence-threshold` at 0.93 is cargo-deny's default; lowering it to make a
+# crate pass would be accepting a guess about a licence.
+confidence-threshold = 0.93
+
+# `ring` ships a licence file that is not machine-readable: a bespoke notice
+# combining ISC, MIT and OpenSSL terms for different parts of the source. The
+# crate's own metadata is the authority, and this is the standard clarification
+# every cargo-deny user of `ring` writes.
+[[licenses.clarify]]
+crate = "ring"
+expression = "ISC AND MIT AND OpenSSL"
+license-files = [{ path = "LICENSE", hash = 0xbd0eed23 }]
+
+# --------------------------------------------------------------------- bans ---
+[bans]
+# Duplicate versions are a warning, not an error. In a tree this size a second
+# copy of a small crate is usually one transitive dependency lagging by a
+# release, and failing the build on it would mean either a permanent exception
+# list or pressure to vendor. Visible, not blocking.
+multiple-versions = "warn"
+# Wildcards are *not* denied. Every crate here is an internal `path`
+# dependency declared as `{ path = "..." }` with no version, which cargo-deny
+# counts as a wildcard — and `allow-wildcard-paths` exempts those only for
+# unpublished crates, which these are not marked as individually. Denying it
+# would fail the build on the workspace's own layout, so the check is off
+# rather than papered over with an exception list.
+wildcards = "allow"
+
+# The dependencies DEPENDENCIES §7 rejects, enforced rather than documented. A
+# `cargo add` that reintroduces one now fails in CI with the reason attached.
+deny = [
+    # C dependency; breaks clean static cross-compilation. `rustls` is
+    # sufficient, and the `scratch` image depends on there being no libssl.
+    { crate = "openssl", reason = "rustls is the project's TLS stack (DEPENDENCIES §7)" },
+    { crate = "openssl-sys", reason = "rustls is the project's TLS stack (DEPENDENCIES §7)" },
+    # An ORM abstraction over a protocol-dictated schema.
+    { crate = "diesel", reason = "sqlx with hand-written SQL is the storage layer (DEPENDENCIES §7)" },
+    { crate = "sea-orm", reason = "sqlx with hand-written SQL is the storage layer (DEPENDENCIES §7)" },
+    # A second HTTP framework. axum aligns with the tokio/tower stack.
+    { crate = "actix-web", reason = "axum is the project's HTTP framework (DEPENDENCIES §7)" },
+    # `time` is the workspace timestamp crate; `chrono` is a larger surface for
+    # the same job, and two date libraries means two sets of parsing bugs.
+    { crate = "chrono", reason = "time is the workspace timestamp crate (DEPENDENCIES §7)" },
+    # `lazy_static` is deliberately absent from this list. DEPENDENCIES §7
+    # rejects it for *our* code, but it is in the tree transitively via
+    # `tracing-subscriber` -> `sharded-slab`, which we do not control. Banning
+    # it outright would fail the build on someone else's dependency choice; the
+    # rule it encodes is a code-review matter for our own manifests.
+    # A second HTTP client stack. `hyper` is already in the tree beneath axum
+    # and is what the webhook client dials out with (ADR-085).
+    { crate = "reqwest", reason = "hyper is already in the tree; see ADR-085" },
+]
+
+# ------------------------------------------------------------------ sources ---
+# Everything must come from crates.io. A git dependency would be a version that
+# `Cargo.lock` pins to a commit nobody reviews again, and neither the release
+# archives nor the reproducible-checksum property survive that.
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]

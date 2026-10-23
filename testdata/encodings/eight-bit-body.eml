@@ -1,0 +1,8 @@
+From: enc@example.test
+To: dev@example.test
+Subject: 8bit body
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Naïve café — raw 8-bit octets, no encoding.

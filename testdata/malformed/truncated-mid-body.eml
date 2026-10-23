@@ -1,0 +1,10 @@
+From: bad@example.test
+To: dev@example.test
+Subject: Truncated part-way through the body
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="tr"
+
+--tr
+Content-Type: text/plain
+
+This part is cut o

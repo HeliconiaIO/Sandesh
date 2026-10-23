@@ -1,0 +1,515 @@
+/* MailboxNav ----------------------------------------------------------------
+ * Uses project design tokens exclusively from tokens.css.
+ * The .nav-item and .nav-item.active styles come from AppShell.css.
+ * ----------------------------------------------------------------------- */
+
+.mailbox-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.mailbox-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* Account section container ------------------------------------------------ */
+
+.mailbox-nav__account-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.mailbox-nav__account-section--multi {
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-2);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.mailbox-nav__account-section--multi:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Account section header with badge & quick-add ---------------------------- */
+
+.mailbox-nav__account-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-1) var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.mailbox-nav__account-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 2px 4px 2px 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--motion-fast) var(--ease);
+}
+
+.mailbox-nav__account-info:hover {
+  background: var(--bg-overlay);
+}
+
+.mailbox-nav__account-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.mailbox-nav__account-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border-strong);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.mailbox-nav__account-name {
+  font-size: var(--text-micro);
+  font-weight: var(--weight-semibold);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mailbox-nav__account-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: none;
+  color: var(--text-tertiary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 0;
+  transition: color var(--motion-fast) var(--ease),
+              background var(--motion-fast) var(--ease);
+}
+
+.mailbox-nav__account-add-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-overlay);
+}
+
+/* Custom folders sub-section ----------------------------------------------- */
+
+.mailbox-nav__custom-section {
+  margin-top: var(--space-2);
+  display: flex;
+  flex-direction: column;
+}
+
+.mailbox-nav__custom-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-2);
+  margin-bottom: 2px;
+}
+
+.mailbox-nav__custom-title {
+  font-size: var(--text-micro);
+  font-weight: var(--weight-semibold);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--text-tertiary);
+}
+
+.mailbox-nav__custom-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: none;
+  background: none;
+  color: var(--text-tertiary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 0;
+  transition: color var(--motion-fast) var(--ease),
+              background var(--motion-fast) var(--ease);
+}
+
+.mailbox-nav__custom-add-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-overlay);
+}
+
+/* Mailbox row & item wrapper ---------------------------------------------- */
+
+.mailbox-nav__item-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.mailbox-nav__item-wrapper--nested {
+  position: relative;
+}
+
+/* Branch tree icon for nested folders */
+.mailbox-nav__branch {
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+  opacity: 0.7;
+  margin-right: -2px;
+}
+
+/* Reveal ⋯ context button on hover or focus */
+.mailbox-nav__item-wrapper:hover .mailbox-nav__ctx-btn,
+.mailbox-nav__item-wrapper:focus-within .mailbox-nav__ctx-btn {
+  opacity: 1;
+}
+
+/* NavLink inside item wrapper */
+.mailbox-nav__item-wrapper .nav-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1);
+}
+
+.mailbox-nav__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  flex: 1;
+}
+
+.mailbox-nav__icon {
+  flex-shrink: 0;
+  opacity: 0.75;
+}
+
+.mailbox-nav__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-chrome);
+}
+
+.mailbox-nav__count {
+  font-size: var(--text-micro);
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--bg-overlay);
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  line-height: 1.6;
+}
+
+.mailbox-nav__count--unseen {
+  background: var(--accent);
+  color: var(--text-inverse);
+  font-weight: var(--weight-medium);
+}
+
+/* Context menu button & popover ------------------------------------------- */
+
+.mailbox-nav__ctx-wrap {
+  position: relative;
+  flex-shrink: 0;
+  margin-right: 2px;
+}
+
+.mailbox-nav__ctx-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transition: opacity var(--motion-fast) var(--ease),
+              background var(--motion-fast) var(--ease),
+              color var(--motion-fast) var(--ease);
+}
+
+.mailbox-nav__ctx-btn:hover,
+.mailbox-nav__ctx-btn[aria-expanded="true"] {
+  opacity: 1 !important;
+  background: var(--bg-overlay);
+  color: var(--text-primary);
+}
+
+/* Click-away backdrop */
+.mailbox-nav__ctx-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+}
+
+/* Dropdown menu */
+.mailbox-nav__ctx-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 2px);
+  z-index: 100;
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  min-width: 140px;
+  padding: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.mailbox-nav__ctx-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 0 var(--space-2);
+  height: 28px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: var(--text-chrome);
+  font-family: var(--font-ui);
+  color: var(--text-primary);
+  border-radius: var(--radius);
+  transition: background var(--motion-fast) var(--ease);
+}
+
+.mailbox-nav__ctx-item:hover {
+  background: var(--bg-overlay);
+}
+
+.mailbox-nav__ctx-item--danger {
+  color: var(--error);
+}
+
+.mailbox-nav__ctx-item--danger:hover {
+  background: var(--error-muted);
+}
+
+/* Delete confirmation popover --------------------------------------------- */
+
+.mailbox-nav__confirm-dialog {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 2px);
+  z-index: 100;
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  width: 200px;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.mailbox-nav__confirm-title {
+  font-size: var(--text-chrome);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.mailbox-nav__confirm-text {
+  font-size: var(--text-micro);
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.mailbox-nav__confirm-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+}
+
+.mailbox-nav__confirm-btn {
+  height: 24px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-micro);
+  font-family: var(--font-ui);
+  cursor: pointer;
+  border: var(--border-width) solid transparent;
+  transition: background var(--motion-fast) var(--ease);
+}
+
+.mailbox-nav__confirm-btn--danger {
+  background: var(--error);
+  color: var(--text-inverse);
+}
+
+.mailbox-nav__confirm-btn--danger:hover {
+  opacity: 0.9;
+}
+
+.mailbox-nav__confirm-btn--cancel {
+  background: var(--bg-raised);
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
+.mailbox-nav__confirm-btn--cancel:hover {
+  background: var(--bg-overlay);
+  color: var(--text-primary);
+}
+
+/* + New folder button ------------------------------------------------------ */
+
+.mailbox-nav__add-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 0 var(--space-2);
+  height: 26px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  font-size: var(--text-chrome);
+  border-radius: var(--radius);
+  transition: color var(--motion-fast) var(--ease),
+              background var(--motion-fast) var(--ease);
+  margin-top: 2px;
+}
+
+.mailbox-nav__add-btn:hover {
+  color: var(--text-secondary);
+  background: var(--bg-overlay);
+}
+
+/* Inline folder-name creation & rename ------------------------------------- */
+
+.mailbox-nav__new-folder-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 2px 0;
+}
+
+.mailbox-nav__new-folder-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-1);
+  height: 28px;
+}
+
+.mailbox-nav__new-folder-input {
+  flex: 1;
+  min-width: 0;
+  height: 24px;
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--accent);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: var(--text-chrome);
+  font-family: var(--font-ui);
+  padding: 0 var(--space-1);
+  outline: none;
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.mailbox-nav__new-folder-input--error {
+  border-color: var(--error);
+  box-shadow: 0 0 0 1px var(--error);
+}
+
+.mailbox-nav__new-folder-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.mailbox-nav__new-folder-ok,
+.mailbox-nav__new-folder-cancel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background var(--motion-fast) var(--ease);
+}
+
+.mailbox-nav__new-folder-ok {
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+.mailbox-nav__new-folder-ok:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.mailbox-nav__new-folder-cancel {
+  background: var(--bg-overlay);
+  color: var(--text-secondary);
+}
+
+.mailbox-nav__new-folder-cancel:hover {
+  background: var(--bg-overlay);
+  color: var(--text-primary);
+}
+
+.mailbox-nav__input-error {
+  font-size: var(--text-micro);
+  color: var(--error);
+  padding: 0 var(--space-2);
+  line-height: 1.3;
+}
+
+/* Note / status states ----------------------------------------------------- */
+
+.mailbox-nav__note {
+  font-size: var(--text-chrome);
+  color: var(--text-secondary);
+  padding: var(--space-1) var(--space-2);
+  margin: 0;
+}
+
+.mailbox-nav__note--error {
+  color: var(--error);
+}

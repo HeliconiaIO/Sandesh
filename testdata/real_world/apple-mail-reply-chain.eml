@@ -1,0 +1,16 @@
+From: colleague@example.test
+To: dev@example.test
+Subject: Re: Re: Re: build is red
+Date: Tue, 09 Sep 2026 11:55:14 +0100
+Message-ID: <7F3A1C2D-4B5E-6789-A0B1-C2D3E4F50617@example.test>
+In-Reply-To: <20260909105512.GA1234@example.test>
+References: <20260909100001.GA1111@example.test>
+	<20260909101502.GA2222@example.test>
+	<20260909103010.GA3333@example.test>
+	<20260909105512.GA1234@example.test>
+X-Mailer: Apple Mail (2.3776.700.51)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+It=92s still failing on main =96 see the log.=0D=0A=0D=0A> On 9 Sep 2026, at 11:55

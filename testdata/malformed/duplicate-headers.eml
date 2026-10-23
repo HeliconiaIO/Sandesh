@@ -1,0 +1,8 @@
+From: Alice <alice@example.test>
+From: Mallory <mallory@example.test>
+Subject: First subject
+Subject: Second subject
+Message-ID: <dup-014@example.test>
+Content-Type: text/plain
+
+This message has conflicting duplicate headers.

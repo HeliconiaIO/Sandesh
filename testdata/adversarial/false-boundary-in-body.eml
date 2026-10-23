@@ -1,0 +1,17 @@
+From: false@example.test
+To: dev@example.test
+Subject: Body contains boundary-like lines
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="real"
+
+--real
+Content-Type: text/plain
+
+--notreal
+This line begins with two dashes but is not the boundary.
+--real-ish
+--real
+Content-Type: text/plain
+
+Second part.
+--real--

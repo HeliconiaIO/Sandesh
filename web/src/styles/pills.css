@@ -1,0 +1,60 @@
+/*
+ * Quick-filter pills.
+ *
+ * Shared rather than route-owned because two routes render this markup: the
+ * search view and the mailbox filter bar. The appearance lived in
+ * `SearchRoute.css` while `MailboxRoute.css` carried only layout overrides
+ * (`white-space`, `flex-shrink`) that assumed it. Routes are code-split, so a
+ * mailbox opened before the search view ever mounted got the overrides without
+ * the base rule and the pills rendered as bare text — styled correctly only
+ * after a visit to search happened to load the other stylesheet.
+ *
+ * Loading it from `base.css` makes the appearance independent of which route
+ * mounts first, which is the property the bug violated.
+ */
+
+.search-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.search-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--motion-fast) var(--ease);
+}
+
+.search-pill:hover {
+  background: var(--bg-overlay);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.search-pill--active {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent);
+  border-color: var(--accent);
+  font-weight: 500;
+}
+
+.search-pill--prefix {
+  color: var(--text-tertiary);
+  border-style: dashed;
+}
+
+.search-pill--prefix:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  border-style: solid;
+}

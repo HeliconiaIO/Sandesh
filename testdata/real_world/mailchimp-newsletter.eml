@@ -1,0 +1,24 @@
+From: "Example News" <news@mail.example.test>
+To: dev@example.test
+Subject: =?utf-8?Q?This_week=E2=80=99s_highlights?=
+Date: Tue, 09 Sep 2026 12:20:00 +0000
+Message-ID: <a1b2c3d4e5f6.1788951600@mail.example.test>
+List-Unsubscribe: <https://mail.example.test/u/abc123>,
+	<mailto:unsubscribe@mail.example.test?subject=unsub>
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+Feedback-ID: 12345:campaign:example
+Precedence: bulk
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="_----------=_178895160012345"
+
+--_----------=_178895160012345
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+This week=E2=80=99s highlights. Unsubscribe: https://mail.example.test/u/abc123
+--_----------=_178895160012345
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<table><tr><td>This week=E2=80=99s highlights.</td></tr></table>
+--_----------=_178895160012345--

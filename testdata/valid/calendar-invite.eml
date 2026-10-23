@@ -1,0 +1,23 @@
+From: sender@example.test
+To: dev@example.test
+Subject: Calendar invitation
+Date: Tue, 09 Sep 2026 12:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="cal"
+
+--cal
+Content-Type: text/plain
+
+You are invited.
+--cal
+Content-Type: text/calendar; method=REQUEST; charset=utf-8
+
+BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:evt-1@example.test
+DTSTART:20260910T090000Z
+SUMMARY:Standup
+END:VEVENT
+END:VCALENDAR
+--cal--

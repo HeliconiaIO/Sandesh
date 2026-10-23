@@ -1,0 +1,8 @@
+From: bad@example.test
+To: dev@example.test
+Subject: Unrecognised Content-Transfer-Encoding
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: x-uuencode-something
+
+Body in an unknown encoding.

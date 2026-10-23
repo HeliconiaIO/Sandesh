@@ -1,0 +1,378 @@
+/**
+ * AccountModal.css
+ * Dedicated styles for AccountModal and DeleteAccountDialog.
+ */
+
+.account-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  backdrop-filter: blur(2px);
+}
+
+.account-modal {
+  width: 100%;
+  max-width: 480px;
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.account-modal--danger {
+  border-color: var(--error);
+}
+
+.account-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.account-modal__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.account-modal__icon {
+  color: var(--accent);
+}
+
+.account-modal__icon--danger {
+  color: var(--error);
+}
+
+.account-modal__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.account-modal__close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  color: var(--text-tertiary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--motion-fast) var(--ease),
+    color var(--motion-fast) var(--ease);
+}
+
+.account-modal__close-btn:hover {
+  background: var(--bg-overlay);
+  color: var(--text-primary);
+}
+
+.account-modal__form,
+.account-modal__body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.account-modal__error {
+  padding: var(--space-2) var(--space-3);
+  background: var(--error-muted);
+  border: var(--border-width) solid var(--error);
+  border-radius: var(--radius-sm);
+  color: var(--error);
+  font-size: var(--text-micro);
+  line-height: 1.4;
+}
+
+.account-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.account-modal__label {
+  font-size: var(--text-chrome);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+}
+
+.account-modal__required {
+  color: var(--error);
+}
+
+.account-modal__input {
+  height: 32px;
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: var(--text-chrome);
+  font-family: var(--font-ui);
+  padding: 0 var(--space-2);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color var(--motion-fast) var(--ease);
+}
+
+.account-modal__input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.account-modal__password-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.account-modal__password-label-row .account-modal__label {
+  margin-bottom: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.account-modal__pw-status {
+  font-size: 11px;
+  font-weight: 500;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.account-modal__pw-status--set {
+  color: var(--ok);
+}
+
+.account-modal__pw-status--none {
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+.account-modal__password-wrapper {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  gap: 0;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg-raised);
+  transition: border-color var(--motion-fast) var(--ease);
+}
+
+.account-modal__password-wrapper:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.account-modal__input--password {
+  flex: 1;
+  min-width: 0;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  background: transparent;
+}
+
+.account-modal__input--password:focus {
+  outline: none;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.account-modal__password-actions {
+  display: flex;
+  align-items: center;
+  border-left: var(--border-width) solid var(--border);
+  background: var(--bg-surface);
+  flex-shrink: 0;
+}
+
+.account-modal__pw-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 100%;
+  min-height: 32px;
+  background: transparent;
+  border: none;
+  border-left: var(--border-width) solid var(--border);
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 0;
+  transition: color var(--motion-fast) var(--ease), background var(--motion-fast) var(--ease);
+}
+
+.account-modal__pw-btn:first-child {
+  border-left: none;
+}
+
+.account-modal__pw-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-overlay);
+}
+
+.account-modal__hint {
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+  line-height: 1.4;
+}
+
+.account-modal__field--checkbox {
+  margin-top: var(--space-1);
+}
+
+.account-modal__checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  cursor: pointer;
+}
+
+.account-modal__checkbox-label input {
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+.account-modal__checkbox-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--text-chrome);
+  color: var(--text-primary);
+}
+
+.account-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-top: var(--border-width) solid var(--border);
+  background: var(--bg-raised);
+}
+
+.account-modal__footer .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-chrome);
+  font-weight: var(--weight-medium);
+  border-radius: var(--radius);
+  border: var(--border-width) solid var(--border-strong);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  cursor: pointer;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--motion-fast) var(--ease),
+    border-color var(--motion-fast) var(--ease),
+    color var(--motion-fast) var(--ease),
+    box-shadow var(--motion-fast) var(--ease);
+}
+
+.account-modal__footer .button:hover {
+  background: var(--bg-overlay);
+  border-color: var(--text-tertiary);
+  text-decoration: none;
+}
+
+.account-modal__footer .button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.account-modal__footer .button--primary {
+  background: var(--accent);
+  color: var(--text-inverse);
+  border-color: var(--accent);
+}
+
+.account-modal__footer .button--primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: var(--text-inverse);
+}
+
+.account-modal__footer .button--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-secondary);
+}
+
+.account-modal__footer .button--ghost:hover {
+  background: var(--bg-overlay);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.account-modal__footer .button--danger {
+  background: var(--error);
+  border-color: var(--error);
+  color: #ffffff;
+}
+
+.account-modal__footer .button--danger:hover {
+  background: var(--error-hover, #d32f2f);
+  border-color: var(--error-hover, #d32f2f);
+}
+
+.account-modal__warning-text {
+  margin: 0;
+  font-size: var(--text-chrome);
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.account-modal__warning-list {
+  margin: 0;
+  padding-left: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-micro);
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.account-modal__warning-item--highlight {
+  color: var(--error);
+  margin-top: var(--space-1);
+}
+
+@media (max-width: 640px) {
+  .account-modal {
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  .account-modal__close-btn {
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .account-modal__footer .button {
+    min-height: var(--touch-target-dense, 36px);
+  }
+}

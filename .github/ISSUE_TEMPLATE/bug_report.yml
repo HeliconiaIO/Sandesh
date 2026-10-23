@@ -1,0 +1,49 @@
+name: Bug report
+description: Something in Sandesh does not work as documented.
+labels: [bug, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Security issues go to SECURITY.md, not here.**
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: |
+        The smallest sequence that shows the bug. A message that triggers it (`.eml`, or the
+        SMTP/IMAP/POP3 commands) is the most useful thing you can attach. Remove anything private.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Sandesh version
+      description: Output of `sandesh --version`, or the image tag.
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How you run Sandesh
+      options: [Binary download, Docker, .deb package, .rpm package, Desktop app, From source]
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: e.g. Ubuntu 24.04, macOS 15, Windows 11
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration and logs
+      description: Non-default settings (bind addresses, auth, TLS) and relevant log output.
+      render: text

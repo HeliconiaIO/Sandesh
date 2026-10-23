@@ -1,0 +1,43 @@
+[package]
+name = "sandesh-app"
+description = "Sandesh composition root."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+# No `[[bin]]` here. The workspace-root package owns the `sandesh` binary so that
+# a bare `cargo run` from the repository root works — the command the README
+# promises. This crate defining a binary of the same name produced two targets
+# writing to the same `target/debug/sandesh` path, which cargo warns about and
+# says may become a hard error (rust-lang/cargo#6313). The library is the real
+# deliverable; `src/main.rs` here was a two-line duplicate of the root's.
+
+[dependencies]
+sandesh-core = { path = "../sandesh-core" }
+sandesh-storage = { path = "../sandesh-storage" }
+sandesh-events = { path = "../sandesh-events" }
+sandesh-config = { path = "../sandesh-config" }
+sandesh-api = { path = "../sandesh-api" }
+sandesh-proto = { path = "../sandesh-proto" }
+tokio-rustls = { workspace = true }
+sandesh-smtp = { path = "../sandesh-smtp" }
+sandesh-imap = { path = "../sandesh-imap" }
+sandesh-pop3 = { path = "../sandesh-pop3" }
+sandesh-webhook = { path = "../sandesh-webhook" }
+tokio = { workspace = true, features = ["rt-multi-thread", "macros", "signal", "net", "time"] }
+tokio-util = { workspace = true }
+async-trait = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
+tokio-tungstenite = { workspace = true }
+futures-util = { workspace = true }
+serde_json = { workspace = true }
+
+[lints]
+workspace = true

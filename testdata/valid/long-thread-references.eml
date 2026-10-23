@@ -1,0 +1,9 @@
+From: sender@example.test
+To: dev@example.test
+Subject: Re: Re: threaded
+Date: Tue, 09 Sep 2026 12:00:00 +0000
+MIME-Version: 1.0
+In-Reply-To: <m3@example.test>
+References: <m1@example.test> <m2@example.test> <m3@example.test>
+
+Threaded reply.

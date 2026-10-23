@@ -1,0 +1,21 @@
+From: enc@example.test
+To: dev@example.test
+Subject: Parts in different charsets
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="mx"
+
+--mx
+Content-Type: text/plain; charset="us-ascii"
+
+ASCII part.
+--mx
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+UTF-8 caf=C3=A9.
+--mx
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: base64
+
+TGF0aW4tOSCkIHNpZ24=
+--mx--

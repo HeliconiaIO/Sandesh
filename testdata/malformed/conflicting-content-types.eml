@@ -1,0 +1,8 @@
+From: bad@example.test
+To: dev@example.test
+Subject: Two Content-Type headers
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Type: text/html
+
+Which type wins?

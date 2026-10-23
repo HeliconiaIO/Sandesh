@@ -1,0 +1,19 @@
+From: Alice <alice@example.test>
+To: Bob <bob@example.test>
+Subject: With attachment
+Date: Tue, 01 Sep 2026 12:05:00 +0000
+Message-ID: <attach-006@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="att-boundary"
+
+--att-boundary
+Content-Type: text/plain; charset=utf-8
+
+Please find the document attached.
+--att-boundary
+Content-Type: application/pdf; name="document.pdf"
+Content-Disposition: attachment; filename="document.pdf"
+Content-Transfer-Encoding: base64
+
+JVBERi0xLjQKJcOkw7zDtsOfCjIgMCBvYmoKPDwvTGVuZ3RoIDMgMCBSPj4Kc3RyZWFtCg==
+--att-boundary--

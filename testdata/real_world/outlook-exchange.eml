@@ -1,0 +1,25 @@
+From: colleague@corp.example.test
+To: dev@example.test
+Subject: RE: quarterly numbers
+Date: Tue, 9 Sep 2026 12:10:44 +0000
+Message-ID:
+	<AM0PR01MB1234567890ABCDEF@AM0PR01MB1234.eurprd01.prod.outlook.com>
+Thread-Topic: quarterly numbers
+Thread-Index: AQHa1b2c3d4e5f60718293a4b5c6d7e8f90
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="_000_AM0PR01MB1234_"
+
+--_000_AM0PR01MB1234_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Numbers attached in the deck.=0D=0A=0D=0ARegards
+--_000_AM0PR01MB1234_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html><body><p>Numbers attached in the deck.</p></body></html>
+--_000_AM0PR01MB1234_--

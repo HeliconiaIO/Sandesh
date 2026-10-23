@@ -1,0 +1,9 @@
+From: Alice <alice@example.test>
+Subject: Unterminated multipart
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="never-closed"
+
+--never-closed
+Content-Type: text/plain
+
+This part is never terminated by a closing boundary.

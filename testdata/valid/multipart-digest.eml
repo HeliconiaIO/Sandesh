@@ -1,0 +1,22 @@
+From: sender@example.test
+To: dev@example.test
+Subject: multipart/digest
+Date: Tue, 09 Sep 2026 12:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/digest; boundary="dg"
+
+--dg
+Content-Type: message/rfc822
+
+From: a@example.test
+Subject: First
+
+One.
+--dg
+Content-Type: message/rfc822
+
+From: b@example.test
+Subject: Second
+
+Two.
+--dg--
