@@ -245,6 +245,16 @@ jobs:
           # above, which is what catches one published after a merge.
           arguments: --all-features
 
+      # The fuzz crate is outside the workspace (see `exclude` in Cargo.toml),
+      # so it has its own lockfile that the step above never reads. Nothing
+      # else refreshes it, and it fell behind on tokio and rustls advisories
+      # the workspace lockfile had already fixed. Advisories only: it ships
+      # nothing, so licences and bans do not apply.
+      - uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          manifest-path: fuzz/Cargo.toml
+          command: check advisories
+
   npm-audit:
     name: npm advisories
     runs-on: ubuntu-latest
@@ -270,10 +280,14 @@ jobs:
       - name: Shipped dependencies
         run: npm audit --omit=dev --audit-level=low
 
-      # Development tooling is reported without failing, so a real finding is
-      # visible in the log rather than invisible until someone runs it locally.
-      - name: Development dependencies (advisory only)
-        run: npm audit --audit-level=moderate || true
+      # Development tooling is reported without failing a pull request, so a
+      # real finding is visible in the log rather than invisible until someone
+      # runs it locally. The nightly run does fail on it: with no update bot,
+      # that is what stops dev dependencies going quietly stale.
+      - name: Development dependencies (fails nightly only)
+        env:
+          EVENT: ${{ github.event_name }}
+        run: npm audit --audit-level=moderate || [ "$EVENT" != schedule ]
 
       # The npm counterpart of cargo-deny's licence check: every package that
       # reaches the shipped bundle must carry a licence from deny.toml's list.

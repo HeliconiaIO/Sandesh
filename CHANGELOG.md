@@ -7,6 +7,11 @@ how versions are chosen and published.
 
 ## [Unreleased]
 
+### Added
+
+- Releases now include a signed SLSA provenance file (`sandesh-<version>.intoto.jsonl`)
+  next to the binaries, verifiable without GitHub's attestation API.
+
 ### Changed
 
 - **Minimum supported Rust is now 1.98** (was 1.94), required by `mail-parser` 1.0.
