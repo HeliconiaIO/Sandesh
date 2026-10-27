@@ -7,6 +7,16 @@ how versions are chosen and published.
 
 ## [Unreleased]
 
+### Changed
+
+- **Minimum supported Rust is now 1.98** (was 1.94), required by `mail-parser` 1.0.
+
+### Fixed
+
+- Some malformed nested multipart messages (for example a `multipart/digest` or
+  `multipart/report` with broken inner parts) were stored as unparsed, with no MIME
+  tree. Upgrading `mail-parser` from 0.11 to 1.0 lets them parse.
+
 ## [0.1.0] - 2026-10-23
 
 The first public release.

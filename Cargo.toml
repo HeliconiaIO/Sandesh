@@ -86,14 +86,14 @@ exclude = ["fuzz"]
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.94"
+rust-version = "1.98"
 license = "Apache-2.0"
 repository = "https://github.com/HeliconiaIO/Sandesh"
 homepage = "https://github.com/HeliconiaIO/Sandesh"
 
 [workspace.dependencies]
 # --- core (no runtime, no I/O) ---
-mail-parser = "0.11"
+mail-parser = "1"
 thiserror = "2"
 uuid = { version = "1", features = ["v7"] }
 time = { version = "0.3", features = ["formatting", "macros", "parsing"] }

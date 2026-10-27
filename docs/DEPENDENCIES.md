@@ -312,7 +312,7 @@ Versions resolved on 2026-09-01 against Rust 1.97.1. `Cargo.lock` is committed.
 
 | Crate | Resolved | Role |
 | --- | --- | --- |
-| `mail-parser` | 0.11.8 | MIME parsing; byte offsets drive the whole range-based model |
+| `mail-parser` | 1.0.0 | MIME parsing; byte offsets drive the whole range-based model |
 | `thiserror` | 2.0.20 | Error derives |
 | `uuid` | 1.26.0 (v7) | Time-ordered identifiers |
 | `time` | 0.3.55 | Timestamps |
@@ -334,6 +334,12 @@ fails the build until ARCHITECTURE §3.2 and the test are updated together.
 **MSRV raised to 1.94.** sqlx 0.9.0 requires it. The alternative was pinning
 sqlx 0.8.6 and diverging from the Phase 0 decision; raising the MSRV is the
 smaller deviation. The toolchain in use is pinned in `rust-toolchain.toml` (1.99.1 since ADR-103).
+
+**MSRV raised to 1.98.** mail-parser 1.0.0 requires it. 0.11.9 panicked on
+malformed nested multiparts the `mime_parser` fuzz target kept finding; the
+panic was caught, but each such message was stored unparsed, and the nightly
+fuzz job failed on it. 1.0 parses them; the reproducers are in
+`fuzz/artifacts/mime_parser/`.
 
 ### Not yet added
 
