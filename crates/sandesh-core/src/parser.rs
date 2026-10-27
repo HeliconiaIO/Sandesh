@@ -16,7 +16,7 @@ use crate::{
     Attachment, AttachmentId, ByteRange, DiagnosticSeverity, Disposition, Header, MimePart,
     ParseDiagnostic, ParsedMessage, PartPath, TransferEncoding,
 };
-use mail_parser::{Encoding, Message, MessageParser, MessagePart, MimeHeaders, PartType};
+use mail_parser::{DecodeProblems, Encoding, Message, MessageParser, MessagePart, PartKind};
 use std::panic::{AssertUnwindSafe, catch_unwind};
 
 /// Version of this parsing logic.
@@ -27,11 +27,12 @@ pub const PARSE_VERSION: u32 = 1;
 
 /// Runs `mail-parser`, treating a panic inside it as "could not be parsed".
 ///
-/// `mail-parser` 0.11.9 panics ("Invalid part ID, could not find multipart")
-/// on some malformed nested `multipart/report` messages, found by the
-/// `mime_parser` fuzz target. Every received message passes through here, so a
-/// panic would let any sender crash the connection handling it. Catching it
-/// keeps the leniency contract above: the message is stored with a diagnostic.
+/// `mail-parser` 0.11.9 panicked ("Invalid part ID, could not find multipart")
+/// on some malformed nested multiparts, found by the `mime_parser` fuzz target;
+/// 1.0 does not, and those inputs are now in the fuzz corpus. The guard stays:
+/// every received message passes through here, so a panic would let any sender
+/// crash the connection handling it. Catching it keeps the leniency contract
+/// above: the message is stored with a diagnostic.
 fn run_parser(raw: &[u8]) -> Option<Message<'_>> {
     catch_unwind(AssertUnwindSafe(|| MessageParser::default().parse(raw)))
         .ok()
@@ -61,18 +62,16 @@ pub fn parse(raw: &[u8]) -> ParsedMessage {
     };
 
     let mut diagnostics = Vec::new();
-    let headers = convert_headers(parsed.headers(), raw, &mut diagnostics);
+    let headers = convert_headers(&parsed, raw, &mut diagnostics);
 
     let mut parts = Vec::new();
     let mut text_parts = Vec::new();
     let mut html_parts = Vec::new();
 
-    // The root of mail-parser's part list is index 0; walk from there,
-    // assigning IMAP paths as we descend.
-    if !parsed.parts.is_empty() {
+    // Walk from the root part, assigning IMAP paths as we descend.
+    if parsed.parts().len() > 0 {
         walk(
-            &parsed.parts,
-            0,
+            parsed.root_part(),
             &PartPath::root(),
             raw,
             &mut parts,
@@ -115,15 +114,14 @@ pub fn parse(raw: &[u8]) -> ParsedMessage {
 #[must_use]
 pub fn decoded_part_body(raw: &[u8], target: &PartPath) -> Option<Vec<u8>> {
     let parsed = run_parser(raw)?;
-    if parsed.parts.is_empty() {
+    if parsed.parts().len() == 0 {
         return None;
     }
-    find_decoded_part(&parsed.parts, 0, &PartPath::root(), target, 0)
+    find_decoded_part(parsed.root_part(), &PartPath::root(), target, 0)
 }
 
 fn find_decoded_part(
-    all: &[MessagePart<'_>],
-    index: usize,
+    part: MessagePart<'_>,
     current_path: &PartPath,
     target: &PartPath,
     depth: usize,
@@ -131,27 +129,24 @@ fn find_decoded_part(
     if depth > MAX_DEPTH {
         return None;
     }
-    let part = all.get(index)?;
     if current_path == target {
-        return match &part.body {
-            PartType::Text(text) | PartType::Html(text) => Some(text.as_bytes().to_vec()),
-            PartType::Binary(bin) | PartType::InlineBinary(bin) => Some(bin.to_vec()),
-            PartType::Message(msg) => Some(msg.raw_message.to_vec()),
-            PartType::Multipart(_) => None,
+        return match part.kind() {
+            PartKind::Text | PartKind::Html => part.text().map(|text| text.as_bytes().to_vec()),
+            // A nested message's body is the message itself, transfer-decoded.
+            PartKind::Binary | PartKind::InlineBinary | PartKind::Message(_) => {
+                Some(part.decoded().into_owned())
+            }
+            PartKind::Multipart => None,
         };
     }
 
-    if let PartType::Multipart(ids) = &part.body {
-        for (ordinal, &child_index) in ids.iter().enumerate() {
-            let Ok(number) = u32::try_from(ordinal + 1) else {
-                continue;
-            };
-            let child_path = current_path.child(number);
-            if let Some(found) =
-                find_decoded_part(all, child_index as usize, &child_path, target, depth + 1)
-            {
-                return Some(found);
-            }
+    for (ordinal, child) in part.children().enumerate() {
+        let Ok(number) = u32::try_from(ordinal + 1) else {
+            continue;
+        };
+        let child_path = current_path.child(number);
+        if let Some(found) = find_decoded_part(child, &child_path, target, depth + 1) {
+            return Some(found);
         }
     }
 
@@ -167,8 +162,7 @@ const MAX_DEPTH: usize = 64;
 
 #[allow(clippy::too_many_arguments)]
 fn walk(
-    all: &[MessagePart<'_>],
-    index: usize,
+    part: MessagePart<'_>,
     path: &PartPath,
     raw: &[u8],
     out: &mut Vec<MimePart>,
@@ -183,33 +177,21 @@ fn walk(
         )));
         return;
     }
-    let Some(part) = all.get(index) else {
-        diagnostics.push(ParseDiagnostic::warning(format!(
-            "MIME part index {index} referenced but absent"
-        )));
-        return;
-    };
-
-    match &part.body {
-        PartType::Text(_) => text.push(path.clone()),
-        PartType::Html(_) => html.push(path.clone()),
+    match part.kind() {
+        PartKind::Text => text.push(path.clone()),
+        PartKind::Html => html.push(path.clone()),
         _ => {}
     }
 
-    let child_indices: Vec<usize> = match &part.body {
-        PartType::Multipart(ids) => ids.iter().map(|id| *id as usize).collect(),
-        _ => Vec::new(),
-    };
+    let children = part.children();
+    out.push(convert_part(&part, path, raw, children.len(), diagnostics));
 
-    out.push(convert_part(part, path, raw, &child_indices, diagnostics));
-
-    for (ordinal, child_index) in child_indices.into_iter().enumerate() {
+    for (ordinal, child) in children.enumerate() {
         let Ok(number) = u32::try_from(ordinal + 1) else {
             continue;
         };
         walk(
-            all,
-            child_index,
+            child,
             &path.child(number),
             raw,
             out,
@@ -229,11 +211,11 @@ fn convert_part(
     part: &MessagePart<'_>,
     path: &PartPath,
     raw: &[u8],
-    child_indices: &[usize],
+    child_count: usize,
     diagnostics: &mut Vec<ParseDiagnostic>,
 ) -> MimePart {
-    let header_range = range_or_empty(part.offset_header, part.offset_body, raw, diagnostics);
-    let body_range = range_or_empty(part.offset_body, part.offset_end, raw, diagnostics);
+    let header_range = range_or_empty(part.offset_header(), part.offset_body(), raw, diagnostics);
+    let body_range = range_or_empty(part.offset_body(), part.offset_end(), raw, diagnostics);
 
     // Disposition comes from the Content-Disposition header. A part with a
     // filename but no explicit disposition is treated as an attachment, which
@@ -250,7 +232,8 @@ fn convert_part(
         }
     };
 
-    if part.is_encoding_problem {
+    let (decoded, problems) = part.decoded_checked();
+    if problems.contains(DecodeProblems::MALFORMED_TRANSFER_ENCODING) {
         diagnostics.push(ParseDiagnostic {
             severity: DiagnosticSeverity::Warning,
             message: format!("part {path} has a malformed content-transfer-encoding"),
@@ -258,10 +241,10 @@ fn convert_part(
         });
     }
 
-    let decoded_size = match &part.body {
-        PartType::Text(t) | PartType::Html(t) => Some(t.len() as u64),
-        PartType::Binary(b) | PartType::InlineBinary(b) => Some(b.len() as u64),
-        PartType::Message(_) | PartType::Multipart(_) => None,
+    let decoded_size = match part.kind() {
+        PartKind::Text | PartKind::Html => part.text().map(|t| t.len() as u64),
+        PartKind::Binary | PartKind::InlineBinary => Some(decoded.len() as u64),
+        PartKind::Message(_) | PartKind::Multipart => None,
     };
 
     MimePart {
@@ -281,7 +264,7 @@ fn convert_part(
         body_range,
         decoded_size,
         is_attachment: disposition == Disposition::Attachment,
-        children: (1..=child_indices.len())
+        children: (1..=child_count)
             .filter_map(|n| u32::try_from(n).ok())
             .map(|n| path.child(n))
             .collect(),
@@ -293,18 +276,11 @@ fn convert_part(
 /// `mail-parser` only distinguishes the encodings it decodes; the header is
 /// consulted for the rest so `7bit`, `8bit` and `binary` are reported faithfully.
 fn encoding_of(part: &MessagePart<'_>) -> TransferEncoding {
-    match part.encoding {
+    match part.encoding() {
         Encoding::QuotedPrintable => TransferEncoding::QuotedPrintable,
         Encoding::Base64 => TransferEncoding::Base64,
         Encoding::None => part
-            .headers
-            .iter()
-            .find(|h| {
-                h.name
-                    .as_str()
-                    .eq_ignore_ascii_case("content-transfer-encoding")
-            })
-            .and_then(|h| h.value.as_text())
+            .content_transfer_encoding()
             .map_or(TransferEncoding::SevenBit, TransferEncoding::parse),
     }
 }
@@ -326,15 +302,16 @@ fn content_type_of(part: &MessagePart<'_>) -> String {
 }
 
 fn convert_headers(
-    headers: &[mail_parser::Header<'_>],
+    message: &Message<'_>,
     raw: &[u8],
     diagnostics: &mut Vec<ParseDiagnostic>,
 ) -> Vec<Header> {
-    headers
+    message
+        .headers()
         .iter()
         .map(|h| {
-            let range = range_or_empty(h.offset_field, h.offset_end, raw, diagnostics);
-            let raw_value = range_or_empty(h.offset_start, h.offset_end, raw, diagnostics)
+            let range = range_or_empty(h.offset_field(), h.offset_end(), raw, diagnostics);
+            let raw_value = range_or_empty(h.offset_start(), h.offset_end(), raw, diagnostics)
                 .slice(raw)
                 .unwrap_or_default()
                 .to_vec();
@@ -343,13 +320,13 @@ fn convert_headers(
             // value to every consumer, which blanked every `Received:` row in
             // the headers view. Nothing in those fields is RFC 2047-encoded, so
             // the unfolded raw bytes are the faithful decoded form.
-            let decoded = match decode_header_value(&h.value) {
+            let decoded = match decode_header_value(&h.value()) {
                 text if text.is_empty() => unfold(&raw_value),
                 text => text,
             };
 
             Header {
-                name: h.name.as_str().to_owned(),
+                name: h.name().as_str().to_owned(),
                 decoded_value: decoded,
                 raw_value,
                 range,
@@ -387,9 +364,10 @@ fn decode_header_value(value: &mail_parser::HeaderValue<'_>) -> String {
     use mail_parser::HeaderValue;
     match value {
         HeaderValue::Text(t) => t.to_string(),
-        HeaderValue::TextList(list) => list.join(", "),
+        HeaderValue::TextList(list) => list.iter().collect::<Vec<_>>().join(", "),
+        // Group members are flattened into the list, as 0.11 rendered them.
         HeaderValue::Address(addr) => addr
-            .iter()
+            .mailboxes()
             .map(|a| match (a.name(), a.address()) {
                 (Some(name), Some(addr)) => format!("{name} <{addr}>"),
                 (None, Some(addr)) => addr.to_owned(),
@@ -629,6 +607,26 @@ PHA+dGVzdDwvcD4=\r\n\
             !received.decoded_value.contains('\n'),
             "an unfolded value is one line"
         );
+    }
+
+    #[test]
+    fn nested_multiparts_that_panicked_mail_parser_0_11_now_parse() {
+        // Regression: 0.11.9 panicked on these fuzz finds, so `run_parser`
+        // caught it and the message degraded to unparsed. The crash replay in
+        // `fuzz/tests/corpus.rs` cannot see that — the catch hid it — so this
+        // pins that the parser itself now gets through them.
+        let cases: [&[u8]; 2] = [
+            include_bytes!(
+                "../../../fuzz/artifacts/mime_parser/crash-d9614430fc2dd65fb002be68c8788f0d2ca34afd"
+            ),
+            include_bytes!(
+                "../../../fuzz/artifacts/mime_parser/crash-ed6b15ca35a1a6d20685cadadc7d3304bd6b2a53"
+            ),
+        ];
+        for raw in cases {
+            assert!(run_parser(raw).is_some(), "mail-parser must not panic");
+            assert!(!parse(raw).parts.is_empty());
+        }
     }
 
     #[test]

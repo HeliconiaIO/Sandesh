@@ -17,7 +17,7 @@ in public issues.** Follow [SECURITY.md](SECURITY.md) instead.
 ## Setup
 
 You need rustup, which installs the pinned toolchain from `rust-toolchain.toml` (currently 1.99.1)
-automatically; the minimum supported Rust is 1.94 (`rust-version` in `Cargo.toml`). Also Node.js 22 and
+automatically; the minimum supported Rust is 1.98 (`rust-version` in `Cargo.toml`). Also Node.js 22 and
 npm.
 
 ```bash
