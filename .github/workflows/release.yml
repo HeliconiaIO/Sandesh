@@ -228,9 +228,18 @@ jobs:
           (cd release && sha256sum * > SHA256SUMS)
           cat release/SHA256SUMS
 
-      - uses: actions/attest-build-provenance@v3
+      - id: attest
+        uses: actions/attest-build-provenance@v3
         with:
           subject-path: 'release/*'
+
+      # The attestation above lives in GitHub's attestation store, which
+      # `gh attestation verify` reads but nothing outside GitHub can see. The
+      # same signed bundle is attached to the release so verifiers (and the
+      # OpenSSF Scorecard Signed-Releases check) find it with the assets. Added
+      # after the checksums on purpose: it describes those files, it is not one.
+      - name: Attach provenance
+        run: cp "${{ steps.attest.outputs.bundle-path }}" "release/sandesh-${{ needs.verify.outputs.version }}.intoto.jsonl"
 
       # The notes are the CHANGELOG section for this version, verbatim: one
       # place to write them, reviewed in the release pull request.
