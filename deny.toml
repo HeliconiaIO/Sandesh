@@ -15,6 +15,9 @@ targets = [
     "x86_64-apple-darwin",
     "aarch64-apple-darwin",
     "x86_64-pc-windows-msvc",
+    # The desktop app on Linux links GTK and D-Bus, which exist only on glibc;
+    # without this target its whole Linux dependency tree went unchecked.
+    "x86_64-unknown-linux-gnu",
 ]
 # Development dependencies are in scope. They do not ship, but they execute on
 # developer machines and in CI, which is where a compromised build-time crate

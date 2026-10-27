@@ -1,0 +1,93 @@
+# Known advisories accepted on purpose, for osv-scanner — and so for the
+# OpenSSF Scorecard Vulnerabilities check, which runs it over every lockfile.
+#
+# cargo-deny (deny.toml) is the gate; this file only states the same policy
+# where Scorecard can read it. Every entry needs a reason a reviewer can check,
+# and an ignoreUntil date: when it passes the advisory counts again, which is
+# the prompt to re-check whether upstream has moved. Remove an entry as soon
+# as `cargo update` makes it unnecessary.
+#
+# None of these is fixable from this repository: each sits under a dependency
+# that pins the affected version. Re-run the check with
+# `osv-scanner scan source -r .` (or wait for the next Scorecard run).
+
+# ---------------------------------------------------------------- server ---
+
+[[IgnoredVulns]]
+id = "GHSA-qwgh-2vcv-g2f7"
+ignoreUntil = 2027-04-27
+reason = """
+block-buffer 0.10.4, in the shipped server: axum and tungstenite use sha1 0.10
+for the WebSocket handshake. The bug needs a panic inside a block-compression
+callback that is then caught; SHA-1 compression does not panic, so the
+corrupted-cursor state is unreachable. Fixed only in block-buffer 0.12, which
+needs axum to move to sha1 0.11.
+"""
+
+# ------------------------------------------- desktop app (Linux, Tauri) ---
+#
+# Everything below is reached only through crates/sandesh-desktop, and only
+# when it is built for Linux: Tauri's tray icon uses the GTK 3 bindings, and
+# desktop notifications use zbus. The server binaries and container do not
+# contain them. They are "unmaintained" notices plus one unsoundness in an API
+# Sandesh never calls; deny.toml limits unmaintained checks to direct
+# dependencies for the same reason.
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0429"
+ignoreUntil = 2027-04-27
+reason = """
+glib 0.18.5 VariantStrIter unsoundness, via tauri -> tray-icon -> gtk 0.18.
+Sandesh never iterates GLib variants. Tauri's Linux backend still depends on
+the archived gtk3-rs bindings; there is no 0.18 release with the fix.
+"""
+
+[[IgnoredVulns]]
+id = "GHSA-wrw7-89jp-8q8g"
+ignoreUntil = 2027-04-27
+reason = "GitHub alias of RUSTSEC-2024-0429 (glib 0.18.5); see that entry."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2024-0370"
+ignoreUntil = 2027-04-27
+reason = "proc-macro-error unmaintained; build-time only, via glib-macros in the same GTK 3 stack."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2025-0075"
+ignoreUntil = 2027-04-27
+reason = "unic-char-range unmaintained; via tauri-utils -> urlpattern."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2025-0080"
+ignoreUntil = 2027-04-27
+reason = "unic-common unmaintained; via tauri-utils -> urlpattern."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2025-0081"
+ignoreUntil = 2027-04-27
+reason = "unic-char-property unmaintained; via tauri-utils -> urlpattern."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2025-0098"
+ignoreUntil = 2027-04-27
+reason = "unic-ucd-version unmaintained; via tauri-utils -> urlpattern."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2025-0100"
+ignoreUntil = 2027-04-27
+reason = "unic-ucd-ident unmaintained; via tauri-utils -> urlpattern."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2026-0370"
+ignoreUntil = 2027-04-27
+reason = "zvariant unmaintained; via notify-rust -> zbus (Linux desktop notifications)."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2026-0371"
+ignoreUntil = 2027-04-27
+reason = "zbus_names unmaintained; via notify-rust -> zbus (Linux desktop notifications)."
+
+[[IgnoredVulns]]
+id = "RUSTSEC-2026-0372"
+ignoreUntil = 2027-04-27
+reason = "zvariant_derive unmaintained; via notify-rust -> zbus (Linux desktop notifications)."
