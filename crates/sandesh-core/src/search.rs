@@ -360,16 +360,17 @@ fn value_contains(header: &crate::Header, needle: &str) -> bool {
 
 /// Whether the message body contains `needle` (already lowercased).
 ///
-/// Searches each non-multipart part's *decoded* text, so a match is found in a
+/// Searches each text part's *decoded* text, so a match is found in a
 /// quoted-printable or base64 text part as a reader would see it rather than as
-/// it appears on the wire. A part that does not decode as text is skipped: a
-/// substring match against binary is not meaningful.
+/// it appears on the wire. Binary parts are skipped
+/// ([`crate::MimePart::is_searchable_text`]): a substring match against a PDF or an
+/// image is not meaningful.
 fn body_contains(message: &Message, needle: &str) -> bool {
     message
         .parsed
         .parts
         .iter()
-        .filter(|part| !part.is_multipart())
+        .filter(|part| part.is_searchable_text())
         .any(|part| {
             let decoded = message.part_body_decoded(&part.path);
             decoded.is_some_and(|bytes| {

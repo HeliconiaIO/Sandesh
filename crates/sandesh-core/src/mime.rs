@@ -256,6 +256,34 @@ pub struct MimePart {
 }
 
 impl MimePart {
+    /// Whether body search should look inside this part.
+    ///
+    /// Text media types only, plus the structured-text `application` types
+    /// developers attach (JSON, XML, CSV, calendar invites). A PDF, image or zip
+    /// decoded through `from_utf8_lossy` is noise: no search ever matches it,
+    /// and indexing it as trigrams made the search index four times the size of
+    /// the mail it indexed. Both the index and the live matcher use this one
+    /// rule, so they can never disagree about which parts are searched.
+    #[must_use]
+    pub fn is_searchable_text(&self) -> bool {
+        if self.is_multipart() {
+            return false;
+        }
+        let media = self.content_type.as_str();
+        media.starts_with("text/")
+            || media.starts_with("message/")
+            || media.ends_with("+json")
+            || media.ends_with("+xml")
+            || matches!(
+                media,
+                "application/json"
+                    | "application/xml"
+                    | "application/csv"
+                    | "application/ics"
+                    | "application/javascript"
+            )
+    }
+
     /// The part's encoded body bytes, sliced from `raw`.
     #[must_use]
     pub fn body<'a>(&self, raw: &'a [u8]) -> Option<&'a [u8]> {

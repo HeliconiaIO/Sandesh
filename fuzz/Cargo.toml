@@ -89,3 +89,10 @@ path = "fuzz_targets/search_query.rs"
 test = false
 doc = false
 bench = false
+
+[[bin]]
+name = "link_extract"
+path = "fuzz_targets/link_extract.rs"
+test = false
+doc = false
+bench = false

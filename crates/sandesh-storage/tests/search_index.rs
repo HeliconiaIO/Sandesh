@@ -497,3 +497,109 @@ async fn collecting_an_orphan_removes_its_index_row() {
         "the index kept a row for a collected message"
     );
 }
+
+/// A text body with a PDF and a CSV attached. The PDF's bytes contain an ASCII
+/// word, as real PDFs do; the CSV is text a developer would search.
+const WITH_ATTACHMENTS: &[u8] = b"\
+From: billing@example.test\r\n\
+To: dev@example.test\r\n\
+Subject: Invoice\r\n\
+MIME-Version: 1.0\r\n\
+Content-Type: multipart/mixed; boundary=b\r\n\
+\r\n\
+--b\r\n\
+Content-Type: text/plain\r\n\
+\r\n\
+Your invoice is attached.\r\n\
+--b\r\n\
+Content-Type: application/pdf; name=invoice.pdf\r\n\
+Content-Disposition: attachment; filename=invoice.pdf\r\n\
+Content-Transfer-Encoding: base64\r\n\
+\r\n\
+JVBERi0xLjQKcGRmb25seXdvcmQKJSVFT0YK\r\n\
+--b\r\n\
+Content-Type: text/csv; name=lines.csv\r\n\
+Content-Disposition: attachment; filename=lines.csv\r\n\
+\r\n\
+sku,csvonlyword\r\n\
+--b--\r\n";
+
+/// The PDF's text (`%PDF-1.4 pdfonlyword %%EOF`) is invisible to body search
+/// and absent from the index; the CSV is searchable through both.
+#[tokio::test]
+async fn binary_attachments_are_neither_searched_nor_indexed() {
+    let (harness, index, messages) = indexed(&[WITH_ATTACHMENTS]).await;
+
+    let body: String = sqlx::query_scalar("SELECT body_text FROM messages_fts")
+        .fetch_one(harness.db.pool())
+        .await
+        .expect("one index row");
+    assert!(
+        !body.contains("pdfonlyword"),
+        "binary part was indexed: {body:?}"
+    );
+    assert!(
+        body.contains("csvonlyword"),
+        "text attachment was not indexed"
+    );
+
+    for (word, expected) in [("pdfonlyword", 0), ("csvonlyword", 1)] {
+        let query = SearchQuery::Contains {
+            field: TextField::Body,
+            value: word.to_owned(),
+        };
+        let truth = scanned(&messages, &query);
+        assert_eq!(truth.len(), expected, "{word}: matcher");
+        let candidates = index.candidates(&query).await.expect("candidates");
+        assert_eq!(
+            with_index(&messages, &query, &candidates),
+            truth,
+            "{word}: index"
+        );
+    }
+}
+
+/// Migration 0010 empties the index, `unindexed` then reports every message
+/// for the repair task, and search stays correct until the rebuild is done.
+#[tokio::test]
+async fn migration_0010_empties_the_index_for_the_repair_task() {
+    let (harness, index, messages) = indexed(&[WITH_ATTACHMENTS, PLAIN]).await;
+    assert!(index.unindexed(10).await.expect("unindexed").is_empty());
+
+    sqlx::raw_sql(include_str!(
+        "../../../migrations/0010_text_only_search_index.sql"
+    ))
+    .execute(harness.db.pool())
+    .await
+    .expect("re-run migration 0010");
+
+    let missing: BTreeSet<MessageId> = index
+        .unindexed(10)
+        .await
+        .expect("unindexed")
+        .into_iter()
+        .collect();
+    let all: BTreeSet<MessageId> = messages.iter().map(|message| message.id).collect();
+    assert_eq!(missing, all, "the rebuild starts from an empty index");
+
+    // While it is missing, a text search declines to narrow rather than
+    // excluding it.
+    let query = SearchQuery::Contains {
+        field: TextField::Body,
+        value: "invoice is attached".to_owned(),
+    };
+    assert!(matches!(
+        index.candidates(&query).await.expect("candidates"),
+        SearchCandidates::Unsupported
+    ));
+
+    for message in &messages {
+        index.index(message).await.expect("repair");
+    }
+    assert!(index.unindexed(10).await.expect("unindexed").is_empty());
+    let candidates = index.candidates(&query).await.expect("candidates");
+    assert_eq!(
+        with_index(&messages, &query, &candidates),
+        scanned(&messages, &query)
+    );
+}

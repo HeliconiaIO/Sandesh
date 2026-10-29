@@ -341,7 +341,7 @@ Phase 4.5 adds both. The seams already exist:
 | Limitation | Reason |
 | --- | --- |
 | ~~No `AUTH` or `STARTTLS`~~ | **Done in Phase 4.5** — `AUTH PLAIN`/`LOGIN`, `STARTTLS` (ADR-036) and implicit TLS (ADR-037) |
-| No `SMTPUTF8` | Phase 7; rejected with `504` rather than silently accepted |
+| No `SMTPUTF8` | Deferred; the parameter is rejected with `504` rather than silently accepted, a non-ASCII address with `553 5.6.7` |
 | ~~No `BDAT`/`CHUNKING`~~ | **Done in Phase 8 A4** (ADR-088). A second content path: no dot-stuffing, a declared octet count, a reply per chunk. A test compares the bytes stored by `DATA` and by `BDAT` for the same message, because a second ingestion path is a second chance to corrupt content |
 | No `DSN` | Deferred |
 | Shutdown does not drain sessions | Accept stops immediately; in-flight sessions finish on their own, bounded by their timeouts. Cutting an in-progress `DATA` would lose a message the client believes is being accepted |

@@ -303,6 +303,93 @@ impl MessageStore for SqliteMessageStore {
         Ok(entries)
     }
 
+    /// The message list's page, in SQL rather than in memory.
+    ///
+    /// The default implementation reads every placement in scope and sorts in
+    /// Rust: 2.6 s and ~170 MB per page at 100,000 messages, paid again on every
+    /// page. Here the grouping, ordering and limit run over the entries table,
+    /// and only the page's placements are decoded.
+    async fn page_entries(
+        &self,
+        mailboxes: &[MailboxId],
+        before_uid: Option<u32>,
+        limit: usize,
+    ) -> CoreResult<sandesh_core::EntryPage> {
+        if mailboxes.is_empty() {
+            return Ok(sandesh_core::EntryPage::default());
+        }
+        // The scope travels as one JSON array of hex ids, so the statement is
+        // static whatever the number of mailboxes; `unhex` turns each back into
+        // the BLOB key, which keeps the `mailbox_id` indexes usable.
+        let scope = serde_json::to_string(
+            &mailboxes
+                .iter()
+                .map(|mailbox| hex::encode(mailbox.as_bytes()))
+                .collect::<Vec<_>>(),
+        )
+        .map_err(|error| CoreError::Storage(sandesh_core::StoreError::new(error.to_string())))?;
+        let cursor = before_uid.map(i64::from);
+
+        let total: i64 = sqlx::query_scalar(
+            "SELECT COUNT(DISTINCT message_id) FROM message_entries
+             WHERE mailbox_id IN (SELECT unhex(value) FROM json_each(?1))
+               AND (?2 IS NULL OR uid < ?2)",
+        )
+        .bind(&scope)
+        .bind(cursor)
+        .fetch_one(&self.pool)
+        .await
+        .map_err(StorageError::from)?;
+
+        // Ties on `added_at` fall back to the id, ascending, which is the order
+        // the reference implementation's `BTreeMap` leaves them in.
+        let rows = sqlx::query(
+            "SELECT message_id, MAX(added_at) AS newest FROM message_entries
+             WHERE mailbox_id IN (SELECT unhex(value) FROM json_each(?1))
+               AND (?2 IS NULL OR uid < ?2)
+             GROUP BY message_id
+             ORDER BY newest DESC, message_id ASC
+             LIMIT ?3",
+        )
+        .bind(&scope)
+        .bind(cursor)
+        .bind(i64::try_from(limit.saturating_add(1)).unwrap_or(i64::MAX))
+        .fetch_all(&self.pool)
+        .await
+        .map_err(StorageError::from)?;
+
+        let has_more = rows.len() > limit;
+        let mut messages = Vec::with_capacity(limit.min(rows.len()));
+        for r in rows.iter().take(limit) {
+            let message_id =
+                MessageId::from_bytes(row::uuid_bytes(r, "message_id", "message_entries")?);
+
+            let mut entries = Vec::new();
+            for entry in self.entries_for_message(message_id).await? {
+                let admitted = mailboxes.contains(&entry.mailbox_id)
+                    && before_uid.is_none_or(|uid| entry.uid.get() < uid);
+                if admitted {
+                    entries.push(entry);
+                }
+            }
+            // Placements in the order the reference yields them: by the
+            // mailbox's position in scope, then by UID.
+            entries.sort_by_key(|entry| {
+                (
+                    mailboxes.iter().position(|m| *m == entry.mailbox_id),
+                    entry.uid,
+                )
+            });
+            messages.push((message_id, entries));
+        }
+
+        Ok(sandesh_core::EntryPage {
+            messages,
+            has_more,
+            total: u64::try_from(total).unwrap_or_default(),
+        })
+    }
+
     /// Places an existing message in another mailbox — IMAP `COPY`.
     ///
     /// The new placement gets a **new UID** from the target mailbox and a copy

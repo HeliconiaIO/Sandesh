@@ -187,6 +187,61 @@ impl Default for MailboxCounts {
     }
 }
 
+/// [`MessageStore::page_entries`] by reading every placement in scope.
+///
+/// The reference behaviour, and the trait's default. Public so a store that
+/// overrides the method can still fall back to it for a scope it cannot answer
+/// in one query.
+///
+/// # Errors
+/// Whatever [`MessageStore::list_entries`] returns.
+pub async fn page_entries_by_scan<S: MessageStore + ?Sized>(
+    store: &S,
+    mailboxes: &[MailboxId],
+    before_uid: Option<u32>,
+    limit: usize,
+) -> CoreResult<EntryPage> {
+    let mut per_message: std::collections::BTreeMap<MessageId, Vec<MessageEntry>> =
+        std::collections::BTreeMap::new();
+    for &mailbox_id in mailboxes {
+        for entry in store.list_entries(mailbox_id).await? {
+            if before_uid.is_some_and(|uid| entry.uid.get() >= uid) {
+                continue;
+            }
+            per_message.entry(entry.message_id).or_default().push(entry);
+        }
+    }
+    let total = per_message.len() as u64;
+    let mut ordered: Vec<_> = per_message.into_iter().collect();
+    let newest = |entries: &Vec<MessageEntry>| {
+        entries
+            .iter()
+            .map(|entry| entry.added_at)
+            .max()
+            .unwrap_or_else(|| Timestamp::from_micros(0))
+    };
+    // Stable, so equal timestamps keep the ascending-id order above.
+    ordered.sort_by_key(|(_, entries)| std::cmp::Reverse(newest(entries)));
+    let has_more = ordered.len() > limit;
+    ordered.truncate(limit);
+    Ok(EntryPage {
+        messages: ordered,
+        has_more,
+        total,
+    })
+}
+
+/// One page from [`MessageStore::page_entries`].
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct EntryPage {
+    /// Messages newest-first, each with its in-scope placements.
+    pub messages: Vec<(MessageId, Vec<MessageEntry>)>,
+    /// Whether more messages follow this page.
+    pub has_more: bool,
+    /// Messages the cursor admits, across every page.
+    pub total: u64,
+}
+
 /// Messages, their raw bytes, and their placements.
 #[async_trait]
 pub trait MessageStore: Send + Sync {
@@ -221,6 +276,28 @@ pub trait MessageStore: Send + Sync {
 
     /// Lists every placement of a message, across all mailboxes.
     async fn entries_for_message(&self, message_id: MessageId) -> CoreResult<Vec<MessageEntry>>;
+
+    /// One newest-first page of the messages placed in `mailboxes`.
+    ///
+    /// Placements with a UID at or above `before_uid` are ignored (the cursor
+    /// walks backwards, since UIDs ascend with age). The rest are grouped by
+    /// message; messages are ordered by their newest placement's `added_at`,
+    /// descending, ties broken by id; the first `limit` are returned with every
+    /// in-scope placement each carries. `total` counts every message the cursor
+    /// admits, not just this page.
+    ///
+    /// This default reads every placement and sorts in memory. It is the
+    /// reference behaviour, and is what a test double gets for free; a store
+    /// backed by a database must override it, because the message list calls
+    /// it on every page and a mailbox may hold 100,000 placements.
+    async fn page_entries(
+        &self,
+        mailboxes: &[MailboxId],
+        before_uid: Option<u32>,
+        limit: usize,
+    ) -> CoreResult<EntryPage> {
+        page_entries_by_scan(self, mailboxes, before_uid, limit).await
+    }
 
     /// Places an existing message into another mailbox — IMAP `COPY`.
     ///

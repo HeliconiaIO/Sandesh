@@ -22,7 +22,7 @@ Design targets, in order of authority. Primary sources only.
 | 1870 | SIZE extension | Advertise message limits |
 | 3207 | SMTP STARTTLS | Opportunistic TLS |
 | 4954 | SMTP AUTH | Authentication |
-| 6531 | SMTPUTF8 | Internationalised addresses; deferred, refused with `504` |
+| 6531 | SMTPUTF8 | Internationalised addresses; deferred. The parameter is refused with `504`, a non-ASCII address with `553 5.6.7` |
 | 9051 | **IMAP4rev2** | Primary IMAP target |
 | 3501 | IMAP4rev1 | Compatibility target for older clients |
 | 2177 | IMAP IDLE | Push notification |
@@ -114,7 +114,9 @@ never relays by default.
 Every Phase 2 row above is implemented and covered by tests. Two clarifications:
 
 * **`SMTPUTF8`** is not advertised and is refused with `504` rather than silently accepted, so a
-  client learns the parameter had no effect instead of assuming it did.
+  client learns the parameter had no effect instead of assuming it did. A `MAIL` or `RCPT` whose
+  address is not ASCII (`jöran@example.test`) is refused with `553 5.6.7`, which names SMTPUTF8 as
+  the missing piece; before, it fell through to `500 Unrecognised command`.
 * **`BODY=7BIT` and `BODY=8BITMIME`** are both accepted. Content is stored as bytes either way, so
   the declaration changes nothing about handling — it only needs to not be rejected.
 

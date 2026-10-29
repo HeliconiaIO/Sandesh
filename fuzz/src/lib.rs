@@ -10,7 +10,7 @@
 //! can be replayed over a fixed corpus — see `tests/corpus.rs`, which runs every
 //! `testdata/` fixture and every crash artifact through them on stable.
 
-use sandesh_core::{ByteRange, SearchQuery, parse_date_text, parse_filter_query};
+use sandesh_core::{ByteRange, LinkReport, SearchQuery, parse_date_text, parse_filter_query};
 use sandesh_imap::{MAX_NESTING_DEPTH, MAX_TOKENS, Parsed, parse_line};
 use sandesh_pop3::Pop3Command;
 use sandesh_smtp::parser::{parse as parse_smtp, parse_path};
@@ -240,6 +240,25 @@ pub fn check_search(data: &[u8]) {
     // The date grammar is reachable from the same box (`before:`, `since:`) and
     // is its own small parser.
     let _ = parse_date_text(input);
+}
+
+/// Link extractor: never panics; deterministic.
+///
+/// The extractor is a hand-written HTML scanner over a received message's
+/// decoded HTML parts — sender-controlled markup, reached by
+/// `GET /messages/{id}/links`. It slices strings at offsets it computes itself,
+/// so the property worth fuzzing is that none of those offsets lands inside a
+/// multi-byte character.
+pub fn check_links(data: &[u8]) {
+    if data.len() > MAX_LITERAL {
+        return;
+    }
+    let report = LinkReport::extract(data, "1");
+    assert_eq!(
+        LinkReport::extract(data, "1").links,
+        report.links,
+        "LinkReport::extract is not deterministic for this input"
+    );
 }
 
 /// Depth of the plan tree, computed iteratively: recursing here would overflow

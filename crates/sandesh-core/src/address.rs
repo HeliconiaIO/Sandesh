@@ -69,6 +69,13 @@ impl EmailAddress {
         }
     }
 
+    /// Replaces the display name, for callers that parsed it separately.
+    #[must_use]
+    pub fn with_display_name(mut self, display_name: Option<String>) -> Self {
+        self.display_name = display_name;
+        self
+    }
+
     /// The local part, verbatim.
     #[must_use]
     pub fn local_part(&self) -> &str {

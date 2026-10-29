@@ -68,6 +68,8 @@ pub const ENV_IMAP_ENABLED: &str = "SANDESH_IMAP_ENABLED";
 pub const ENV_TRACING_ENABLED: &str = "SANDESH_TRACING_ENABLED";
 /// How many connection records to keep before the oldest are evicted.
 pub const ENV_TRACE_RETENTION: &str = "SANDESH_TRACE_RETENTION";
+/// The largest message SMTP accepts and IMAP `APPEND` takes, in bytes.
+pub const ENV_MAX_MESSAGE_SIZE: &str = "SANDESH_MAX_MESSAGE_SIZE";
 
 /// The IMAP authentication posture.
 pub const ENV_IMAP_AUTH: &str = "SANDESH_IMAP_AUTH";
@@ -319,6 +321,14 @@ pub fn apply(mut config: AppConfig) -> Result<AppConfig, EnvError> {
 
     if let Some(raw) = var(ENV_TRACE_RETENTION) {
         config.trace_retention = parse_u32(ENV_TRACE_RETENTION, &raw)?;
+    }
+
+    // One knob for both: an IMAP literal carries a whole message, so a lower
+    // `APPEND` limit would refuse mail that SMTP had just accepted.
+    if let Some(raw) = var(ENV_MAX_MESSAGE_SIZE) {
+        let size = parse_u32(ENV_MAX_MESSAGE_SIZE, &raw)? as usize;
+        config.smtp.max_message_size = size;
+        config.imap.max_literal_size = size;
     }
 
     if let Some(raw) = var(ENV_IMAP_AUTH) {

@@ -110,6 +110,31 @@ fn command_seeds_survive_their_checks() {
     }
 }
 
+/// HTML shapes for the link extractor: unterminated constructs, and multi-byte
+/// characters at each offset the scanner slices at.
+const HTML_SEEDS: &[&str] = &[
+    "",
+    "<",
+    "</",
+    "<a",
+    "<a href=",
+    "<a href=\"",
+    "<!--",
+    "<a>x</€ y</a>",
+    "<a href=\"https://example.com\">€</a€>",
+    "<img src=€>",
+    "<div style=\"background:url(€\">",
+    "<a href=\"https://€.test/\">&€;&amp</a>",
+    "<script>€</scr€ipt>",
+];
+
+#[test]
+fn html_seeds_survive_the_link_checks() {
+    for seed in HTML_SEEDS {
+        sandesh_fuzz::check_links(seed.as_bytes());
+    }
+}
+
 /// Crash reproducers, once fuzzing has found any. Empty until it does.
 #[test]
 fn every_crash_artifact_stays_fixed() {
@@ -129,6 +154,7 @@ fn every_crash_artifact_stays_fixed() {
             "imap_command" => sandesh_fuzz::check_imap(&bytes),
             "pop3_command" => sandesh_fuzz::check_pop3(&bytes),
             "search_query" => sandesh_fuzz::check_search(&bytes),
+            "link_extract" => sandesh_fuzz::check_links(&bytes),
             other => panic!(
                 "artifact {} sits under an unknown target directory {other:?}; \
                  artifacts belong in fuzz/artifacts/<target>/",

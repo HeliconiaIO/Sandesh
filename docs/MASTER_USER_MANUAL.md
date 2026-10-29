@@ -1279,6 +1279,7 @@ $env:SANDESH_SMTP_ADDR = "127.0.0.1:2025"
 | `SANDESH_API_TLS` | `false` | Serve the API over HTTPS |
 | `SANDESH_TRACING_ENABLED` | `true` | Record a protocol transcript per connection |
 | `SANDESH_TRACE_RETENTION` | `1000` | Connection records kept before the oldest are evicted |
+| `SANDESH_MAX_MESSAGE_SIZE` | `26214400` (25 MiB) | Largest message, in bytes, that SMTP accepts and IMAP `APPEND` takes. Attachments grow by about a third when base64-encoded, so a 20 MB file needs roughly 27 MB |
 
 > **Binding off loopback:** Setting any address to `0.0.0.0:...` makes Sandesh reachable from the network. Sandesh warns you when you do this. If you bind off loopback, also enable API auth:
 > ```bash

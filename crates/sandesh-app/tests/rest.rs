@@ -118,6 +118,54 @@ async fn the_to_header_is_reported_on_the_summary() {
     app.stop().await;
 }
 
+/// Applications send with a bounce address in `MAIL FROM` and their name in
+/// `From:`. The list must show what the application wrote.
+#[tokio::test(flavor = "multi_thread")]
+async fn the_summary_sender_is_the_from_header_not_the_envelope() {
+    let app = TestApp::start().await;
+    let message = "From: \"My App\" <noreply@app.test>\r\n\
+                   To: dev@example.test\r\n\
+                   Subject: Welcome\r\n\
+                   \r\n\
+                   Hi.";
+    app.deliver("bounces+123@mailer.test", "dev@example.test", message)
+        .await;
+
+    let (_, list) = app.get_json("/messages").await;
+    let item = &list["items"][0];
+    assert_eq!(item["from"]["address"], "noreply@app.test");
+    assert_eq!(item["from"]["display_name"], "My App");
+
+    app.stop().await;
+}
+
+/// A comma inside a quoted or RFC 2047-encoded display name is part of the
+/// name, and an empty group names no one.
+#[tokio::test(flavor = "multi_thread")]
+async fn address_lists_split_on_mailboxes_not_on_every_comma() {
+    let app = TestApp::start().await;
+    let message = "From: =?UTF-8?Q?M=C3=BCller=2C_J=C3=B6rg?= <jorg@app.test>\r\n\
+                   To: \"Doe, Jane\" <jane@example.test>, bob@example.test,\r\n \
+                   undisclosed-recipients:;\r\n\
+                   Subject: Names\r\n\
+                   \r\n\
+                   Hi.";
+    app.deliver("bounce@app.test", "jane@example.test", message)
+        .await;
+
+    let (_, list) = app.get_json("/messages").await;
+    let item = &list["items"][0];
+    assert_eq!(item["from"]["address"], "jorg@app.test");
+    assert_eq!(item["from"]["display_name"], "Müller, Jörg");
+
+    let to = item["to"].as_array().expect("to");
+    let addresses: Vec<&str> = to.iter().map(|a| a["address"].as_str().unwrap()).collect();
+    assert_eq!(addresses, vec!["jane@example.test", "bob@example.test"]);
+    assert_eq!(to[0]["display_name"], "Doe, Jane");
+
+    app.stop().await;
+}
+
 #[tokio::test(flavor = "multi_thread")]
 async fn headers_are_available_separately() {
     let app = TestApp::start().await;

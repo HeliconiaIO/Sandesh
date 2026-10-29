@@ -502,6 +502,7 @@ jobs:
           - imap_command
           - pop3_command
           - search_query
+          - link_extract
     steps:
       - uses: actions/checkout@v7
 

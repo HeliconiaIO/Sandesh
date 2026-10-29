@@ -150,13 +150,19 @@ impl Harness {
     /// Deliberately unbounded-ish: a cursor that fails to advance would loop,
     /// so the guard is a page cap that panics rather than a silent break.
     async fn walk_all_pages(&self, limit: usize) -> Vec<String> {
+        self.walk_pages(&format!("/api/v1/messages?limit={limit}"))
+            .await
+    }
+
+    /// [`walk_all_pages`](Self::walk_all_pages) over any paginated list.
+    async fn walk_pages(&self, first: &str) -> Vec<String> {
         let mut seen = Vec::new();
         let mut cursor: Option<String> = None;
 
         for _ in 0..500 {
             let path = match &cursor {
-                Some(value) => format!("/api/v1/messages?limit={limit}&cursor={value}"),
-                None => format!("/api/v1/messages?limit={limit}"),
+                Some(value) => format!("{first}&cursor={value}"),
+                None => first.to_owned(),
             };
             let body = self.get(&path).await;
             seen.extend(field_strings(&body, "id"));
@@ -231,6 +237,29 @@ async fn walking_the_cursor_reaches_every_message_exactly_once() {
         120,
         "walking every page must reach all 120 messages, saw {}",
         seen.len()
+    );
+}
+
+/// Search pages with the same backwards cursor as the list. It read the
+/// cursor forwards (`uid <= cursor` skipped), so page 2 re-served page 1.
+#[tokio::test]
+async fn walking_a_search_reaches_every_match_exactly_once() {
+    let app = Harness::start().await;
+    app.deliver_many(120).await;
+    app.await_count(120).await;
+
+    let seen = app.walk_pages("/api/v1/search?q=msg&limit=50").await;
+
+    let unique: HashSet<&String> = seen.iter().collect();
+    assert_eq!(
+        unique.len(),
+        seen.len(),
+        "a search page re-served earlier results"
+    );
+    assert_eq!(
+        seen.len(),
+        120,
+        "walking the search must reach all 120 matches"
     );
 }
 

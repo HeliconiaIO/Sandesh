@@ -126,6 +126,11 @@ pub enum ParseError {
     #[error("command contains non-ASCII bytes")]
     NotAscii,
 
+    /// A `MAIL` or `RCPT` whose arguments are not ASCII: an internationalised
+    /// address, which needs SMTPUTF8 (RFC 6531) and is not yet supported.
+    #[error("non-ASCII address requires SMTPUTF8")]
+    NeedsSmtpUtf8,
+
     /// The command's arguments were malformed.
     #[error("{0}")]
     Syntax(String),
@@ -176,6 +181,13 @@ pub fn parse(line: &[u8]) -> Result<Command, ParseError> {
     // The command line must be ASCII. Message *content* may be arbitrary bytes,
     // but a command that is not ASCII cannot name any verb.
     if !line.is_ascii() {
+        // The verb is ASCII even when the address is not, so a client sending
+        // `MAIL FROM:<jöran@…>` can be told what is actually wrong.
+        let verb = line.get(..4).unwrap_or_default();
+        let separated = line.get(4).is_some_and(|b| *b == b' ' || *b == b':');
+        if separated && (verb.eq_ignore_ascii_case(b"MAIL") || verb.eq_ignore_ascii_case(b"RCPT")) {
+            return Err(ParseError::NeedsSmtpUtf8);
+        }
         return Err(ParseError::NotAscii);
     }
     let line = core::str::from_utf8(line).map_err(|_| ParseError::NotAscii)?;
@@ -761,6 +773,20 @@ mod tests {
     fn non_ascii_command_lines_are_rejected_not_panicked() {
         assert_eq!(parse(b"EHLO \xff\xfe"), Err(ParseError::NotAscii));
         assert_eq!(parse(&[0xC3, 0x28]), Err(ParseError::NotAscii));
+    }
+
+    #[test]
+    fn a_non_ascii_address_is_reported_as_needing_smtputf8() {
+        for line in ["MAIL FROM:<jöran@app.test>", "rcpt TO:<jöran@app.test>"] {
+            assert_eq!(
+                parse(line.as_bytes()),
+                Err(ParseError::NeedsSmtpUtf8),
+                "{line}"
+            );
+        }
+        // Only the address verbs: a non-ASCII byte elsewhere is still noise.
+        assert_eq!(parse("MAILX ö".as_bytes()), Err(ParseError::NotAscii));
+        assert_eq!(parse("VRFY jöran".as_bytes()), Err(ParseError::NotAscii));
     }
 
     #[test]

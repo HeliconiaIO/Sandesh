@@ -334,6 +334,77 @@ async fn an_application_can_be_restarted_over_the_same_database() {
     handle.await.expect("task").expect("stops cleanly");
 }
 
+/// Messages the search index lacks are indexed in the background at startup.
+///
+/// Migration 0010 empties the index to rebuild it, so on the first start after
+/// upgrading every message is in this state. Search is correct without the
+/// index, so a missing repair task would show up only as every text search
+/// scanning forever; this asserts the task runs and drains it.
+#[tokio::test(flavor = "multi_thread")]
+async fn a_restart_reindexes_messages_the_search_index_lacks() {
+    use sandesh_core::{MessageId, SearchIndex};
+    use sandesh_storage::{Database, SqliteSearchIndex};
+
+    let dir = tempfile::tempdir().expect("temporary directory");
+    let config = config(&dir);
+
+    let app = Application::start(config.clone()).await.expect("starts");
+    let smtp = app.addresses().smtp.expect("bound");
+    let shutdown = app.shutdown_token();
+    let handle = tokio::spawn(app.run());
+    let mut client = common::SmtpClient::connect(smtp).await;
+    client.expect("220").await;
+    client.send("EHLO test.local").await;
+    client.read_multiline().await;
+    client.send("MAIL FROM:<s@test.local>").await;
+    client.expect("250").await;
+    client.send("RCPT TO:<dev@example.test>").await;
+    client.expect("250").await;
+    client.send("DATA").await;
+    client.expect("354").await;
+    client.send("Subject: reindex me\r\n\r\nBody.\r\n.").await;
+    let accepted = client.expect("250").await;
+    client.send("QUIT").await;
+    shutdown.cancel();
+    handle.await.expect("task").expect("stops cleanly");
+
+    // `250 2.6.0 Message accepted: <id>` names the stored message.
+    let digits: String = accepted
+        .rsplit(' ')
+        .next()
+        .expect("an id")
+        .trim()
+        .replace('-', "");
+    let mut bytes = [0_u8; 16];
+    for (index, byte) in bytes.iter_mut().enumerate() {
+        *byte = u8::from_str_radix(&digits[index * 2..index * 2 + 2], 16).expect("hex id");
+    }
+    let id = MessageId::from_bytes(bytes);
+
+    // Take the message out of the index, as the migration does.
+    let database = Database::open(&config.database_path).await.expect("open");
+    let index = SqliteSearchIndex::new(database.pool().clone());
+    let ids = vec![id];
+    index.remove(ids[0]).await.expect("remove from index");
+    assert_eq!(index.unindexed(10).await.expect("unindexed"), ids);
+
+    let app = Application::start(config).await.expect("restarts");
+    let shutdown = app.shutdown_token();
+    let handle = tokio::spawn(app.run());
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
+    while !index.unindexed(10).await.expect("unindexed").is_empty() {
+        assert!(
+            std::time::Instant::now() < deadline,
+            "the startup repair task never reindexed the message"
+        );
+        tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+    }
+
+    shutdown.cancel();
+    handle.await.expect("task").expect("stops cleanly");
+    database.close().await;
+}
+
 /// A minimal HTTP client for tests that build an `Application` directly.
 struct Probe {
     http: std::net::SocketAddr,
