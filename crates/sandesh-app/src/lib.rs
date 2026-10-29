@@ -289,6 +289,53 @@ impl Repositories {
     }
 }
 
+/// Indexes, in the background, every stored message the search index lacks.
+///
+/// Run once per workspace database as it opens. In steady state there is
+/// nothing to do and this is one query; after migration 0010 emptied the index,
+/// it rebuilds every row under the text-only rule. Batches keep each pass's memory bounded, and a failure stops the task
+/// rather than spinning: search stays correct without the index, only slower.
+pub(crate) fn spawn_index_repair(pool: &sqlx_pool::Pool, repos: &Repositories) {
+    const BATCH: u32 = 200;
+    let index = sandesh_storage::SqliteSearchIndex::new(pool.clone());
+    let messages = Arc::clone(&repos.messages);
+    let search_index = Arc::clone(&repos.search_index);
+    tokio::spawn(async move {
+        let mut repaired = 0usize;
+        loop {
+            let batch = match index.unindexed(BATCH).await {
+                Ok(batch) => batch,
+                Err(error) => {
+                    tracing::warn!(%error, "search index repair stopped");
+                    return;
+                }
+            };
+            if batch.is_empty() {
+                break;
+            }
+            for id in batch {
+                let message = match messages.get(id).await {
+                    Ok(Some(message)) => message,
+                    // Deleted between listing and loading: nothing to index.
+                    Ok(None) => continue,
+                    Err(error) => {
+                        tracing::warn!(%error, "search index repair stopped");
+                        return;
+                    }
+                };
+                if let Err(error) = search_index.index(&message).await {
+                    tracing::warn!(%error, "search index repair stopped");
+                    return;
+                }
+                repaired += 1;
+            }
+        }
+        if repaired > 0 {
+            tracing::info!(repaired, "search index repaired");
+        }
+    });
+}
+
 /// The domain services, built once over the ports.
 ///
 /// Grouped so that `Application::start` names one value rather than three, and
@@ -911,6 +958,7 @@ impl Application {
         // 4. Default repositories over the pool.
         let pool = database.pool().clone();
         let default_repos = Repositories::new(&pool, &blobs, recorder);
+        spawn_index_repair(&pool, &default_repos);
         let default_connections = connection_store(&config, &database);
         let default_outbox: Arc<dyn sandesh_core::OutboxStore> =
             Arc::new(sandesh_storage::SqliteOutboxStore::new(pool.clone()));

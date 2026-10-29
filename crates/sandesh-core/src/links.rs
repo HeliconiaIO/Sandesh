@@ -474,8 +474,11 @@ fn find_close_tag(haystack: &str, name: &str) -> Option<usize> {
     while i + 1 < bytes.len() {
         if bytes[i] == b'<' && bytes[i + 1] == b'/' {
             let after = &haystack[i + 2..];
-            if after.len() >= name.len()
-                && after[..name.len()].eq_ignore_ascii_case(name)
+            // `get` rather than indexing: a multi-byte character may straddle
+            // `name.len()`, and that is simply not a match.
+            if after
+                .get(..name.len())
+                .is_some_and(|head| head.eq_ignore_ascii_case(name))
                 && after[name.len()..]
                     .chars()
                     .next()
@@ -648,6 +651,14 @@ mod tests {
         assert_eq!(links[0].text.as_deref(), Some("Click here"));
         assert_eq!(links[0].host.as_deref(), Some("example.com"));
         assert_eq!(links[0].scheme.as_deref(), Some("https"));
+    }
+
+    #[test]
+    fn multibyte_character_after_close_tag_slash_is_not_a_panic() {
+        // Searching for `</a` compares one byte after `</`; `€` is three.
+        let links = extract(r#"<a href="https://example.com/a">x</€ y</a>"#);
+        assert_eq!(links.len(), 1);
+        assert_eq!(links[0].url, "https://example.com/a");
     }
 
     #[test]

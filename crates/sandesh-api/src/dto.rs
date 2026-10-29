@@ -24,7 +24,7 @@
 //! the UI.
 
 use sandesh_core::{
-    Account, Attachment, DiagnosticSeverity, EmailAddress, Mailbox, MailboxCounts, Message,
+    Account, Attachment, DiagnosticSeverity, EmailAddress, Header, Mailbox, MailboxCounts, Message,
     MessageEntry, MimePart, ParseDiagnostic, Timestamp,
 };
 use serde::{Deserialize, Serialize};
@@ -109,7 +109,14 @@ pub struct MessageSummary {
     pub id: String,
     /// Decoded `Subject`, if present.
     pub subject: Option<String>,
-    /// Envelope sender (SMTP `MAIL FROM`).
+    /// The `From:` header, decoded — what the sending application wrote,
+    /// display name included.
+    ///
+    /// Falls back to the envelope sender (SMTP `MAIL FROM`) only when the
+    /// message has no `From:` mailbox. The envelope is usually a bounce
+    /// address with no name, so preferring it would list most application mail
+    /// under an address its author never typed; it remains available from
+    /// `GET /messages/{id}/delivery`.
     pub from: Option<AddressDto>,
     /// The `To:` header, decoded.
     ///
@@ -139,11 +146,16 @@ impl MessageSummary {
         Self {
             id: message.id.to_string(),
             subject: message.subject().map(ToOwned::to_owned),
-            from: message
-                .envelope
-                .mail_from
-                .as_ref()
-                .map(AddressDto::from_core),
+            from: header_addresses(message, "From")
+                .into_iter()
+                .next()
+                .or_else(|| {
+                    message
+                        .envelope
+                        .mail_from
+                        .as_ref()
+                        .map(AddressDto::from_core)
+                }),
             to: header_addresses(message, "To"),
             received_at: rfc3339(message.received_at),
             size: message.size(),
@@ -162,15 +174,8 @@ fn header_addresses(message: &Message, name: &str) -> Vec<AddressDto> {
     message
         .parsed
         .headers_named(name)
-        .flat_map(|header| {
-            header
-                .decoded_value
-                .split(',')
-                .map(str::trim)
-                .filter(|part| !part.is_empty())
-                .map(|part| AddressDto::from_core(&EmailAddress::parse_lenient(part)))
-                .collect::<Vec<_>>()
-        })
+        .flat_map(Header::addresses)
+        .map(|address| AddressDto::from_core(&address))
         .collect()
 }
 

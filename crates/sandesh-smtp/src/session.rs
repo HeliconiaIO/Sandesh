@@ -309,6 +309,7 @@ where
                     ParseError::Empty | ParseError::UnknownCommand | ParseError::NotAscii => {
                         reply::unrecognised_command()
                     }
+                    ParseError::NeedsSmtpUtf8 => reply::address_needs_smtputf8(),
                     ParseError::Syntax(detail) => reply::syntax_error(detail),
                     ParseError::UnsupportedParameter(detail) => {
                         reply::parameter_not_implemented(detail)

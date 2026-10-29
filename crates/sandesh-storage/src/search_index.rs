@@ -38,6 +38,29 @@ impl SqliteSearchIndex {
     pub const fn new(pool: SqlitePool) -> Self {
         Self { pool }
     }
+
+    /// Up to `limit` stored messages the index has no row for.
+    ///
+    /// Delivery indexes in the same transaction as the insert, so in steady
+    /// state this is empty. Rows go missing when a migration empties the index
+    /// to rebuild it (0010 did, to drop indexed attachment binary), and until
+    /// they are rebuilt every text search declines to narrow and scans
+    /// instead. The repair task drains this.
+    ///
+    /// # Errors
+    /// [`CoreError::Storage`](sandesh_core::CoreError) if the query fails.
+    pub async fn unindexed(&self, limit: u32) -> CoreResult<Vec<MessageId>> {
+        let rows = sqlx::query(
+            "SELECT id AS message_id FROM messages
+             WHERE id NOT IN (SELECT message_id FROM messages_fts_map)
+             LIMIT ?",
+        )
+        .bind(i64::from(limit))
+        .fetch_all(&self.pool)
+        .await
+        .map_err(StorageError::from)?;
+        rows.iter().map(decode_id).collect()
+    }
 }
 
 /// The text this index stores for a message.
@@ -45,7 +68,8 @@ impl SqliteSearchIndex {
 /// Headers come from the parsed structure rather than the denormalised
 /// `messages` columns so that the index and `matches` read the same source; the
 /// body is every decoded non-multipart text part, which is what
-/// `TextField::Body` compares against.
+/// `TextField::Body` compares against — text parts only, never attachments'
+/// binary (`MimePart::is_searchable_text`).
 fn indexable(message: &Message) -> IndexedText {
     indexable_from_parts(&message.parsed, &message.raw)
 }
@@ -67,12 +91,12 @@ fn indexable_from_parts(
             .join(" ")
     };
 
-    // Every non-multipart part, **decoded** — exactly the set and the form that
+    // Every text part, **decoded** — exactly the set and the form that
     // `search::body_contains` compares against. Indexing the raw bytes instead
     // would make a base64 body index as base64 while `matches` reads it as
     // text, and the index would then miss messages it must not miss.
     let mut body = String::new();
-    for part in parsed.parts.iter().filter(|part| !part.is_multipart()) {
+    for part in parsed.parts.iter().filter(|part| part.is_searchable_text()) {
         if let Some(bytes) = sandesh_core::decoded_part_body(raw.bytes(), &part.path)
             .or_else(|| part.body_range.slice(raw.bytes()).map(<[u8]>::to_vec))
         {

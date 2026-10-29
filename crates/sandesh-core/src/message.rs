@@ -78,6 +78,38 @@ impl Header {
     pub fn name_matches(&self, name: &str) -> bool {
         self.name.eq_ignore_ascii_case(name)
     }
+
+    /// The mailboxes in an address field (`From`, `To`, `Cc`, ...).
+    ///
+    /// Parsed from `raw_value`, not `decoded_value`: decoding drops the quotes
+    /// around `"Doe, Jane"` and can surface a comma from an RFC 2047 word, so
+    /// splitting the decoded text on `,` would cut one mailbox in two. Group
+    /// syntax is flattened; an empty group such as `undisclosed-recipients:;`
+    /// yields nothing. A value that is not an address list at all falls back to
+    /// the decoded text, so a malformed field is shown rather than dropped.
+    #[must_use]
+    pub fn addresses(&self) -> Vec<EmailAddress> {
+        let parsed = mail_parser::HeaderForm::Addresses.parse(&self.raw_value);
+        let Some(list) = parsed.value().as_address() else {
+            return self
+                .decoded_value
+                .split(',')
+                .map(str::trim)
+                .filter(|part| !part.is_empty())
+                .map(EmailAddress::parse_lenient)
+                .collect();
+        };
+        list.mailboxes()
+            .filter_map(|mailbox| {
+                let address = EmailAddress::parse_lenient(mailbox.address()?);
+                let name = mailbox
+                    .name()
+                    .map(str::trim)
+                    .filter(|name| !name.is_empty());
+                Some(address.with_display_name(name.map(ToOwned::to_owned)))
+            })
+            .collect()
+    }
 }
 
 /// The SMTP envelope, distinct from the message headers.

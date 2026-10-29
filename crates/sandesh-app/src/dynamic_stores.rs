@@ -213,6 +213,7 @@ impl DynamicStorageRouter {
 
         let pool = db.pool().clone();
         let repos = Repositories::new(&pool, &blobs, self.recorder.clone());
+        crate::spawn_index_repair(&pool, &repos);
 
         let connections: Option<Arc<dyn ConnectionStore>> = self.tracing_enabled.then(|| {
             Arc::new(SqliteConnectionStore::new(pool.clone())) as Arc<dyn ConnectionStore>
@@ -631,6 +632,37 @@ impl MessageStore for DynamicMessageStore {
             .repos
             .messages
             .entries_for_message(message_id)
+            .await
+    }
+    async fn page_entries(
+        &self,
+        mailboxes: &[MailboxId],
+        before_uid: Option<u32>,
+        limit: usize,
+    ) -> CoreResult<sandesh_core::EntryPage> {
+        // One workspace — the normal case — answers the whole page in SQL. A
+        // scope spanning workspaces has no single database to ask, so it falls
+        // back to the scan, which routes each mailbox through `list_entries`.
+        let mut workspace: Option<Option<String>> = None;
+        for &mailbox_id in mailboxes {
+            let ws = self.router.workspace_for_mailbox(mailbox_id).await;
+            match &workspace {
+                None => workspace = Some(ws),
+                Some(seen) if *seen == ws => {}
+                Some(_) => {
+                    return sandesh_core::page_entries_by_scan(self, mailboxes, before_uid, limit)
+                        .await;
+                }
+            }
+        }
+        let bundle = match workspace.flatten() {
+            Some(ws_id) => self.router.bundle_for(&ws_id).await?,
+            None => self.router.active_bundle().await?,
+        };
+        bundle
+            .repos
+            .messages
+            .page_entries(mailboxes, before_uid, limit)
             .await
     }
     async fn copy_entry(

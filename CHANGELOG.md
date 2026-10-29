@@ -11,9 +11,16 @@ how versions are chosen and published.
 
 - Releases now include a signed SLSA provenance file (`sandesh-<version>.intoto.jsonl`)
   next to the binaries, verifiable without GitHub's attestation API.
+- `SANDESH_MAX_MESSAGE_SIZE` sets the largest message SMTP accepts and IMAP `APPEND`
+  takes. It was fixed at 25 MiB with no way to raise it.
 
 ### Changed
 
+- **The message list shows the `From:` header as the sender**, display name included.
+  It showed the SMTP envelope sender, usually a bounce address with no name. The
+  envelope is still available from `GET /messages/{id}/delivery`.
+- A non-ASCII address in `MAIL FROM` or `RCPT TO` is refused with `553 5.6.7`,
+  saying SMTPUTF8 is not supported, instead of `500 Unrecognised command`.
 - **Minimum supported Rust is now 1.98** (was 1.94), required by `mail-parser` 1.0.
 
 ### Fixed
@@ -21,6 +28,20 @@ how versions are chosen and published.
 - Some malformed nested multipart messages (for example a `multipart/digest` or
   `multipart/report` with broken inner parts) were stored as unparsed, with no MIME
   tree. Upgrading `mail-parser` from 0.11 to 1.0 lets them parse.
+- **The search index no longer indexes attachments' binary content.** PDFs, images
+  and archives were indexed as text, making the index about four times the size of
+  the mail it covered (4.1 GB of a 5.2 GB database at 100,000 messages; 432 MB
+  after this fix). On first start after upgrading, the index is rebuilt in the
+  background (about 100 s for 100,000 messages); search is correct but slower until
+  it finishes. The database file does not shrink, but the freed space is reused.
+- **The message list reads one page, not the whole mailbox.** Each page loaded and
+  sorted every message, taking 2.6 s and about 170 MB at 100,000 messages; it now
+  takes about 100 ms.
+- Paging through `GET /search` returned the first page again as the second.
+- A display name containing a comma, such as `"Doe, Jane" <jane@example.test>`, was
+  split into two recipients, one of them a bogus `Doe`.
+- A received HTML email containing `</` followed by a non-ASCII character made
+  `GET /messages/{id}/links` fail.
 
 ## [0.1.0] - 2026-10-23
 

@@ -587,3 +587,27 @@ async fn unsupported_parameters_are_refused_with_504() {
     let reply = client.send("MAIL FROM:<a@example.test> SMTPUTF8").await;
     assert_eq!(code_of(&reply), 504, "{reply}");
 }
+
+/// What nodemailer sends for `to: "jöran@app.test"` against a server that does
+/// not advertise SMTPUTF8. The reply must name the real problem, and the
+/// session must survive it so the client can carry on with other recipients.
+#[tokio::test]
+async fn a_non_ascii_address_is_refused_with_553_not_500() {
+    let server = TestServer::start().await;
+    let mut client = server.connect().await;
+    client.send("EHLO localhost").await;
+
+    let reply = client.send("MAIL FROM:<jöran@example.test>").await;
+    assert_eq!(code_of(&reply), 553, "{reply}");
+    assert!(
+        reply.contains("5.6.7") && reply.contains("SMTPUTF8"),
+        "{reply}"
+    );
+
+    let reply = client.send("MAIL FROM:<a@example.test>").await;
+    assert_eq!(code_of(&reply), 250, "{reply}");
+    let reply = client.send("RCPT TO:<jöran@example.test>").await;
+    assert_eq!(code_of(&reply), 553, "{reply}");
+    let reply = client.send("RCPT TO:<dev@example.test>").await;
+    assert_eq!(code_of(&reply), 250, "{reply}");
+}

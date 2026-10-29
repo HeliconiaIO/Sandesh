@@ -105,10 +105,10 @@ pub use mime::{
 pub use parser::{PARSE_VERSION, decoded_part_body, parse};
 pub use ports::{
     AccountStore, BlobStore, ConnectionStore, CredentialVerifier, DELIVERY_DURATION_BUCKETS_US,
-    DeliveryStore, DeliveryTally, DurationHistogram, FlagChangeStatus, FlagOutcome, FlagUpdate,
-    InsertedMessage, MailboxCounts, MailboxStore, MessageStore, MetricsSnapshot, MetricsSource,
-    NewMessage, NewPlacement, NullSearchIndex, OutboxStore, ProtocolTally, RuleStore,
-    SearchCandidates, SearchIndex, WorkspaceStore,
+    DeliveryStore, DeliveryTally, DurationHistogram, EntryPage, FlagChangeStatus, FlagOutcome,
+    FlagUpdate, InsertedMessage, MailboxCounts, MailboxStore, MessageStore, MetricsSnapshot,
+    MetricsSource, NewMessage, NewPlacement, NullSearchIndex, OutboxStore, ProtocolTally,
+    RuleStore, SearchCandidates, SearchIndex, WorkspaceStore, page_entries_by_scan,
 };
 pub use routing::UnknownRecipient;
 pub use rules::{Rule, RuleAction, RuleCondition, RuleMatch, RuleSet};

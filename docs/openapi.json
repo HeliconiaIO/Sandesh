@@ -4717,7 +4717,7 @@
               },
               {
                 "$ref": "#/components/schemas/AddressDto",
-                "description": "Envelope sender (SMTP `MAIL FROM`)."
+                "description": "The `From:` header, decoded — what the sending application wrote,\ndisplay name included.\n\nFalls back to the envelope sender (SMTP `MAIL FROM`) only when the\nmessage has no `From:` mailbox. The envelope is usually a bounce\naddress with no name, so preferring it would list most application mail\nunder an address its author never typed; it remains available from\n`GET /messages/{id}/delivery`."
               }
             ]
           },

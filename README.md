@@ -255,6 +255,7 @@ directory is created:
 | `SANDESH_API_TLS` | Serve the API over HTTPS, reusing the mail listeners' certificate | `false` |
 | `SANDESH_TRACING_ENABLED` | Record a protocol transcript per connection | `true` |
 | `SANDESH_TRACE_RETENTION` | Connection records kept before the oldest are evicted | `1000` |
+| `SANDESH_MAX_MESSAGE_SIZE` | Largest message, in bytes, that SMTP accepts and IMAP `APPEND` takes. Attachments grow by about a third when base64-encoded, so a 20 MB file needs roughly 27 MB | `26214400` (25 MiB) |
 
 A TLS mode with no usable certificate fails startup rather than falling back to plaintext.
 

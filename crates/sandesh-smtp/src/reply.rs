@@ -49,6 +49,8 @@ pub enum Code {
     TransactionFailed = 554,
     /// Message exceeds the size limit.
     MessageTooLarge = 552,
+    /// Requested action not taken: mailbox name not allowed.
+    MailboxNameNotAllowed = 553,
 
     // --- RFC 4954 (AUTH) and RFC 3207 (STARTTLS) ---
     /// Server challenge during a SASL exchange.
@@ -323,6 +325,21 @@ pub fn message_accepted(id: &str) -> Reply {
 #[must_use]
 pub fn unrecognised_command() -> Reply {
     Reply::enhanced(Code::SyntaxError, "5.5.1", "Unrecognised command")
+}
+
+/// `553` for a `MAIL`/`RCPT` carrying a non-ASCII address.
+///
+/// RFC 6531 §3.7.4.1 names `553 5.6.7` for a non-ASCII address the server will
+/// not accept. Without it the line falls through to `500 Unrecognised command`,
+/// which tells the developer their mail library sent nonsense when it sent a
+/// perfectly good internationalised address.
+#[must_use]
+pub fn address_needs_smtputf8() -> Reply {
+    Reply::enhanced(
+        Code::MailboxNameNotAllowed,
+        "5.6.7",
+        "Non-ASCII addresses need SMTPUTF8, which Sandesh does not support yet",
+    )
 }
 
 /// `501` malformed arguments.

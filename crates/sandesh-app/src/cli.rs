@@ -105,6 +105,7 @@ Sandesh is configured by environment variables:
   SANDESH_IMAP_ADDR       IMAP listener        (default: 127.0.0.1:1143).
   SANDESH_HTTP_ADDR       HTTP API and web UI  (default: 127.0.0.1:8080).
   SANDESH_LOG             Log filter           (default: info).
+  SANDESH_MAX_MESSAGE_SIZE  Largest message in bytes (default: 26214400, 25 MiB).
 
 Everything binds to loopback and authentication is off by default; see README.md
 for the full set, including TLS and API authentication.

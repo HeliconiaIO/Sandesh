@@ -219,8 +219,14 @@ impl Visit for FieldCollector {
         if field.name() == "message" {
             let _ = write!(self.message, "{value:?}");
             // `Debug` on a string quotes it; the message reads better without.
-            if self.message.starts_with('"') && self.message.ends_with('"') {
-                self.message = self.message[1..self.message.len() - 1].to_owned();
+            // Strip the pair, not each end: a message that is a lone `"` both
+            // starts and ends with one, and slicing `[1..len - 1]` would panic.
+            if let Some(inner) = self
+                .message
+                .strip_prefix('"')
+                .and_then(|rest| rest.strip_suffix('"'))
+            {
+                self.message = inner.to_owned();
             }
         } else {
             if !self.fields.is_empty() {
@@ -319,6 +325,25 @@ mod tests {
         let recent = buffer.recent(10, None, None);
         assert_eq!(recent[0].message, "line 7", "the oldest is evicted first");
         assert_eq!(recent[2].message, "line 9");
+    }
+
+    /// Every crate's events pass through the layer, so a message it cannot
+    /// handle would panic inside whichever call site happened to log it.
+    #[test]
+    fn a_message_that_is_a_lone_quote_is_recorded_not_a_panic() {
+        use tracing_subscriber::layer::SubscriberExt;
+
+        let buffer = std::sync::Arc::new(LogBuffer::new());
+        let subscriber =
+            tracing_subscriber::registry().with(LogLayer::new(std::sync::Arc::clone(&buffer)));
+        tracing::subscriber::with_default(subscriber, || {
+            tracing::info!("\"");
+            tracing::info!("\"quoted\"");
+        });
+
+        let recent = buffer.recent(10, None, None);
+        let messages: Vec<&str> = recent.iter().map(|l| l.message.as_str()).collect();
+        assert_eq!(messages, vec!["\"", "quoted"]);
     }
 
     #[test]

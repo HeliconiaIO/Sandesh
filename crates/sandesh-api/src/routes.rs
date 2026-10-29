@@ -1186,46 +1186,34 @@ pub async fn list_messages(
     // reads only that mailbox's entries rather than everything.
     let mailboxes = scope_mailboxes(&state, &page).await?;
 
-    // Collect entries per message so a message placed in several in-scope
-    // mailboxes appears once, carrying every placement.
     let mut names = BTreeMap::new();
-    let mut per_message: BTreeMap<MessageId, Vec<MessageEntry>> = BTreeMap::new();
-    for mailbox_id in mailboxes {
-        let Some(mailbox) = state.mailboxes.get(mailbox_id).await? else {
-            continue;
-        };
-        names.insert(mailbox_id, mailbox.name.as_str().to_owned());
-
-        for entry in state.messages.list_entries(mailbox_id).await? {
-            // The cursor walks *backwards*, because this list is newest-first
-            // and UIDs ascend with age (§2 of API_DESIGN). Reading it forwards
-            // — `uid > after` — returns the rows the client has already seen
-            // and then reports the list exhausted, which truncated every
-            // mailbox at two pages regardless of its size.
-            if after.is_some_and(|uid| entry.uid.get() >= uid) {
-                continue;
-            }
-            per_message.entry(entry.message_id).or_default().push(entry);
+    for &mailbox_id in &mailboxes {
+        if let Some(mailbox) = state.mailboxes.get(mailbox_id).await? {
+            names.insert(mailbox_id, mailbox.name.as_str().to_owned());
         }
     }
 
-    let total = per_message.len() as u64;
-
-    // Newest first: a developer watching mail arrive wants the last thing sent.
-    let mut ordered: Vec<_> = per_message.into_iter().collect();
-    ordered.sort_by(|a, b| {
-        let newest = |entries: &Vec<MessageEntry>| {
-            entries
-                .iter()
-                .map(|entry| entry.added_at)
-                .max()
-                .unwrap_or_else(|| sandesh_core::Timestamp::from_micros(0))
-        };
-        newest(&b.1).cmp(&newest(&a.1))
-    });
-
-    let has_more = ordered.len() > limit as usize;
-    ordered.truncate(limit as usize);
+    // Grouping (a message placed in several in-scope mailboxes appears once,
+    // carrying every placement), newest-first ordering and the limit all happen
+    // in the store, which answers in SQL. Doing it here meant reading every
+    // placement on every page: 2.6 s and ~170 MB per page at 100,000 messages.
+    //
+    // The cursor walks *backwards*, because this list is newest-first and UIDs
+    // ascend with age (§2 of API_DESIGN). Reading it forwards — `uid > after` —
+    // returns the rows the client has already seen and then reports the list
+    // exhausted, which truncated every mailbox at two pages regardless of its
+    // size.
+    let known: Vec<MailboxId> = mailboxes
+        .into_iter()
+        .filter(|mailbox_id| names.contains_key(mailbox_id))
+        .collect();
+    let page = state
+        .messages
+        .page_entries(&known, after, limit as usize)
+        .await?;
+    let total = page.total;
+    let has_more = page.has_more;
+    let ordered = page.messages;
 
     let mut items = Vec::with_capacity(ordered.len());
     for (message_id, entries) in ordered {
@@ -1541,7 +1529,10 @@ pub async fn search_messages(
         names.insert(mailbox_id, mailbox.name.as_str().to_owned());
 
         for entry in state.messages.list_entries(mailbox_id).await? {
-            if after.is_some_and(|uid| entry.uid.get() <= uid) {
+            // Backwards, as in `list_messages`: results are newest-first and
+            // the cursor is the lowest UID served. Skipping `<= cursor` served
+            // page 1 again as page 2.
+            if after.is_some_and(|uid| entry.uid.get() >= uid) {
                 continue;
             }
 
@@ -1591,12 +1582,14 @@ pub async fn search_messages(
         ));
     }
 
+    // The lowest UID the last item carries, for the reason `list_messages`
+    // gives: a message in several mailboxes carries several UIDs.
     let next_cursor = has_more
         .then(|| {
             items
                 .last()
-                .and_then(|item| item.entries.first())
-                .map(|entry| entry.uid.to_string())
+                .and_then(|item| item.entries.iter().map(|entry| entry.uid).min())
+                .map(|uid| uid.to_string())
         })
         .flatten();
 
