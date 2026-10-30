@@ -17,7 +17,7 @@ What is deliberately *not* re-asserted: the protocol semantics. Those are the
 subject of several thousand tests against the same code. The question here is
 only whether this artifact, as a user would download it, starts and works.
 
-Usage:  scripts/binary_smoke.py dist/sandesh-0.1.0-x86_64-unknown-linux-musl.tar.gz
+Usage:  scripts/binary_smoke.py dist/sandesh-0.2.0-x86_64-unknown-linux-musl.tar.gz
 """
 import hashlib
 import json

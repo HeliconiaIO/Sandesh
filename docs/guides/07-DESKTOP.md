@@ -1,8 +1,8 @@
 # Sandesh Desktop App — Tray Icon & Native Notifications
 
 **What you need**: One of:
-- `sandesh-desktop_0.1.0_amd64.deb` — for Debian/Ubuntu with a desktop environment
-- `Sandesh-Desktop_0.1.0_amd64.AppImage` — portable, runs on any Linux distro with a desktop
+- `sandesh-desktop_0.2.0_amd64.deb` — for Debian/Ubuntu with a desktop environment
+- `Sandesh-Desktop_0.2.0_amd64.AppImage` — portable, runs on any Linux distro with a desktop
 
 **Prerequisites**: A Linux desktop environment (GNOME, KDE, XFCE, etc.) with GTK 3 support. This is **not** the headless server — it is a GUI application that runs in your system tray.
 
@@ -23,17 +23,17 @@
 ### Option A — AppImage (any distro, no install needed)
 ```bash
 # Make the AppImage executable
-chmod +x Sandesh-Desktop_0.1.0_amd64.AppImage
+chmod +x Sandesh-Desktop_0.2.0_amd64.AppImage
 
 # Run it
-./Sandesh-Desktop_0.1.0_amd64.AppImage
+./Sandesh-Desktop_0.2.0_amd64.AppImage
 ```
 
 > AppImages are self-contained. They do not install anything into your system. Just download, make executable, and run.
 
 ### Option B — `.deb` Package (Debian / Ubuntu desktop)
 ```bash
-sudo apt install ./sandesh-desktop_0.1.0_amd64.deb
+sudo apt install ./sandesh-desktop_0.2.0_amd64.deb
 ```
 
 After install, find **Sandesh** in your application launcher or run `sandesh-desktop` from the terminal.
@@ -162,7 +162,7 @@ The embedded server provides the full REST API at `http://localhost:8080/api/v1`
 ```bash
 # Health check
 curl http://localhost:8080/api/v1/health
-# {"status":"ok","version":"0.1.0"}
+# {"status":"ok","version":"0.2.0"}
 
 # List messages
 curl -s http://localhost:8080/api/v1/messages | jq .

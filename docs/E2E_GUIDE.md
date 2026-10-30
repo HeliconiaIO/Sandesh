@@ -11,9 +11,9 @@ Find the guide that matches what you have:
 | I have... | Guide |
 | :--- | :--- |
 | A Docker or Podman image (`sandesh.tar` or `sandesh:latest`) | [01-DOCKER.md](guides/01-DOCKER.md) |
-| A `.tar.gz` file for Linux (e.g. `sandesh-0.1.0-x86_64-unknown-linux-musl.tar.gz`) | [02-BINARY-LINUX.md](guides/02-BINARY-LINUX.md) |
-| A `.tar.gz` file for macOS (e.g. `sandesh-0.1.0-aarch64-apple-darwin.tar.gz`) | [03-BINARY-MACOS.md](guides/03-BINARY-MACOS.md) |
-| A `.zip` file for Windows (e.g. `sandesh-0.1.0-x86_64-pc-windows-msvc.zip`) | [04-BINARY-WINDOWS.md](guides/04-BINARY-WINDOWS.md) |
+| A `.tar.gz` file for Linux (e.g. `sandesh-0.2.0-x86_64-unknown-linux-musl.tar.gz`) | [02-BINARY-LINUX.md](guides/02-BINARY-LINUX.md) |
+| A `.tar.gz` file for macOS (e.g. `sandesh-0.2.0-aarch64-apple-darwin.tar.gz`) | [03-BINARY-MACOS.md](guides/03-BINARY-MACOS.md) |
+| A `.zip` file for Windows (e.g. `sandesh-0.2.0-x86_64-pc-windows-msvc.zip`) | [04-BINARY-WINDOWS.md](guides/04-BINARY-WINDOWS.md) |
 | A `.deb` file (Debian / Ubuntu) | [05-DEBIAN-UBUNTU.md](guides/05-DEBIAN-UBUNTU.md) |
 | A `.rpm` file (Fedora / RHEL / CentOS / Rocky Linux) | [06-RHEL-FEDORA.md](guides/06-RHEL-FEDORA.md) |
 | A desktop app (AppImage or `.deb` GUI app with tray icon) | [07-DESKTOP.md](guides/07-DESKTOP.md) |
@@ -63,7 +63,7 @@ with smtplib.SMTP("localhost", 1025) as s:
 
 ```bash
 curl http://localhost:8080/api/v1/health
-# {"status":"ok","version":"0.1.0"}
+# {"status":"ok","version":"0.2.0"}
 
 # Docker: use port 1080
 curl http://localhost:1080/api/v1/health

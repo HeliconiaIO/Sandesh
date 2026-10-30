@@ -1,8 +1,8 @@
 # Sandesh on macOS — Static Binary
 
 **What you need**: A `.tar.gz` archive, for example:
-- `sandesh-0.1.0-aarch64-apple-darwin.tar.gz` — Apple Silicon (M1, M2, M3, M4)
-- `sandesh-0.1.0-x86_64-apple-darwin.tar.gz` — Intel Mac
+- `sandesh-0.2.0-aarch64-apple-darwin.tar.gz` — Apple Silicon (M1, M2, M3, M4)
+- `sandesh-0.2.0-x86_64-apple-darwin.tar.gz` — Intel Mac
 
 **Prerequisites**: Nothing extra. Sandesh is a self-contained binary with no dependencies. Runs on macOS 12 Monterey and later.
 
@@ -22,10 +22,10 @@ uname -m
 
 ```bash
 # Verify checksum (optional but recommended)
-shasum -a 256 -c sandesh-0.1.0-aarch64-apple-darwin.tar.gz.sha256
+shasum -a 256 -c sandesh-0.2.0-aarch64-apple-darwin.tar.gz.sha256
 
 # Extract
-tar -xzf sandesh-0.1.0-aarch64-apple-darwin.tar.gz
+tar -xzf sandesh-0.2.0-aarch64-apple-darwin.tar.gz
 
 # Make executable (should already be set, but just in case)
 chmod +x sandesh
@@ -57,7 +57,7 @@ xattr -dr com.apple.quarantine ./sandesh
 
 Expected output:
 ```
-Sandesh 0.1.0 starting...
+Sandesh 0.2.0 starting...
 SMTP:      127.0.0.1:1025
 IMAP:      127.0.0.1:1143
 POP3:      127.0.0.1:1110
@@ -200,7 +200,7 @@ Sandesh provides a full REST API for automation and test assertions:
 ```bash
 # Health check
 curl http://localhost:8080/api/v1/health
-# {"status":"ok","version":"0.1.0"}
+# {"status":"ok","version":"0.2.0"}
 
 # List received messages
 curl -s http://localhost:8080/api/v1/messages | jq .

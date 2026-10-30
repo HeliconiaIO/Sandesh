@@ -1,8 +1,8 @@
 # Sandesh on Linux — Static Binary
 
 **What you need**: A `.tar.gz` archive, for example:
-- `sandesh-0.1.0-x86_64-unknown-linux-musl.tar.gz` (most Linux desktops/servers)
-- `sandesh-0.1.0-aarch64-unknown-linux-musl.tar.gz` (ARM64, e.g. Raspberry Pi, AWS Graviton)
+- `sandesh-0.2.0-x86_64-unknown-linux-musl.tar.gz` (most Linux desktops/servers)
+- `sandesh-0.2.0-aarch64-unknown-linux-musl.tar.gz` (ARM64, e.g. Raspberry Pi, AWS Graviton)
 
 **Prerequisites**: None. This binary is fully self-contained — no runtime, no libraries, no `apt install` required. It runs on Ubuntu, Debian, Fedora, Alpine, Arch, CentOS, RHEL, and any other Linux distro.
 
@@ -12,13 +12,13 @@
 
 ```bash
 # Verify the checksum (the .sha256 file must be in the same folder)
-sha256sum -c sandesh-0.1.0-x86_64-unknown-linux-musl.tar.gz.sha256
+sha256sum -c sandesh-0.2.0-x86_64-unknown-linux-musl.tar.gz.sha256
 
 # If verification passes:
-# sandesh-0.1.0-x86_64-unknown-linux-musl.tar.gz: OK
+# sandesh-0.2.0-x86_64-unknown-linux-musl.tar.gz: OK
 
 # Extract
-tar -xzf sandesh-0.1.0-x86_64-unknown-linux-musl.tar.gz
+tar -xzf sandesh-0.2.0-x86_64-unknown-linux-musl.tar.gz
 
 # Confirm the binary is there
 ls -lh sandesh
@@ -36,7 +36,7 @@ ls -lh sandesh
 
 You should see output like:
 ```
-Sandesh 0.1.0 starting...
+Sandesh 0.2.0 starting...
 SMTP:      127.0.0.1:1025
 IMAP:      127.0.0.1:1143
 POP3:      127.0.0.1:1110

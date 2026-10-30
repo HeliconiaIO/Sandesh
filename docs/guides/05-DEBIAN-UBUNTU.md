@@ -1,6 +1,6 @@
 # Sandesh on Debian / Ubuntu — `.deb` Package
 
-**What you need**: A `.deb` file — e.g. `sandesh_0.1.0_amd64.deb`
+**What you need**: A `.deb` file — e.g. `sandesh_0.2.0_amd64.deb`
 
 **Prerequisites**: A Debian- or Ubuntu-based system with `apt` or `dpkg`. No other dependencies — the binary is statically linked and installs with zero library requirements.
 
@@ -13,14 +13,14 @@
 
 ### Recommended (via `apt`):
 ```bash
-sudo apt install ./sandesh_0.1.0_amd64.deb
+sudo apt install ./sandesh_0.2.0_amd64.deb
 ```
 
 `apt` confirms there are no unresolvable dependencies (there are none — the package is self-contained) and runs the maintainer scripts to set up the service user and directory.
 
 ### Alternative (via `dpkg`, works offline):
 ```bash
-sudo dpkg -i sandesh_0.1.0_amd64.deb
+sudo dpkg -i sandesh_0.2.0_amd64.deb
 ```
 
 ---
