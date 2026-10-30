@@ -17,7 +17,11 @@ async fn pop3_greeting_and_capa() {
     assert!(capa_lines.iter().any(|l| l == "USER"));
     assert!(capa_lines.iter().any(|l| l == "UIDL"));
     assert!(capa_lines.iter().any(|l| l == "TOP"));
-    assert!(capa_lines.iter().any(|l| l.starts_with("IMPLEMENTATION")));
+    let implementation = format!("IMPLEMENTATION Sandesh {}", env!("CARGO_PKG_VERSION"));
+    assert!(
+        capa_lines.contains(&implementation),
+        "CAPA must announce the running version: {capa_lines:?}"
+    );
 
     let quit_resp = client.cmd("QUIT").await;
     assert!(quit_resp.starts_with("+OK"));

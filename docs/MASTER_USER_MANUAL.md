@@ -1,6 +1,6 @@
 # Sandesh — Master User Manual
 
-> **Version:** 0.1.0 | **Audience:** Application developers, QA engineers, anyone testing mail flows locally.
+> **Version:** 0.2.0 | **Audience:** Application developers, QA engineers, anyone testing mail flows locally.
 
 ---
 
@@ -107,7 +107,7 @@
 **Step 1 — Pull the image**
 
 ```bash
-docker pull ghcr.io/heliconiaio/sandesh:latest   # or a version tag, e.g. :0.1.0
+docker pull ghcr.io/heliconiaio/sandesh:latest   # or a version tag, e.g. :0.2.0
 ```
 
 Offline, load a shared archive instead (`docker load -i sandesh.tar`) and use `sandesh:latest` as
@@ -141,7 +141,7 @@ docker run -d \
 ```bash
 docker ps | grep sandesh
 curl http://localhost:1080/api/v1/health
-# Expected: {"status":"ok","version":"0.1.0"}
+# Expected: {"status":"ok","version":"0.2.0"}
 ```
 
 **Step 4 — Open the Web UI:** `http://localhost:1080`
@@ -164,8 +164,8 @@ curl http://localhost:1080/api/v1/health
 **Step 1 — Verify & extract**
 
 ```bash
-sha256sum -c sandesh-0.1.0-x86_64-unknown-linux-musl.tar.gz.sha256
-tar -xzf sandesh-0.1.0-x86_64-unknown-linux-musl.tar.gz
+sha256sum -c sandesh-0.2.0-x86_64-unknown-linux-musl.tar.gz.sha256
+tar -xzf sandesh-0.2.0-x86_64-unknown-linux-musl.tar.gz
 ls -lh sandesh
 ```
 
@@ -177,7 +177,7 @@ ls -lh sandesh
 
 Expected output:
 ```
-Sandesh 0.1.0 starting...
+Sandesh 0.2.0 starting...
 SMTP:      127.0.0.1:1025
 IMAP:      127.0.0.1:1143
 POP3:      127.0.0.1:1110
@@ -213,8 +213,8 @@ uname -m
 **Step 2 — Verify & extract**
 
 ```bash
-shasum -a 256 -c sandesh-0.1.0-aarch64-apple-darwin.tar.gz.sha256
-tar -xzf sandesh-0.1.0-aarch64-apple-darwin.tar.gz
+shasum -a 256 -c sandesh-0.2.0-aarch64-apple-darwin.tar.gz.sha256
+tar -xzf sandesh-0.2.0-aarch64-apple-darwin.tar.gz
 chmod +x sandesh
 ```
 
@@ -276,7 +276,7 @@ Keep this window open — closing it stops Sandesh.
 **Step 1 — Install**
 
 ```bash
-sudo apt install ./sandesh_0.1.0_amd64.deb
+sudo apt install ./sandesh_0.2.0_amd64.deb
 ```
 
 **What gets installed:**
@@ -323,7 +323,7 @@ sudo apt purge sandesh     # removes mail too
 **Step 1 — Install**
 
 ```bash
-sudo dnf install ./sandesh-0.1.0-1.fc41.x86_64.rpm
+sudo dnf install ./sandesh-0.2.0-1.fc41.x86_64.rpm
 ```
 
 **Step 2 — Start**
@@ -351,20 +351,20 @@ sudo systemctl enable --now sandesh
 
 ![Linux System Tray: Sandesh tray icon context menu with Open and Quit](images/setup-desktop-tray.png)
 
-**What you need:** `Sandesh-Desktop_0.1.0_amd64.AppImage` or `sandesh-desktop_0.1.0_amd64.deb`.  
+**What you need:** `Sandesh-Desktop_0.2.0_amd64.AppImage` or `sandesh-desktop_0.2.0_amd64.deb`.  
 **Prerequisites:** Linux desktop (GNOME, KDE, XFCE) with GTK 3.
 
 **Step 1 — Install**
 
 *AppImage (any distro, no install):*
 ```bash
-chmod +x Sandesh-Desktop_0.1.0_amd64.AppImage
-./Sandesh-Desktop_0.1.0_amd64.AppImage
+chmod +x Sandesh-Desktop_0.2.0_amd64.AppImage
+./Sandesh-Desktop_0.2.0_amd64.AppImage
 ```
 
 *`.deb` package:*
 ```bash
-sudo apt install ./sandesh-desktop_0.1.0_amd64.deb
+sudo apt install ./sandesh-desktop_0.2.0_amd64.deb
 sandesh-desktop    # or find "Sandesh" in your app launcher
 ```
 
@@ -450,7 +450,7 @@ Switch to your browser. The message appears **instantly** in the message list �
 
 ```bash
 curl http://localhost:8080/api/v1/health
-# {"status":"ok","version":"0.1.0"}
+# {"status":"ok","version":"0.2.0"}
 
 curl -s http://localhost:8080/api/v1/messages | jq .
 ```
@@ -1368,7 +1368,7 @@ $env:SANDESH_SMTP_ADDR = "127.0.0.1:2025"
 
 ---
 
-*End of Sandesh Master User Manual — v0.1.0*
+*End of Sandesh Master User Manual — v0.2.0*
 
 ---
 

@@ -1,6 +1,6 @@
 # Sandesh on Windows — Static Binary
 
-**What you need**: A `.zip` file — `sandesh-0.1.0-x86_64-pc-windows-msvc.zip`
+**What you need**: A `.zip` file — `sandesh-0.2.0-x86_64-pc-windows-msvc.zip`
 
 **Prerequisites**: Nothing extra — Sandesh is a standalone `.exe`. Works on Windows 10 and Windows 11 (64-bit).
 
@@ -8,7 +8,7 @@
 
 ## Step 1 — Extract the Zip
 
-1. Right-click `sandesh-0.1.0-x86_64-pc-windows-msvc.zip`
+1. Right-click `sandesh-0.2.0-x86_64-pc-windows-msvc.zip`
 2. Select **Extract All...**
 3. Choose a folder, e.g. `C:\sandesh\`
 
@@ -41,7 +41,7 @@ cd C:\sandesh
 
 Expected output:
 ```
-Sandesh 0.1.0 starting...
+Sandesh 0.2.0 starting...
 SMTP:      127.0.0.1:1025
 IMAP:      127.0.0.1:1143
 POP3:      127.0.0.1:1110
@@ -191,7 +191,7 @@ You can query Sandesh directly from PowerShell using `Invoke-RestMethod`:
 Invoke-RestMethod http://localhost:8080/api/v1/health
 # status  version
 # ------  -------
-# ok      0.1.0
+# ok      0.2.0
 
 # List messages
 (Invoke-RestMethod http://localhost:8080/api/v1/messages).items | Select-Object id, subject, from, to

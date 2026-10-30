@@ -446,15 +446,19 @@ where
     }
 
     async fn handle_capa(&mut self) -> Result<Flow, ProtocolError> {
-        let mut out = String::from(
+        // The version comes from the workspace manifest, not a literal: a
+        // literal here announced 0.1.0 to clients whatever the release.
+        let mut out = String::from(concat!(
             "+OK Capability list follows\r\n\
              USER\r\n\
              RESP-CODES\r\n\
              PIPELINING\r\n\
              UIDL\r\n\
              TOP\r\n\
-             IMPLEMENTATION Sandesh 0.1.0\r\n",
-        );
+             IMPLEMENTATION Sandesh ",
+            env!("CARGO_PKG_VERSION"),
+            "\r\n",
+        ));
 
         if self.config.start_tls && !self.encrypted {
             out.push_str("STLS\r\n");

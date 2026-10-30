@@ -1,6 +1,6 @@
 # Sandesh on RHEL / Fedora / CentOS / Rocky Linux — `.rpm` Package
 
-**What you need**: A `.rpm` file — e.g. `sandesh-0.1.0-1.fc41.x86_64.rpm`
+**What you need**: A `.rpm` file — e.g. `sandesh-0.2.0-1.fc41.x86_64.rpm`
 
 **Prerequisites**: A Fedora, RHEL, CentOS, Rocky Linux, or AlmaLinux system with `dnf` or `rpm`. No other dependencies — the binary is statically linked and installs with zero library requirements.
 
@@ -13,14 +13,14 @@
 
 ### Recommended (via `dnf`):
 ```bash
-sudo dnf install ./sandesh-0.1.0-1.fc41.x86_64.rpm
+sudo dnf install ./sandesh-0.2.0-1.fc41.x86_64.rpm
 ```
 
 `dnf` verifies there are no unresolved dependencies and runs the pre/post install scripts.
 
 ### Alternative (via `rpm`, works offline):
 ```bash
-sudo rpm -ivh sandesh-0.1.0-1.fc41.x86_64.rpm
+sudo rpm -ivh sandesh-0.2.0-1.fc41.x86_64.rpm
 ```
 
 ---

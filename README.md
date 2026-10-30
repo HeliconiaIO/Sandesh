@@ -18,7 +18,7 @@ modern developer console — over SMTP, IMAP and POP3, backed by one shared mail
 
 ## Status
 
-**Usable today, version 0.1.0.** One binary starts SMTP, IMAP, POP3, an HTTP API, a live event
+**Usable today, version 0.2.0.** One binary starts SMTP, IMAP, POP3, an HTTP API, a live event
 stream and the developer console, over one shared mail state. It ships as static binaries for
 Linux, macOS and Windows, a container image, and `.deb`/`.rpm` packages.
 
@@ -107,10 +107,10 @@ a checksum beside it:
 
 ```bash
 # Pick your platform's archive from the release page, then verify and unpack it.
-sha256sum -c sandesh-0.1.0-x86_64-unknown-linux-musl.tar.gz.sha256
+sha256sum -c sandesh-0.2.0-x86_64-unknown-linux-musl.tar.gz.sha256
 # or check everything you downloaded against the release's combined list:
 sha256sum -c SHA256SUMS --ignore-missing
-tar xzf sandesh-0.1.0-x86_64-unknown-linux-musl.tar.gz
+tar xzf sandesh-0.2.0-x86_64-unknown-linux-musl.tar.gz
 ./sandesh --version   # confirm what you downloaded
 ./sandesh             # start it
 ```
@@ -141,11 +141,11 @@ python3 scripts/binary_smoke.py dist/sandesh-*.tar.gz           # verify + run i
 ### Debian and Ubuntu
 
 ```bash
-sudo apt install ./sandesh_0.1.0_amd64.deb
+sudo apt install ./sandesh_0.2.0_amd64.deb
 sudo systemctl enable --now sandesh
 
 # Or, with no network at all — the package needs no dependency resolution:
-sudo dpkg -i sandesh_0.1.0_amd64.deb
+sudo dpkg -i sandesh_0.2.0_amd64.deb
 ```
 
 Installs the **headless server** and a systemd unit running as an unprivileged `sandesh` user, with
@@ -163,7 +163,7 @@ python3 scripts/deb_smoke.py      # install and run it in a Debian container
 ### Fedora, RHEL and openSUSE
 
 ```bash
-sudo rpm -i sandesh-0.1.0-1.fc41.x86_64.rpm
+sudo rpm -i sandesh-0.2.0-1.fc41.x86_64.rpm
 sudo systemctl enable --now sandesh
 ```
 
@@ -188,7 +188,7 @@ built first. Without `web/dist`, Sandesh still runs and the API works, and the b
 explaining that the UI was not built. Sandesh prints where it is listening and starts serving:
 
 ```text
-Sandesh 0.1.0 starting...
+Sandesh 0.2.0 starting...
 SMTP:      127.0.0.1:1025
 IMAP:      127.0.0.1:1143
 POP3:      127.0.0.1:1110
@@ -207,7 +207,7 @@ docker run -d -p 1025:1025 -p 1080:1080 -p 1143:1143 -p 1110:1110 \
 ```
 
 The official image is multi-arch (`linux/amd64` and `linux/arm64`) and published by every release;
-pin a version tag such as `:0.1.0` in CI. Inside the container the HTTP port is **1080**, not 8080.
+pin a version tag such as `:0.2.0` in CI. Inside the container the HTTP port is **1080**, not 8080.
 To build it yourself instead: `docker build -t sandesh .`
 
 A 20.6 MB image built `FROM scratch`: one static binary with the UI embedded, and no shell or
@@ -285,7 +285,7 @@ healthcheck still works.
 Check it is alive, and see the connection details:
 
 ```bash
-curl http://127.0.0.1:8080/api/v1/health        # {"status":"ok","version":"0.1.0"}
+curl http://127.0.0.1:8080/api/v1/health        # {"status":"ok","version":"0.2.0"}
 curl http://127.0.0.1:8080/api/v1/health/ready  # also checks the database
 curl http://127.0.0.1:8080/api/v1/info          # addresses, database location
 ```

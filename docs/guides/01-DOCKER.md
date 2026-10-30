@@ -14,7 +14,7 @@ step 1.
 docker pull ghcr.io/heliconiaio/sandesh:latest
 ```
 
-Use a version tag such as `:0.1.0` instead of `:latest` when you need a fixed version, e.g. in CI.
+Use a version tag such as `:0.2.0` instead of `:latest` when you need a fixed version, e.g. in CI.
 
 Offline, with a `.tar` someone shared: `docker load -i sandesh.tar`, then use `sandesh:latest` in
 place of the image name below.
@@ -58,7 +58,7 @@ docker ps | grep sandesh
 
 # Health check
 curl http://localhost:1080/api/v1/health
-# Expected: {"status":"ok","version":"0.1.0"}
+# Expected: {"status":"ok","version":"0.2.0"}
 ```
 
 ---

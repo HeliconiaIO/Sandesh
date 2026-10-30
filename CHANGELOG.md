@@ -7,6 +7,8 @@ how versions are chosen and published.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-30
+
 ### Added
 
 - Releases now include a signed SLSA provenance file (`sandesh-<version>.intoto.jsonl`)
@@ -25,6 +27,8 @@ how versions are chosen and published.
 
 ### Fixed
 
+- POP3 `CAPA` announced `IMPLEMENTATION Sandesh 0.1.0` whatever the version, and the
+  desktop app's version was set separately from the rest. Both now come from `Cargo.toml`.
 - Some malformed nested multipart messages (for example a `multipart/digest` or
   `multipart/report` with broken inner parts) were stored as unparsed, with no MIME
   tree. Upgrading `mail-parser` from 0.11 to 1.0 lets them parse.
@@ -81,5 +85,6 @@ The first public release.
   the `mail-parser` dependency; Sandesh now stores such a message as unparseable instead.
 - Dependencies are checked against RustSec and npm advisories and a licence allowlist in CI.
 
-[Unreleased]: https://github.com/HeliconiaIO/Sandesh/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/HeliconiaIO/Sandesh/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/HeliconiaIO/Sandesh/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/HeliconiaIO/Sandesh/releases/tag/v0.1.0

@@ -11,11 +11,11 @@ Pick the guide that matches how you received Sandesh:
 | Guide | What you have | Best for |
 | :--- | :--- | :--- |
 | [01-DOCKER.md](01-DOCKER.md) | A Docker / Podman image (e.g. `sandesh.tar` or `sandesh:latest`) | Developers, CI environments, shared team setups |
-| [02-BINARY-LINUX.md](02-BINARY-LINUX.md) | A `.tar.gz` file (e.g. `sandesh-0.1.0-x86_64-unknown-linux-musl.tar.gz`) | Any Linux machine, no installation needed |
-| [03-BINARY-MACOS.md](03-BINARY-MACOS.md) | A `.tar.gz` file (e.g. `sandesh-0.1.0-aarch64-apple-darwin.tar.gz`) | macOS (Apple Silicon or Intel) |
-| [04-BINARY-WINDOWS.md](04-BINARY-WINDOWS.md) | A `.zip` file (e.g. `sandesh-0.1.0-x86_64-pc-windows-msvc.zip`) | Windows 10 / 11 |
-| [05-DEBIAN-UBUNTU.md](05-DEBIAN-UBUNTU.md) | A `.deb` file (e.g. `sandesh_0.1.0_amd64.deb`) | Debian, Ubuntu, or any `apt`-based system |
-| [06-RHEL-FEDORA.md](06-RHEL-FEDORA.md) | A `.rpm` file (e.g. `sandesh-0.1.0-1.fc41.x86_64.rpm`) | Fedora, RHEL, CentOS, Rocky Linux, AlmaLinux |
+| [02-BINARY-LINUX.md](02-BINARY-LINUX.md) | A `.tar.gz` file (e.g. `sandesh-0.2.0-x86_64-unknown-linux-musl.tar.gz`) | Any Linux machine, no installation needed |
+| [03-BINARY-MACOS.md](03-BINARY-MACOS.md) | A `.tar.gz` file (e.g. `sandesh-0.2.0-aarch64-apple-darwin.tar.gz`) | macOS (Apple Silicon or Intel) |
+| [04-BINARY-WINDOWS.md](04-BINARY-WINDOWS.md) | A `.zip` file (e.g. `sandesh-0.2.0-x86_64-pc-windows-msvc.zip`) | Windows 10 / 11 |
+| [05-DEBIAN-UBUNTU.md](05-DEBIAN-UBUNTU.md) | A `.deb` file (e.g. `sandesh_0.2.0_amd64.deb`) | Debian, Ubuntu, or any `apt`-based system |
+| [06-RHEL-FEDORA.md](06-RHEL-FEDORA.md) | A `.rpm` file (e.g. `sandesh-0.2.0-1.fc41.x86_64.rpm`) | Fedora, RHEL, CentOS, Rocky Linux, AlmaLinux |
 | [07-DESKTOP.md](07-DESKTOP.md) | A desktop app (AppImage / `.deb` GUI) | Developers who want a system tray app + native notifications |
 
 ---

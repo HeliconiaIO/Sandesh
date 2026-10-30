@@ -3610,7 +3610,7 @@ dependencies = [
 
 [[package]]
 name = "sandesh"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "base64 0.23.1",
  "futures-util",
@@ -3632,7 +3632,7 @@ dependencies = [
 
 [[package]]
 name = "sandesh-api"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "async-trait",
  "axum",
@@ -3665,7 +3665,7 @@ dependencies = [
 
 [[package]]
 name = "sandesh-app"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "async-trait",
  "futures-util",
@@ -3692,14 +3692,14 @@ dependencies = [
 
 [[package]]
 name = "sandesh-config"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "thiserror 2.0.20",
 ]
 
 [[package]]
 name = "sandesh-core"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "async-trait",
  "hex",
@@ -3714,7 +3714,7 @@ dependencies = [
 
 [[package]]
 name = "sandesh-desktop"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "notify-rust",
  "sandesh-app",
@@ -3730,7 +3730,7 @@ dependencies = [
 
 [[package]]
 name = "sandesh-events"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "async-trait",
  "sandesh-core",
@@ -3743,7 +3743,7 @@ dependencies = [
 
 [[package]]
 name = "sandesh-imap"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "base64 0.23.1",
  "rustls",
@@ -3762,7 +3762,7 @@ dependencies = [
 
 [[package]]
 name = "sandesh-pop3"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "base64 0.23.1",
  "rustls",
@@ -3780,7 +3780,7 @@ dependencies = [
 
 [[package]]
 name = "sandesh-proto"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "argon2",
  "async-trait",
@@ -3800,7 +3800,7 @@ dependencies = [
 
 [[package]]
 name = "sandesh-smtp"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "async-trait",
  "base64 0.23.1",
@@ -3820,7 +3820,7 @@ dependencies = [
 
 [[package]]
 name = "sandesh-storage"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "async-trait",
  "hex",
@@ -3838,7 +3838,7 @@ dependencies = [
 
 [[package]]
 name = "sandesh-webhook"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "async-trait",
  "http-body-util",
@@ -6246,7 +6246,7 @@ dependencies = [
 
 [[package]]
 name = "xtask"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "sandesh-api",
 ]
