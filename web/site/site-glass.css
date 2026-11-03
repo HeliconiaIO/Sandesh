@@ -1,0 +1,234 @@
+/*
+ * Glass look, layered over site.css.
+ *
+ * Scoped under `html.glass` (set in index.html). Removing that class restores
+ * the classic paper-and-ink look that site.css defines on its own.
+ */
+
+html.glass {
+  --deep: #061217;
+  --deep-2: #0a1d22;
+  --glass: rgba(214, 240, 232, 0.055);
+  --glass-strong: rgba(214, 240, 232, 0.09);
+  --edge: rgba(214, 245, 235, 0.14);
+  --edge-bright: rgba(232, 255, 246, 0.32);
+  --blur: 18px;
+  --radius-panel: 18px;
+  --on-lime: #0b1a17;
+
+  /* Re-point the classic tokens for a dark field. */
+  --paper: var(--deep);
+  --paper-bright: #eef6f1;
+  --ink: #e6f0eb;
+  --copy: #a9bdb5;
+  --muted: #8ea49b;
+  --line: rgba(214, 245, 235, 0.12);
+  --teal: #72d9c9;
+
+  scrollbar-color: #3c5852 var(--deep);
+}
+
+html.glass body {
+  background: var(--deep);
+  color: var(--ink);
+}
+
+/* Ambient light behind the glass: three slow fields, fixed to the viewport. */
+html.glass body::before {
+  content: '';
+  position: fixed;
+  inset: -20vmax;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(38vmax 30vmax at 18% 14%, rgba(47, 179, 166, 0.30), transparent 70%),
+    radial-gradient(34vmax 26vmax at 86% 38%, rgba(216, 239, 115, 0.13), transparent 70%),
+    radial-gradient(44vmax 34vmax at 40% 92%, rgba(20, 110, 130, 0.30), transparent 72%),
+    linear-gradient(180deg, var(--deep) 0%, var(--deep-2) 100%);
+  animation: glass-drift 38s ease-in-out infinite alternate;
+}
+
+@keyframes glass-drift {
+  from { transform: translate3d(0, 0, 0) rotate(0deg); }
+  to { transform: translate3d(-3vmax, 2vmax, 0) rotate(6deg); }
+}
+
+html.glass ::-webkit-scrollbar-track { background: var(--deep); }
+html.glass ::-webkit-scrollbar-thumb { border-color: var(--deep); background: #3c5852; }
+
+/* The shared glass surface. */
+html.glass .masthead,
+html.glass .hero__readout,
+html.glass .steps,
+html.glass .protocol-grid,
+html.glass .capability-list,
+html.glass .resource-grid,
+html.glass .download-list,
+html.glass .boundary-list,
+html.glass .command,
+html.glass .feature-list {
+  border: 1px solid var(--edge);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(140%);
+  backdrop-filter: blur(var(--blur)) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 var(--edge-bright),
+    0 24px 60px -30px rgba(0, 0, 0, 0.7);
+}
+
+html.glass .steps,
+html.glass .protocol-grid,
+html.glass .capability-list,
+html.glass .resource-grid,
+html.glass .download-list,
+html.glass .boundary-list,
+html.glass .command,
+html.glass .feature-list {
+  overflow: hidden;
+  border-radius: var(--radius-panel);
+}
+
+/* Header: a sticky frosted bar instead of a solid band. */
+html.glass .masthead {
+  position: sticky;
+  top: 0;
+  border-width: 0 0 1px;
+  background: rgba(6, 18, 23, 0.55);
+  box-shadow: inset 0 -1px 0 var(--edge);
+}
+
+html.glass .site-nav__github,
+html.glass .menu-toggle,
+html.glass .button--quiet,
+html.glass .button--outline,
+html.glass .copy-button {
+  border-color: var(--edge-bright);
+  border-radius: 999px;
+  background: var(--glass);
+}
+
+/* Section bands become transparent so the light reads through. */
+html.glass .hero,
+html.glass .signals,
+html.glass .local-boundary,
+html.glass .quickstart,
+html.glass .footer {
+  background: transparent;
+  border-color: var(--line);
+}
+
+html.glass .footer { border-top: 1px solid var(--line); }
+
+/* Buttons. */
+html.glass .button { border-radius: 999px; }
+html.glass .button--lime,
+html.glass .snippet-tab[aria-selected='true'],
+html.glass .skip-link { color: var(--on-lime); }
+html.glass .button--lime { box-shadow: 0 0 0 6px rgba(216, 239, 115, 0.10), 0 10px 30px -10px rgba(216, 239, 115, 0.55); }
+html.glass .button--dark {
+  border-color: var(--edge-bright);
+  background: var(--glass-strong);
+  color: var(--paper-bright);
+}
+html.glass .button--dark:hover { border-color: var(--lime); background: var(--glass-strong); color: var(--lime); }
+html.glass .snippet-tab { border-radius: 999px; }
+
+/* Signature: the readout is a thick glass slab with a pointer-tracked sheen. */
+html.glass .hero__readout {
+  position: relative;
+  overflow: hidden;
+  padding: 20px 22px 18px;
+  border-radius: 22px;
+  background: var(--glass-strong);
+}
+
+html.glass .hero__readout::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    220px circle at var(--sheen-x, 30%) var(--sheen-y, 0%),
+    rgba(232, 255, 246, 0.16),
+    transparent 70%
+  );
+  transition: background-position 200ms ease;
+}
+
+/* Screenshots sit in glass frames. */
+html.glass .hero__screen img,
+html.glass .inspection__screen img,
+html.glass .signals__screen img {
+  border: 1px solid var(--edge-bright);
+  border-radius: 14px;
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.85), 0 0 0 6px var(--glass);
+}
+
+html.glass .hero__screen img { border-bottom: 1px solid var(--edge-bright); }
+html.glass .hero { padding-bottom: 56px; }
+
+/* Panel interiors: padding so content clears the rounded edges. */
+html.glass .step,
+html.glass .step + .step { padding: 24px 26px 26px; }
+html.glass .protocol-item,
+html.glass .protocol-item + .protocol-item { padding: 22px 22px 22px; }
+html.glass .protocol-item:hover,
+html.glass .download-list a:hover { background: var(--glass-strong); }
+html.glass .capability-list { padding-inline: 26px; column-gap: 40px; }
+html.glass .capability:last-child,
+html.glass .capability:nth-last-child(2) { border-bottom: 0; }
+html.glass .resource-group,
+html.glass .resource-group + .resource-group { padding: 22px 22px 14px; }
+html.glass .boundary-list { padding-inline: 22px; border-color: var(--edge); }
+html.glass .boundary-item { border-color: var(--line); }
+html.glass .boundary-item:last-child { border-bottom: 0; }
+html.glass .feature-list { padding-inline: 18px; }
+html.glass .feature-list li:first-child { border-top: 0; }
+
+/* Muted greys tuned for the dark field. */
+html.glass .step__index span,
+html.glass .protocol-item__name span,
+html.glass .protocols__note,
+html.glass .resource-group small,
+html.glass .download-list small,
+html.glass .downloads__note,
+html.glass .inspection__screen figcaption { color: var(--muted); }
+
+/* Quickstart keeps its lime identity as a tint, not a slab. */
+html.glass .quickstart__inner {
+  padding: 48px;
+  border: 1px solid rgba(216, 239, 115, 0.28);
+  border-radius: 26px;
+  background: linear-gradient(135deg, rgba(216, 239, 115, 0.14), rgba(216, 239, 115, 0.03));
+  -webkit-backdrop-filter: blur(var(--blur));
+  backdrop-filter: blur(var(--blur));
+}
+html.glass .quickstart .eyebrow { color: var(--lime); }
+html.glass .quickstart__copy > p:not(.eyebrow) { color: var(--copy); }
+html.glass .text-link--light { color: var(--lime); }
+html.glass .command { background: rgba(4, 12, 15, 0.6); }
+
+@media (max-width: 680px) {
+  html.glass .quickstart__inner { padding: 26px 18px; }
+  html.glass .capability-list { padding-inline: 18px; }
+  html.glass .step + .step,
+  html.glass .protocol-item + .protocol-item,
+  html.glass .resource-group + .resource-group { border-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.glass body::before { animation: none; }
+}
+
+/* Without backdrop-filter, glass falls back to a solid tint that stays legible. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html.glass .masthead,
+  html.glass .hero__readout,
+  html.glass .steps,
+  html.glass .protocol-grid,
+  html.glass .capability-list,
+  html.glass .resource-grid,
+  html.glass .download-list,
+  html.glass .boundary-list,
+  html.glass .feature-list { background: rgba(14, 34, 38, 0.92); }
+}

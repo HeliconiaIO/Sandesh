@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en" class="glass">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#061217" />
+    <meta
+      name="description"
+      content="Sandesh is a local-first mail development environment. Deliver to localhost, then inspect messages, protocol traces, and delivery outcomes."
+    />
+    <title>Sandesh | Local mail, made inspectable</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="masthead" id="top">
+      <div class="masthead__inner">
+        <a class="brand" href="#top" aria-label="Sandesh home">
+          <img data-image="mark" alt="" width="34" height="34" />
+          <span>Sandesh</span>
+        </a>
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-nav"
+          aria-label="Open navigation"
+        >
+          Menu
+        </button>
+        <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+          <a href="#workflow">How it works</a>
+          <a href="#protocols">Protocols</a>
+          <a href="#inspection">Inspection</a>
+          <a href="#guides">Guides</a>
+          <a href="#downloads">Downloads</a>
+          <a class="site-nav__github" href="https://github.com/HeliconiaIO/Sandesh">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__inner">
+          <div class="hero__intro">
+            <div class="hero__copy" data-reveal>
+              <p class="eyebrow"><span class="status-light"></span>Local mail development</p>
+              <h1 id="hero-title">Sandesh</h1>
+              <p class="hero__claim">Mail, made inspectable.</p>
+              <p class="hero__description">
+                Run a complete mail environment on your own machine. Point your app at
+                localhost, send a message, and follow it from delivery to raw bytes.
+              </p>
+              <div class="hero__actions">
+                <a class="button button--lime" href="https://github.com/HeliconiaIO/Sandesh/releases">
+                  Get Sandesh <span aria-hidden="true">&gt;</span>
+                </a>
+                <a class="button button--quiet" href="#workflow">See how it works</a>
+              </div>
+              <p class="hero__note">Open source <span aria-hidden="true">/</span> Apache-2.0 <span aria-hidden="true">/</span> Runs locally</p>
+            </div>
+            <div class="hero__readout" aria-label="Default protocol addresses" data-reveal>
+              <p class="readout__label">Ready for a test message</p>
+              <button class="protocol-row" type="button" data-copy-value="127.0.0.1:1025" aria-label="Copy SMTP address 127.0.0.1:1025">
+                <span>SMTP</span><code>127.0.0.1:1025</code><span class="protocol-row__action" data-copy-feedback>Copy</span>
+              </button>
+              <button class="protocol-row" type="button" data-copy-value="127.0.0.1:1143" aria-label="Copy IMAP address 127.0.0.1:1143">
+                <span>IMAP</span><code>127.0.0.1:1143</code><span class="protocol-row__action" data-copy-feedback>Copy</span>
+              </button>
+              <button class="protocol-row" type="button" data-copy-value="127.0.0.1:1110" aria-label="Copy POP3 address 127.0.0.1:1110">
+                <span>POP3</span><code>127.0.0.1:1110</code><span class="protocol-row__action" data-copy-feedback>Copy</span>
+              </button>
+              <p class="readout__foot"><span class="status-light"></span>Loopback by default</p>
+            </div>
+          </div>
+
+          <figure class="hero__screen" data-reveal>
+            <img
+              data-image="overview"
+              alt="Sandesh developer console with local mail endpoints, delivery status, and recent messages"
+              width="2160"
+              height="1350"
+              fetchpriority="high"
+            />
+            <figcaption>
+              <span>One local stack</span>
+              <span>SMTP / IMAP / POP3 / HTTP</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="workflow section" id="workflow" aria-labelledby="workflow-title">
+        <div class="section__heading" data-reveal>
+          <p class="eyebrow eyebrow--ink">From send to signal</p>
+          <h2 id="workflow-title">Your app sends.<br />Sandesh shows what happened.</h2>
+          <p class="section__lede">
+            No external mailbox or provider account to prepare. Start the server,
+            keep your app pointed at localhost, and inspect each delivery as it lands.
+          </p>
+        </div>
+        <div class="steps" aria-label="Three-step workflow">
+          <article class="step" data-reveal>
+            <p class="step__index">01 <span>Start</span></p>
+            <h3>Run one binary</h3>
+            <p>Sandesh starts the mail protocols, HTTP API, event stream, and developer console together.</p>
+          </article>
+          <article class="step" data-reveal>
+            <p class="step__index">02 <span>Connect</span></p>
+            <h3>Use localhost</h3>
+            <p>Point your test app at SMTP. The default listeners bind to loopback on your machine.</p>
+          </article>
+          <article class="step" data-reveal>
+            <p class="step__index">03 <span>Inspect</span></p>
+            <h3>Follow the bytes</h3>
+            <p>Read headers, MIME parts, attachments, delivery outcomes, and the protocol conversation.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="protocols section" id="protocols" aria-labelledby="protocols-title">
+        <div class="section__heading section__heading--row" data-reveal>
+          <div>
+            <p class="eyebrow eyebrow--ink">One local state</p>
+            <h2 id="protocols-title">Four ways into the same mailbox.</h2>
+          </div>
+          <p class="section__lede">
+            Test the protocol your app actually uses, then inspect the same delivered
+            message from the console or API.
+          </p>
+        </div>
+        <div class="protocol-grid" data-reveal>
+          <a class="protocol-item" href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/SMTP_DESIGN.md">
+            <span class="protocol-item__name">SMTP <span>1025 default</span></span>
+            <h3>Send and diagnose</h3>
+            <p>Exercise SMTP transactions, CHUNKING, fault injection, and per-recipient delivery records.</p>
+            <span class="protocol-item__link">SMTP details <span aria-hidden="true">&gt;</span></span>
+          </a>
+          <a class="protocol-item" href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/IMAP_DESIGN.md">
+            <span class="protocol-item__name">IMAP <span>9051</span></span>
+            <h3>Sync with real clients</h3>
+            <p>UIDPLUS, MOVE, IDLE, CONDSTORE, ESEARCH, and mailbox flags over one shared state.</p>
+            <span class="protocol-item__link">IMAP details <span aria-hidden="true">&gt;</span></span>
+          </a>
+          <a class="protocol-item" href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/PROTOCOL_CAPABILITIES.md">
+            <span class="protocol-item__name">POP3 <span>1939</span></span>
+            <h3>Check retrieval flows</h3>
+            <p>Test UIDL and TOP behavior against messages also visible through IMAP and the API.</p>
+            <span class="protocol-item__link">POP3 capabilities <span aria-hidden="true">&gt;</span></span>
+          </a>
+          <a class="protocol-item" href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/API_DESIGN.md">
+            <span class="protocol-item__name">HTTP <span>REST + SSE</span></span>
+            <h3>Automate the test loop</h3>
+            <p>Send, search, watch live events, query traces, and connect your own test tooling.</p>
+            <span class="protocol-item__link">API details <span aria-hidden="true">&gt;</span></span>
+          </a>
+        </div>
+        <p class="protocols__note">All listener ports are configurable and shown in the console.</p>
+      </section>
+
+      <section class="inspection section" id="inspection" aria-labelledby="inspection-title">
+        <div class="inspection__copy" data-reveal>
+          <p class="eyebrow eyebrow--ink">Message inspection</p>
+          <h2 id="inspection-title">Every view leads back to the original.</h2>
+          <p>
+            Preview the message, inspect ordered headers, follow the MIME tree, or
+            search the raw source. Attachments, links, and delivery details stay close
+            to the message they explain.
+          </p>
+          <ul class="feature-list">
+            <li>Sandboxed HTML preview</li>
+            <li>MIME parts linked to their exact source bytes</li>
+            <li>Received hops and authentication headers parsed, never verified</li>
+          </ul>
+          <a class="text-link" href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/MASTER_USER_MANUAL.md">
+            Read the user manual <span aria-hidden="true">&gt;</span>
+          </a>
+        </div>
+        <figure class="inspection__screen" data-reveal>
+          <img
+            data-image="inspector"
+            alt="Message inspector showing headers, MIME, links, raw source, attachments, and delivery tabs"
+            width="2160"
+            height="1350"
+            loading="lazy"
+          />
+          <figcaption>Preview · Headers · MIME · Links · Raw · Attachments · Delivery</figcaption>
+        </figure>
+      </section>
+
+      <section class="signals" aria-labelledby="signals-title">
+        <div class="signals__inner">
+          <div class="signals__intro" data-reveal>
+            <p class="eyebrow"><span class="status-light"></span>Connection history</p>
+            <h2 id="signals-title">When a client gets stuck, see the conversation.</h2>
+            <p>
+              Per-connection transcripts cover SMTP, IMAP, and POP3. Credentials are
+              redacted and message bodies are elided at capture.
+            </p>
+            <a class="button button--outline" href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/PROTOCOL_CAPABILITIES.md">
+              Explore protocol support
+            </a>
+          </div>
+          <figure class="signals__screen" data-reveal>
+            <img
+              data-image="traces"
+              alt="Protocol traces screen with live and historical SMTP, IMAP, and POP3 connections"
+              width="2160"
+              height="1350"
+              loading="lazy"
+            />
+            <figcaption>Live and historical protocol traces</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="local-boundary" aria-labelledby="local-boundary-title">
+        <div class="local-boundary__inner">
+          <div class="local-boundary__heading" data-reveal>
+            <p class="eyebrow"><span class="status-light"></span>Built for local development</p>
+            <h2 id="local-boundary-title">Your test mail stays in your environment.</h2>
+            <p>Sandesh is a development tool, not a hosted inbox. Its defaults keep the test loop close to your app and under your control.</p>
+          </div>
+          <div class="boundary-list" data-reveal>
+            <article class="boundary-item">
+              <span>NETWORK</span>
+              <div><h3>Loopback by default</h3><p>Listeners bind to your own machine unless you deliberately configure another address.</p></div>
+            </article>
+            <article class="boundary-item">
+              <span>STORAGE</span>
+              <div><h3>Local data files</h3><p>SQLite state and message blobs live in the data directory you choose.</p></div>
+            </article>
+            <article class="boundary-item">
+              <span>CONTENT</span>
+              <div><h3>Inspectable, not executed</h3><p>Email HTML is sandboxed. Extracted links are displayed but never fetched by Sandesh.</p></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="capabilities section" aria-labelledby="capabilities-title">
+        <div class="section__heading section__heading--row">
+          <div>
+            <p class="eyebrow eyebrow--ink">A working mail environment</p>
+            <h2 id="capabilities-title">Built for the whole test loop.</h2>
+          </div>
+          <p class="section__lede">
+            Capture is only the start. Keep debugging, replaying, and integrating
+            against the same local state.
+          </p>
+        </div>
+        <div class="capability-list" data-reveal>
+          <article class="capability">
+            <span class="capability__mark">SMTP</span>
+            <div><h3>Exercise real clients</h3><p>SMTP, IMAP, and POP3 share mail state with the REST API and live event stream.</p></div>
+          </article>
+          <article class="capability">
+            <span class="capability__mark">REPLAY</span>
+            <div><h3>Make failures reproducible</h3><p>Replay stored messages, inject SMTP faults, and import or export a corpus as mbox.</p></div>
+          </article>
+          <article class="capability">
+            <span class="capability__mark">HOOKS</span>
+            <div><h3>Test what happens next</h3><p>Configure delivery webhooks, inspect the retry outbox, and apply message rules.</p></div>
+          </article>
+          <article class="capability">
+            <span class="capability__mark">LOCAL</span>
+            <div><h3>Keep development data close</h3><p>Messages, blobs, and settings stay on your machine unless you deliberately move them.</p></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="quickstart" aria-labelledby="quickstart-title">
+        <div class="quickstart__inner">
+          <div class="quickstart__copy" data-reveal>
+            <p class="eyebrow">Start locally</p>
+            <h2 id="quickstart-title">A mail server for your next test run.</h2>
+            <p>Start Sandesh, then point your app at <code>127.0.0.1:1025</code>. Choose a container or application example.</p>
+            <a class="text-link text-link--light" href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/E2E_GUIDE.md">
+              See all setup options <span aria-hidden="true">&gt;</span>
+            </a>
+          </div>
+          <div class="command" data-reveal>
+            <div class="snippet-tabs" role="tablist" aria-label="Choose a setup example">
+              <button class="snippet-tab" id="tab-docker" type="button" role="tab" aria-selected="true" aria-controls="quickstart-panel" tabindex="0" data-snippet="docker">Docker</button>
+              <button class="snippet-tab" id="tab-python" type="button" role="tab" aria-selected="false" aria-controls="quickstart-panel" tabindex="-1" data-snippet="python">Python</button>
+              <button class="snippet-tab" id="tab-node" type="button" role="tab" aria-selected="false" aria-controls="quickstart-panel" tabindex="-1" data-snippet="node">Node.js</button>
+            </div>
+            <div class="command__topline"><span data-snippet-title>Docker</span><span>localhost</span></div>
+            <pre id="quickstart-panel" role="tabpanel" aria-labelledby="tab-docker" tabindex="0"><code id="quickstart-command">docker run -d \
+  -p 1025:1025 -p 1080:1080 \
+  -p 1143:1143 -p 1110:1110 \
+  -v sandesh-data:/data \
+  ghcr.io/heliconiaio/sandesh:latest</code></pre>
+            <button class="copy-button" type="button" data-copy-command>Copy example</button>
+            <span class="copy-status" aria-live="polite"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="resources section" id="guides" aria-labelledby="guides-title">
+        <div class="section__heading section__heading--row" data-reveal>
+          <div>
+            <p class="eyebrow eyebrow--ink">Keep going</p>
+            <h2 id="guides-title">Find the guide for your next step.</h2>
+          </div>
+          <p class="section__lede">
+            Install instructions, working integration examples, and protocol details
+            maintained alongside the project.
+          </p>
+        </div>
+
+        <div class="resource-grid" data-reveal>
+          <section class="resource-group" aria-labelledby="resource-install-title">
+            <h3 id="resource-install-title">Install &amp; run</h3>
+            <ul>
+              <li><a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/guides/01-DOCKER.md"><span><strong>Docker &amp; Podman</strong><small>Persistent local container</small></span><span aria-hidden="true">&gt;</span></a></li>
+              <li><a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/guides/02-BINARY-LINUX.md"><span><strong>Linux binary</strong><small>Static archive, no installer</small></span><span aria-hidden="true">&gt;</span></a></li>
+              <li><a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/guides/03-BINARY-MACOS.md"><span><strong>macOS</strong><small>Apple silicon and Intel</small></span><span aria-hidden="true">&gt;</span></a></li>
+              <li><a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/guides/04-BINARY-WINDOWS.md"><span><strong>Windows</strong><small>Download and run the archive</small></span><span aria-hidden="true">&gt;</span></a></li>
+              <li><a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/guides/05-DEBIAN-UBUNTU.md"><span><strong>Debian &amp; Ubuntu</strong><small>Install the .deb package</small></span><span aria-hidden="true">&gt;</span></a></li>
+              <li><a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/guides/06-RHEL-FEDORA.md"><span><strong>RHEL &amp; Fedora</strong><small>Install the RPM package</small></span><span aria-hidden="true">&gt;</span></a></li>
+              <li><a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/guides/07-DESKTOP.md"><span><strong>Desktop app</strong><small>Tray icon and notifications</small></span><span aria-hidden="true">&gt;</span></a></li>
+            </ul>
+          </section>
+
+          <section class="resource-group" aria-labelledby="resource-integrate-title">
+            <h3 id="resource-integrate-title">Connect an app</h3>
+            <ul>
+              <li><a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/INTEGRATION_GUIDE.md"><span><strong>Integration guide</strong><small>Python, Node.js, Odoo, and more</small></span><span aria-hidden="true">&gt;</span></a></li>
+              <li><a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/E2E_GUIDE.md"><span><strong>End-to-end test</strong><small>Send, fetch, and verify a message</small></span><span aria-hidden="true">&gt;</span></a></li>
+              <li><a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/API_DESIGN.md"><span><strong>REST API</strong><small>Automation and test assertions</small></span><span aria-hidden="true">&gt;</span></a></li>
+              <li><a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/MASTER_USER_MANUAL.md"><span><strong>User manual</strong><small>Console features and workflows</small></span><span aria-hidden="true">&gt;</span></a></li>
+            </ul>
+          </section>
+
+          <section class="resource-group" aria-labelledby="resource-protocol-title">
+            <h3 id="resource-protocol-title">Explore the protocols</h3>
+            <ul>
+              <li><a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/PROTOCOL_CAPABILITIES.md"><span><strong>Capability matrix</strong><small>Compare SMTP, IMAP, POP3, and REST</small></span><span aria-hidden="true">&gt;</span></a></li>
+              <li><a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/SMTP_DESIGN.md"><span><strong>SMTP design</strong><small>Ingress, extensions, and delivery</small></span><span aria-hidden="true">&gt;</span></a></li>
+              <li><a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/IMAP_DESIGN.md"><span><strong>IMAP design</strong><small>Mailboxes, sync, and flags</small></span><span aria-hidden="true">&gt;</span></a></li>
+              <li><a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/ARCHITECTURE.md"><span><strong>Architecture</strong><small>How the services fit together</small></span><span aria-hidden="true">&gt;</span></a></li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <section class="downloads section" id="downloads" aria-labelledby="downloads-title">
+        <div class="section__heading section__heading--row" data-reveal>
+          <div>
+            <p class="eyebrow eyebrow--ink">Choose your setup</p>
+            <h2 id="downloads-title">Run it where you work.</h2>
+          </div>
+          <a class="button button--dark" href="https://github.com/HeliconiaIO/Sandesh/releases">
+            Browse releases <span aria-hidden="true">&gt;</span>
+          </a>
+        </div>
+        <div class="download-list" data-reveal>
+          <a href="https://github.com/HeliconiaIO/Sandesh/releases">
+            <span><strong>Linux</strong><small>Static binaries · Debian · RPM</small></span><span class="download-arrow" aria-hidden="true">&gt;</span>
+          </a>
+          <a href="https://github.com/HeliconiaIO/Sandesh/releases">
+            <span><strong>macOS</strong><small>Intel and Apple silicon</small></span><span class="download-arrow" aria-hidden="true">&gt;</span>
+          </a>
+          <a href="https://github.com/HeliconiaIO/Sandesh/releases">
+            <span><strong>Windows</strong><small>x86_64 release archive</small></span><span class="download-arrow" aria-hidden="true">&gt;</span>
+          </a>
+          <a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/INTEGRATION_GUIDE.md">
+            <span><strong>Integrate</strong><small>Python · Node.js · Odoo · more</small></span><span class="download-arrow" aria-hidden="true">&gt;</span>
+          </a>
+        </div>
+        <p class="downloads__note">Sandesh is a local development tool, not a hosted mailbox. Releases and checksums are published on GitHub.</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__inner">
+        <a class="brand brand--footer" href="#top">
+          <img data-image="mark" alt="" width="30" height="30" />
+          <span>Sandesh</span>
+        </a>
+        <p>Local mail. Clear answers.</p>
+        <nav aria-label="Footer navigation">
+          <a href="https://github.com/HeliconiaIO/Sandesh">GitHub</a>
+          <a href="https://github.com/HeliconiaIO/Sandesh/blob/main/docs/INTEGRATION_GUIDE.md">Docs</a>
+          <a href="https://github.com/HeliconiaIO/Sandesh/blob/main/LICENSE">Apache-2.0</a>
+        </nav>
+      </div>
+    </footer>
+    <script type="module" src="/main.ts"></script>
+  </body>
+</html>

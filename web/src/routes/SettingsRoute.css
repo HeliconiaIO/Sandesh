@@ -1135,12 +1135,6 @@
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
-/* =========================================================================
-   Account Modal Dialogs
-   ========================================================================= */
-
-@import '../features/settings/AccountModal.css';
-
 @media (max-width: 640px) {
   .settings-page {
     padding: var(--space-3);
@@ -1161,4 +1155,47 @@
   .button {
     min-height: var(--touch-target-dense, 36px);
   }
+}
+
+/* Phase 4 Design System Enhancements --------------------------------------- */
+
+/* Form inputs */
+.settings-form-input {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  color: var(--text-primary);
+  font-size: 13px;
+  outline: none;
+  transition: border-color var(--motion-fast) var(--ease),
+    box-shadow var(--motion-fast) var(--ease);
+}
+
+.settings-form-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+  outline: none;
+}
+
+/* Protocol/port pills */
+.settings-protocol-pill {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: var(--bg-overlay);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  color: var(--text-primary);
+  display: inline-block;
+}
+
+/* Section label titles */
+.settings-section-label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
 }

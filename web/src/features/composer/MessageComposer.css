@@ -3,7 +3,7 @@
 .composer-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(15, 23, 42, 0.45);
+  background-color: rgba(6, 14, 32, 0.75);
   backdrop-filter: blur(2px);
   z-index: var(--z-modal);
   display: flex;
@@ -23,14 +23,14 @@
 }
 
 .composer-dialog {
-  background: var(--bg-surface);
+  background: var(--bg-raised);
   border: var(--border-width) solid var(--border-strong);
   border-radius: var(--radius-lg);
   width: 100%;
   max-width: 700px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--border);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-strong);
   overflow: hidden;
   animation: composer-scale-in var(--motion) var(--ease);
 }
@@ -50,10 +50,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 44px;
+  height: 48px;
   padding: 0 var(--space-4);
   border-bottom: var(--border-width) solid var(--border);
-  background: var(--bg-surface);
+  background: var(--bg-raised);
 }
 
 .composer-header__title {
@@ -126,7 +126,7 @@
 
 .composer-ctrl-btn:hover {
   background: var(--bg-overlay);
-  color: var(--text-primary);
+  color: var(--accent);
 }
 
 .composer-ctrl-btn--close:hover {
@@ -139,8 +139,8 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-1) var(--space-4);
-  background: rgba(59, 130, 246, 0.1);
-  border-bottom: var(--border-width) solid rgba(59, 130, 246, 0.2);
+  background: rgba(107, 216, 203, 0.08);
+  border-bottom: var(--border-width) solid rgba(107, 216, 203, 0.15);
   font-size: var(--text-micro);
   color: var(--accent);
 }
@@ -184,7 +184,7 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
-  background: var(--accent-muted);
+  background: var(--bg-overlay);
   border-bottom: var(--border-width) solid var(--accent-border);
   font-size: var(--text-micro);
   color: var(--text-primary);
@@ -208,7 +208,7 @@
 .composer-fields {
   display: flex;
   flex-direction: column;
-  background: var(--bg-surface);
+  background: var(--bg-raised);
 }
 
 .composer-field-row {
@@ -216,13 +216,14 @@
   align-items: center;
   gap: var(--space-2);
   padding: 6px var(--space-4);
-  border-bottom: var(--border-width) solid var(--border);
-  background: var(--bg-surface);
+  border-bottom: var(--border-width) solid var(--border-strong);
+  background: var(--bg-raised);
   transition: background var(--motion-fast) var(--ease);
 }
 
 .composer-field-row:focus-within {
-  background: var(--bg-raised);
+  background: var(--bg-overlay);
+  border-left: 2px solid var(--accent);
 }
 
 .composer-field-label {
@@ -271,8 +272,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 6px var(--space-4);
-  background: var(--bg-raised);
-  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-overlay);
+  border-bottom: var(--border-width) solid var(--border-strong);
 }
 
 .composer-segmented {
@@ -301,9 +302,10 @@
 
 .composer-segmented-btn--active {
   background: var(--bg-raised);
-  color: var(--text-primary);
+  color: var(--accent);
   font-weight: var(--weight-medium);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--accent);
 }
 
 .composer-toolbar-hint {
@@ -322,11 +324,11 @@
   width: 100%;
   height: 220px;
   border: none;
-  background: var(--bg-surface);
+  background: var(--bg-raised);
   color: var(--text-primary);
   font-family: var(--font-ui);
   font-size: var(--text-body);
-  line-height: var(--leading-normal);
+  line-height: 1.6;
   padding: var(--space-3) var(--space-4);
   resize: vertical;
   outline: none;
@@ -348,8 +350,8 @@
   justify-content: space-between;
   height: 48px;
   padding: 0 var(--space-4);
-  border-top: var(--border-width) solid var(--border);
-  background: var(--bg-raised);
+  border-top: 1px solid var(--border-strong);
+  background: var(--bg-overlay);
 }
 
 .composer-shortcut-hint {

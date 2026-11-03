@@ -42,7 +42,7 @@
 }
 
 .search-pill--active {
-  background: rgba(56, 189, 248, 0.15);
+  background: rgba(107, 216, 203, 0.16);
   color: var(--accent);
   border-color: var(--accent);
   font-weight: 500;

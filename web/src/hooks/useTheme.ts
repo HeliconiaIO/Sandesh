@@ -35,6 +35,7 @@ export function useTheme() {
     const apply = () => {
       const resolved = preference === 'system' ? systemTheme() : preference
       document.documentElement.dataset['theme'] = resolved
+      document.documentElement.classList.toggle('dark', resolved === 'dark')
     }
 
     apply()

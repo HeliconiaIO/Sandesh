@@ -20,6 +20,7 @@
                 ? 'light'
                 : 'dark';
           document.documentElement.dataset.theme = theme;
+          document.documentElement.classList.toggle('dark', theme === 'dark');
         } catch (_) {
           /* Private mode denies storage; the dark default already applies. */
         }

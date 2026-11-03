@@ -1,6 +1,7 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 
 // The dev server proxies the API to the Rust backend so that application code
 // never needs to know whether it is running against Vite or against the
@@ -9,11 +10,12 @@ import react from '@vitejs/plugin-react'
 const BACKEND = process.env.SANDESH_API ?? 'http://127.0.0.1:8080'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   build: {
     // Served by the Rust binary from `web/dist`; see `sandesh-api::assets`.
     outDir: 'dist',
     sourcemap: true,
+    chunkSizeWarningLimit: 550,
   },
   server: {
     proxy: {
