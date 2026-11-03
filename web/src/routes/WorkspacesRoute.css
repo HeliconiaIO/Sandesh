@@ -22,8 +22,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-4);
-  border-bottom: var(--border-width) solid var(--border);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border);
   background: var(--bg-surface);
   gap: var(--space-3);
   flex-wrap: wrap;
@@ -101,7 +101,7 @@
 .workspaces-metric-card__value {
   font-size: var(--text-display);
   font-weight: var(--weight-semibold);
-  color: var(--text-primary);
+  color: var(--accent);
   font-family: var(--font-mono);
 }
 
@@ -113,8 +113,8 @@
 /* --- Active Workspace Hero Card ---------------------------------------- */
 
 .active-ws-card {
-  background: var(--bg-surface);
-  border: var(--border-width) solid var(--accent-border);
+  background: rgba(107, 216, 203, 0.04);
+  border: 1px solid var(--accent);
   border-radius: var(--radius-lg);
   padding: var(--space-4) var(--space-5);
   display: flex;
@@ -170,12 +170,14 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: var(--text-micro);
-  font-weight: var(--weight-semibold);
-  color: var(--ok);
-  background: rgba(63, 185, 80, 0.12);
-  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--accent);
+  background: rgba(107, 216, 203, 0.12);
+  padding: 2px 8px;
   border-radius: var(--radius-sm);
+  border: 1px solid rgba(107, 216, 203, 0.25);
 }
 
 .active-ws-card__badge-dot {
@@ -183,7 +185,13 @@
   height: 6px;
   border-radius: 50%;
   background: var(--ok);
-  box-shadow: 0 0 6px var(--ok);
+  box-shadow: 0 0 0 3px rgba(78, 222, 163, 0.2);
+  animation: badge-dot-ping 2s ease infinite;
+}
+
+@keyframes badge-dot-ping {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(78, 222, 163, 0.2); }
+  50% { box-shadow: 0 0 0 5px rgba(78, 222, 163, 0.08); }
 }
 
 .active-ws-card__desc {
@@ -409,9 +417,9 @@
 }
 
 .ws-item-card {
-  background: var(--bg-surface);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius);
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   padding: var(--space-4);
   display: flex;
   flex-direction: column;
@@ -420,18 +428,21 @@
   min-width: 0;
   overflow: hidden;
   box-sizing: border-box;
-  transition: border-color var(--motion-fast) var(--ease),
-    background var(--motion-fast) var(--ease);
+  transition: background var(--motion-fast) var(--ease),
+    box-shadow var(--motion-fast) var(--ease),
+    border-color var(--motion-fast) var(--ease);
 }
 
 .ws-item-card:hover {
+  background: var(--bg-overlay);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
   border-color: var(--border-strong);
-  background: var(--bg-raised);
 }
 
 .ws-item-card--active {
-  border-color: var(--accent-border);
-  background: var(--bg-raised);
+  border-color: var(--accent);
+  background: var(--bg-overlay);
+  border-left: 1px solid var(--accent);
 }
 
 .ws-item-card__main {

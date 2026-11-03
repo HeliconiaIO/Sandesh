@@ -35,7 +35,7 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   border-bottom: var(--border-width) solid var(--border);
-  border-left: 3px solid transparent;
+  border-left: 4px solid transparent;
   cursor: pointer;
   transition: background var(--motion-fast) var(--ease),
     border-left-color var(--motion-fast) var(--ease);
@@ -62,7 +62,7 @@
   background: var(--bg-selected);
 }
 
-/* The unread marker is a shape, reinforced by weight below — not colour alone. */
+/* The unread marker is an emerald dot with live halo, reinforced by weight below. */
 .message-row__marker {
   width: 6px;
   height: 6px;
@@ -74,8 +74,8 @@
 }
 
 .message-row--unread .message-row__marker {
-  background: var(--accent);
-  box-shadow: 0 0 4px var(--accent);
+  background: var(--ok);
+  box-shadow: 0 0 6px rgba(78, 222, 163, 0.6);
 }
 
 .message-row--selected .message-row__marker {
@@ -87,7 +87,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .message-row__top,
@@ -108,6 +108,7 @@
 
 .message-row--unread .message-row__from {
   color: var(--text-primary);
+  font-weight: var(--weight-semibold);
 }
 
 .message-row__age {
@@ -118,16 +119,26 @@
   font-variant-numeric: tabular-nums;
 }
 
+.message-row--selected .message-row__age {
+  color: var(--accent);
+  font-weight: var(--weight-medium);
+}
+
 .message-row__subject {
   font-size: var(--text-chrome);
-  color: var(--text-primary);
+  color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.message-row--selected .message-row__subject,
 .message-row--unread .message-row__subject {
-  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.message-row--unread .message-row__subject {
+  font-weight: var(--weight-medium);
 }
 
 .message-row__nosubject {
@@ -144,9 +155,14 @@
 
 .message-row__size {
   font-family: var(--font-mono);
-  font-size: var(--text-micro);
+  font-size: 10.5px;
   color: var(--text-tertiary);
   font-variant-numeric: tabular-nums;
+  background: var(--bg-overlay);
+  border: var(--border-width) solid var(--border);
+  padding: 0 4px;
+  border-radius: var(--radius-sm);
+  line-height: 1.4;
 }
 
 .message-row__placements {
@@ -159,11 +175,11 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  color: var(--text-tertiary);
+  color: var(--warn);
 }
 
 .badge--warn {
-  color: var(--warn);
+  color: var(--error);
 }
 
 .chip {
@@ -171,9 +187,12 @@
   align-items: center;
   padding: 0 5px;
   height: 16px;
-  background: var(--bg-raised);
-  border: var(--border-width) solid var(--border);
+  background: rgba(107, 216, 203, 0.1);
+  border: var(--border-width) solid rgba(107, 216, 203, 0.25);
   border-radius: var(--radius-sm);
-  font-size: var(--text-micro);
-  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
 }

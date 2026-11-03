@@ -93,6 +93,14 @@
  * is the same everywhere it is needed.
  */
 @media (max-width: 1280px) {
+  .viewer__headline {
+    flex-wrap: wrap;
+  }
+
+  .viewer__headline > .min-w-0.flex-1 {
+    flex-basis: 100%;
+  }
+
   .viewer__actions {
     width: 100%;
     flex-wrap: nowrap;

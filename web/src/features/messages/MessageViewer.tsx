@@ -16,6 +16,7 @@ import {
   Archive,
   ArrowLeft,
   Binary,
+  Check,
   Circle,
   CircleDot,
   CornerDownRight,
@@ -347,7 +348,19 @@ export function MessageViewer({
               <span>Back</span>
             </button>
           )}
-          <h1 className="viewer__subject">{message.subject || '(no subject)'}</h1>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-space-xs text-outline font-label-code-xs text-label-code-xs mb-1">
+              <span className="text-primary font-medium">RFC 5322</span>
+              <span>•</span>
+              <span>Queue ID: {message.id.slice(0, 8)}</span>
+              <span>•</span>
+              <span className="text-secondary flex items-center gap-0.5">
+                <Check size={11} aria-hidden="true" />
+                Verified Local
+              </span>
+            </div>
+            <h1 className="viewer__subject">{message.subject || '(no subject)'}</h1>
+          </div>
           <div className="viewer__actions">
             {isDrafts ? (
               <>

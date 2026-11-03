@@ -134,8 +134,9 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   background: var(--bg-raised);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
 }
 
 .webhooks__url {
@@ -161,7 +162,7 @@
 }
 
 .webhooks__remove:hover {
-  color: var(--error);
+  color: var(--danger);
   background: var(--error-muted);
 }
 
@@ -203,7 +204,7 @@
 }
 
 .outbox__row--failed {
-  border-left-color: var(--error);
+  border-left-color: var(--danger);
 }
 
 .outbox__summary {
@@ -240,14 +241,20 @@
 
 .outbox__status--delivered {
   color: var(--ok);
+  font-family: var(--font-mono);
+  font-size: 11px;
 }
 
 .outbox__status--pending {
   color: var(--warn);
+  font-family: var(--font-mono);
+  font-size: 11px;
 }
 
 .outbox__status--failed {
-  color: var(--error);
+  color: var(--danger);
+  font-family: var(--font-mono);
+  font-size: 11px;
 }
 
 .outbox__what {

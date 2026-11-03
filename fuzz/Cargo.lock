@@ -634,14 +634,14 @@ checksum = "cf54715a573b99ac80df0bc206da022bcd442c974952c7b9720069370852e21f"
 
 [[package]]
 name = "sandesh-config"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "thiserror",
 ]
 
 [[package]]
 name = "sandesh-core"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "async-trait",
  "hex",
@@ -667,7 +667,7 @@ dependencies = [
 
 [[package]]
 name = "sandesh-imap"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "sandesh-config",
  "sandesh-core",
@@ -680,7 +680,7 @@ dependencies = [
 
 [[package]]
 name = "sandesh-pop3"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "sandesh-config",
  "sandesh-core",
@@ -693,7 +693,7 @@ dependencies = [
 
 [[package]]
 name = "sandesh-proto"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "argon2",
  "async-trait",
@@ -712,7 +712,7 @@ dependencies = [
 
 [[package]]
 name = "sandesh-smtp"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "async-trait",
  "sandesh-config",

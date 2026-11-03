@@ -21,7 +21,8 @@
   flex: 1;
   min-width: 0;
   min-height: 0;
-  background: var(--bg-base);
+  background: var(--bg-surface);
+  color: var(--text-primary);
 }
 
 /* --- The bar ------------------------------------------------------------ */
@@ -33,14 +34,15 @@
   gap: var(--space-4);
   flex-wrap: wrap;
   padding: var(--space-3) var(--space-4);
-  border-bottom: var(--border-width) solid var(--border);
-  background: var(--bg-surface);
+  border-bottom: var(--border-width) solid var(--border-strong);
+  background: var(--bg-raised);
 }
 
 .traces__title {
   margin: 0;
-  font-size: var(--text-title);
-  font-weight: var(--weight-semibold);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-ui);
   color: var(--text-primary);
 }
 
@@ -74,6 +76,7 @@
   color: var(--accent);
   background: var(--accent-muted);
   border-color: var(--accent-border);
+  border-bottom: 2px solid var(--accent);
 }
 
 /* --- Layout ------------------------------------------------------------- */
@@ -150,8 +153,9 @@
 }
 
 .trace-row--selected {
-  background: var(--bg-selected);
+  background: rgba(107, 216, 203, 0.06);
   color: var(--text-primary);
+  border-left: 2px solid var(--accent);
 }
 
 /*
@@ -294,11 +298,15 @@
 }
 
 .dialogue__line--client .dialogue__text {
-  color: var(--text-primary);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 12px;
 }
 
 .dialogue__line--server .dialogue__text {
-  color: var(--text-secondary);
+  color: var(--ok);
+  font-family: var(--font-mono);
+  font-size: 12px;
 }
 
 /* A note is the server narrating itself — a STARTTLS upgrade, a timeout. It
@@ -306,6 +314,18 @@
 .dialogue__line--note {
   color: var(--text-tertiary);
   font-style: italic;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+/* Duration/timing chips */
+.trace__timing-chip {
+  background: rgba(107, 216, 203, 0.1);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
 }
 
 .trace__truncated {

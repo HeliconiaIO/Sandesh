@@ -5,6 +5,8 @@
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/HeliconiaIO/Sandesh/badge)](https://scorecard.dev/viewer/?uri=github.com/HeliconiaIO/Sandesh)
 
+[Project website](https://heliconiaio.github.io/Sandesh/) · [Releases](https://github.com/HeliconiaIO/Sandesh/releases) · [Documentation](docs/E2E_GUIDE.md)
+
 **A local-first Mail Development Environment for developers.**
 
 Sandesh is a single, self-contained mail environment you run on your own machine. Point your

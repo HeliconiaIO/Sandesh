@@ -20,10 +20,10 @@
    * document. Body stays a workhorse grotesque for long prose. Monospace is
    * used generously — this is a tool for reading protocol data.
    */
-  --font-display: 'Space Grotesk Variable', 'Space Grotesk', 'Inter Variable',
+  --font-display: 'Geist Variable', 'Geist', 'Space Grotesk Variable',
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-ui: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-ui: 'Geist Variable', 'Geist', 'Inter Variable', 'Inter', -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace,
     SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
 
@@ -68,9 +68,9 @@
 
   /* --- Fixed metrics ----------------------------------------------------- */
   --row-height: 32px;
-  --header-height: 44px;
-  --sidebar-width: 216px;
-  --list-width: 340px;
+  --header-height: 48px;
+  --sidebar-width: 256px;
+  --list-width: 380px;
 
   /* --- Touch & Ergonomics (WCAG 2.5.8) ----------------------------------- */
   --touch-target-min: 44px;
@@ -183,48 +183,54 @@
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --bg-base: #0b1012;        /* the window behind everything */
-  --bg-surface: #10171a;     /* panes */
-  --bg-raised: #151f23;      /* rows, cards, inputs */
-  --bg-overlay: #1b272c;     /* hover */
-  --bg-selected: #16323a;    /* the selected row — accent-tinted, not blue */
+  --bg-base: #0b1326;        /* the window behind everything */
+  --bg-surface: #060e20;     /* panes (surface-container-lowest) */
+  --bg-list: #060e20;
+  --bg-raised: #131b2e;      /* rows, cards, inputs (surface-container-low) */
+  --bg-overlay: #171f33;     /* hover (surface-container) */
+  --bg-selected: #222a3d;    /* selected row (surface-container-high) */
+  --bg-bright: #31394d;
 
-  --border: #1f2c31;
-  --border-strong: #2e3f46;
+  --border: #2d3449;         /* hairline dividers (surface-container-highest) */
+  --border-strong: #3d4947;  /* outline-variant */
+  --inverse-surface: #dae2fd;
+  --inverse-on-surface: #283044;
 
-  --text-primary: #e4ecee;
-  --text-secondary: #94a7ad;
-  /*
-   * Tertiary is the de-emphasised tier, and it is tuned to the WORST case: the
-   * hover background (--bg-overlay), not the pane behind it. Both themes had
-   * set it purely by eye and it measured 3.4-4.25:1 against the surfaces it
-   * actually landed on — under the 4.5 floor §11 requires, on every timestamp,
-   * log target and caption in the product. These values clear 4.5 against
-   * every background level while staying visibly quieter than --text-secondary.
-   */
-  --text-tertiary: #7b9098;
-  --text-inverse: #0b1012;
+  --text-primary: #dae2fd;   /* on-surface */
+  --text-secondary: #bcc9c6; /* on-surface-variant */
+  --text-tertiary: #879391;  /* outline */
+  --text-inverse: #0b1326;
 
   /*
-   * The single interaction accent: a cyan-leaning teal. Deliberately distinct
-   * in hue from --info below, so "this is interactive" and "this is an
-   * informational signal" can never be confused — they were near-identical
-   * blues before.
+   * The single interaction accent: Precision Deep Teal
    */
-  --accent: #38bec9;
-  --accent-hover: #5ad3dd;
-  --accent-muted: rgba(56, 190, 201, 0.14);
-  --accent-border: rgba(56, 190, 201, 0.42);
+  --accent: #6bd8cb;
+  --accent-hover: #89f5e7;
+  --accent-muted: rgba(107, 216, 203, 0.14);
+  --accent-border: rgba(107, 216, 203, 0.42);
+  --text-on-primary: #003732;
+  --primary-container: #29a195;
+  --on-primary-container: #00302b;
+  --inverse-primary: #006a61;
 
-  /* Semantic. Never decorative. */
-  --ok: #3fb950;
-  --ok-muted: rgba(63, 185, 80, 0.14);
-  --warn: #d6a02a;
-  --warn-muted: rgba(214, 160, 42, 0.14);
-  --error: #f85149;
-  --error-muted: rgba(248, 81, 73, 0.14);
-  --info: #6ea8fe;
-  --info-muted: rgba(110, 168, 254, 0.14);
+  /* Semantic. Precision palette. */
+  --ok: #4edea3;             /* emerald */
+  --ok-muted: rgba(78, 222, 163, 0.14);
+  --text-on-secondary: #003824;
+  --secondary-container: #00a572;
+  --on-secondary-container: #00311f;
+  --warn: #ffb95f;           /* amber */
+  --warn-muted: rgba(255, 185, 95, 0.14);
+  --text-on-tertiary: #472a00;
+  --tertiary-container: #ca8100;
+  --on-tertiary-container: #3e2400;
+  --error: #ffb4ab;          /* crimson */
+  --error-muted: rgba(255, 180, 171, 0.14);
+  --text-on-error: #690005;
+  --error-container: #93000a;
+  --on-error-container: #ffdad6;
+  --info: #6bd8cb;
+  --info-muted: rgba(107, 216, 203, 0.14);
 
   --focus-ring: var(--accent);
 }
@@ -234,12 +240,16 @@
 
   --bg-base: #eef2f3;
   --bg-surface: #ffffff;
+  --bg-list: #f4f7f8;
   --bg-raised: #f4f7f8;
   --bg-overlay: #e6edee;
   --bg-selected: #d7eef1;
+  --bg-bright: #ffffff;
 
   --border: #d3dcde;
   --border-strong: #b3c0c4;
+  --inverse-surface: #121a1c;
+  --inverse-on-surface: #eef2f3;
 
   --text-primary: #121a1c;
   --text-secondary: #4d5f64;
@@ -277,13 +287,26 @@
   --accent-hover: #0a5f6a;
   --accent-muted: rgba(12, 106, 119, 0.10);
   --accent-border: rgba(12, 106, 119, 0.40);
+  --text-on-primary: #ffffff;
+  --primary-container: #d7eef1;
+  --on-primary-container: #124c50;
+  --inverse-primary: #6bd8cb;
 
   --ok: #176e2c;
   --ok-muted: rgba(23, 110, 44, 0.10);
+  --text-on-secondary: #ffffff;
+  --secondary-container: #dff4e5;
+  --on-secondary-container: #174a27;
   --warn: #835800;
   --warn-muted: rgba(131, 88, 0, 0.10);
+  --text-on-tertiary: #ffffff;
+  --tertiary-container: #fff0c7;
+  --on-tertiary-container: #4d3500;
   --error: #b81e29;
   --error-muted: rgba(184, 30, 41, 0.10);
+  --text-on-error: #ffffff;
+  --error-container: #fde0e2;
+  --on-error-container: #6d1017;
   --info: #1d59c4;
   --info-muted: rgba(29, 89, 196, 0.10);
 

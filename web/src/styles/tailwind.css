@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-surface: var(--bg-base);
+  --color-surface-dim: var(--bg-base);
+  --color-surface-bright: var(--bg-bright);
+  --color-surface-container-lowest: var(--bg-surface);
+  --color-surface-container-low: var(--bg-raised);
+  --color-surface-container: var(--bg-overlay);
+  --color-surface-container-high: var(--bg-selected);
+  --color-surface-container-highest: var(--border);
+  --color-on-surface: var(--text-primary);
+  --color-on-surface-variant: var(--text-secondary);
+  --color-inverse-surface: var(--inverse-surface);
+  --color-inverse-on-surface: var(--inverse-on-surface);
+  --color-outline: var(--text-tertiary);
+  --color-outline-variant: var(--border-strong);
+  --color-surface-tint: var(--accent);
+  --color-primary: var(--accent);
+  --color-on-primary: var(--text-on-primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-inverse-primary: var(--inverse-primary);
+  --color-secondary: var(--ok);
+  --color-on-secondary: var(--text-on-secondary);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-tertiary: var(--warn);
+  --color-on-tertiary: var(--text-on-tertiary);
+  --color-tertiary-container: var(--tertiary-container);
+  --color-on-tertiary-container: var(--on-tertiary-container);
+  --color-error: var(--error);
+  --color-on-error: var(--text-on-error);
+  --color-error-container: var(--error-container);
+  --color-on-error-container: var(--on-error-container);
+  --color-primary-fixed: #89f5e7;
+  --color-primary-fixed-dim: #6bd8cb;
+  --color-on-primary-fixed: #00201d;
+  --color-on-primary-fixed-variant: #005049;
+  --color-secondary-fixed: #6ffbbe;
+  --color-secondary-fixed-dim: #4edea3;
+  --color-on-secondary-fixed: #002113;
+  --color-on-secondary-fixed-variant: #005236;
+  --color-tertiary-fixed: #ffddb8;
+  --color-tertiary-fixed-dim: #ffb95f;
+  --color-on-tertiary-fixed: #2a1700;
+  --color-on-tertiary-fixed-variant: #653e00;
+  --color-background: var(--bg-base);
+  --color-on-background: var(--text-primary);
+  --color-surface-variant: var(--bg-selected);
+
+  --spacing-space-xs: 0.25rem;
+  --spacing-space-sm: 0.5rem;
+  --spacing-space-md: 0.75rem;
+  --spacing-space-lg: 1rem;
+  --spacing-space-xl: 1.5rem;
+  --spacing-gutter: 0.75rem;
+  --spacing-margin: 1rem;
+
+  --font-headline-lg: 'Geist Variable', 'Geist', sans-serif;
+  --font-headline-sm: 'Geist Variable', 'Geist', sans-serif;
+  --font-body-md: 'Geist Variable', 'Geist', sans-serif;
+  --font-body-sm: 'Geist Variable', 'Geist', sans-serif;
+  --font-label-caps: 'Geist Variable', 'Geist', sans-serif;
+  --font-label-code-xs: 'JetBrains Mono Variable', 'JetBrains Mono', monospace;
+  --font-label-code-sm: 'JetBrains Mono Variable', 'JetBrains Mono', monospace;
+  --font-label-code-md: 'JetBrains Mono Variable', 'JetBrains Mono', monospace;
+
+  --text-headline-lg: 1.5rem;
+  --text-headline-lg--line-height: 2rem;
+  --text-headline-lg--letter-spacing: -0.02em;
+  --text-headline-lg--font-weight: 600;
+
+  --text-headline-sm: 1.125rem;
+  --text-headline-sm--line-height: 1.5rem;
+  --text-headline-sm--letter-spacing: -0.015em;
+  --text-headline-sm--font-weight: 600;
+
+  --text-body-md: 0.875rem;
+  --text-body-md--line-height: 1.25rem;
+  --text-body-md--font-weight: 400;
+
+  --text-body-sm: 0.8125rem;
+  --text-body-sm--line-height: 1.125rem;
+  --text-body-sm--font-weight: 400;
+
+  --text-label-caps: 0.6875rem;
+  --text-label-caps--line-height: 0.875rem;
+  --text-label-caps--letter-spacing: 0.06em;
+  --text-label-caps--font-weight: 600;
+
+  --text-label-code-xs: 0.6875rem;
+  --text-label-code-xs--line-height: 0.875rem;
+  --text-label-code-xs--letter-spacing: 0.02em;
+  --text-label-code-xs--font-weight: 500;
+
+  --text-label-code-sm: 0.75rem;
+  --text-label-code-sm--line-height: 1rem;
+  --text-label-code-sm--font-weight: 400;
+
+  --text-label-code-md: 0.8125rem;
+  --text-label-code-md--line-height: 1.125rem;
+  --text-label-code-md--letter-spacing: -0.01em;
+  --text-label-code-md--font-weight: 500;
+}

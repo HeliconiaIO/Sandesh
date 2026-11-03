@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 export default tseslint.config(
   {
     // Generated code is the contract's output, not source to lint.
-    ignores: ['dist', 'src/generated', 'node_modules', 'playwright-report', 'test-results'],
+    ignores: ['dist', 'site-dist', 'src/generated', 'node_modules', 'playwright-report', 'test-results'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

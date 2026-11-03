@@ -14,7 +14,9 @@
 @import '@fontsource-variable/space-grotesk';
 @import '@fontsource-variable/inter';
 @import '@fontsource-variable/jetbrains-mono';
+@import '@fontsource-variable/geist';
 
+@import './tailwind.css';
 @import './tokens.css';
 @import './pills.css';
 

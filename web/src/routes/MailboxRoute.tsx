@@ -8,7 +8,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { FolderOpen, MailCheck, MailX, Search, SlidersHorizontal, Trash2, X } from 'lucide-react'
+import { FolderOpen, Inbox, MailCheck, MailX, Search, SlidersHorizontal, Trash2, X } from 'lucide-react'
 
 import { EmptyState, ErrorState, LoadingState } from '../components/States'
 import { MessageList } from '../features/messages/MessageList'
@@ -663,6 +663,11 @@ export function MailboxRoute() {
     },
   ])
 
+  const unreadCount = useMemo(
+    () => loaded.filter((m) => m.entries.some((e) => !e.flags.includes(SEEN))).length,
+    [loaded],
+  )
+
   // On mobile (< 768px), master-detail only switches to the viewer pane when an
   // individual message is active AND we are not in multi-selection mode.
   const hasMessageOpen = Boolean(messageId && selectedIds.size === 0 && !isSelectionMode)
@@ -673,15 +678,20 @@ export function MailboxRoute() {
         <header className="mail__list-header">
           <div className="mail__list-header-top">
             <h1 className="mail__title">{mailbox?.name ?? 'Messages'}</h1>
-            <div className="mail__header-meta">
+            <div className="mail__header-meta flex items-center gap-1.5">
               {list.data ? (
                 <span className="mail__count">
                   {(filter.trim() || unreadOnly || attachmentsOnly) && items.length !== loaded.length
                     ? `${items.length} of ${loaded.length}`
-                    : loaded.length}
+                    : `${loaded.length} msgs`}
                   {/* A trailing "+" means more pages exist, not a count we know:
                       the cursor says whether there is more, never how much. */}
                   {list.hasNextPage ? '+' : ''}
+                </span>
+              ) : null}
+              {unreadCount > 0 ? (
+                <span className="font-label-caps text-label-caps bg-secondary-container/20 text-secondary px-1.5 py-0.5 rounded font-medium">
+                  {unreadCount} unread
                 </span>
               ) : null}
               {loaded.length > 0 && (
@@ -1199,9 +1209,44 @@ export function MailboxRoute() {
             mailboxId={mailboxId}
           />
         ) : !messageId ? (
-          <EmptyState title="No message selected">
-            <p>Choose a message to inspect its content, headers, MIME structure and source.</p>
-          </EmptyState>
+          <div className="flex-1 flex flex-col items-center justify-center p-space-xl max-w-2xl mx-auto my-auto text-center relative select-none">
+            <div className="relative mb-6 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-xl bg-surface-container-low border border-border flex items-center justify-center shadow-md">
+                <Inbox size={32} className="text-primary" aria-hidden="true" />
+              </div>
+              <div className="absolute -bottom-2 -right-3 px-2 py-0.5 rounded bg-surface-container-high text-secondary font-label-code-xs text-label-code-xs shadow-sm flex items-center gap-1 border border-border/50">
+                <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
+                <span>STANDBY</span>
+              </div>
+            </div>
+            <h2 className="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight mb-2">
+              No message selected
+            </h2>
+            <p className="font-body-md text-body-md text-on-surface-variant max-w-md mb-8">
+              Choose an email from the stream to inspect MIME multipart structures, raw protocol bytes, or test live SMTP replies.
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full max-w-md">
+              <div className="p-2.5 rounded bg-surface-container-low border border-border flex flex-col items-center gap-1">
+                <div className="flex items-center gap-1">
+                  <kbd className="font-label-code-xs px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface">j</kbd>
+                  <kbd className="font-label-code-xs px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface">k</kbd>
+                </div>
+                <span className="font-label-code-xs text-on-surface-variant text-[11px]">Navigate</span>
+              </div>
+              <div className="p-2.5 rounded bg-surface-container-low border border-border flex flex-col items-center gap-1">
+                <kbd className="font-label-code-xs px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface">/</kbd>
+                <span className="font-label-code-xs text-on-surface-variant text-[11px]">Filter</span>
+              </div>
+              <div className="p-2.5 rounded bg-surface-container-low border border-border flex flex-col items-center gap-1">
+                <kbd className="font-label-code-xs px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface">c</kbd>
+                <span className="font-label-code-xs text-on-surface-variant text-[11px]">Compose</span>
+              </div>
+              <div className="p-2.5 rounded bg-surface-container-low border border-border flex flex-col items-center gap-1">
+                <kbd className="font-label-code-xs px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface">?</kbd>
+                <span className="font-label-code-xs text-on-surface-variant text-[11px]">Shortcuts</span>
+              </div>
+            </div>
+          </div>
         ) : message.isPending ? (
           <LoadingState label="Loading message" />
         ) : message.isError ? (
