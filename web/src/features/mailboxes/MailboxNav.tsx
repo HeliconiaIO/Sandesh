@@ -50,18 +50,18 @@ import './MailboxNav.css'
 export function getMailboxIcon(name: string) {
   const lower = name.toLowerCase()
   if (lower === 'inbox')
-    return <Inbox size={14} aria-hidden="true" className="mailbox-nav__icon" />
+    return <Inbox size={16} aria-hidden="true" className="mailbox-nav__icon" />
   if (lower === 'sent' || lower === 'sent items')
-    return <Send size={14} aria-hidden="true" className="mailbox-nav__icon" />
+    return <Send size={16} aria-hidden="true" className="mailbox-nav__icon" />
   if (lower === 'drafts' || lower === 'draft')
-    return <FileText size={14} aria-hidden="true" className="mailbox-nav__icon" />
+    return <FileText size={16} aria-hidden="true" className="mailbox-nav__icon" />
   if (lower === 'archive')
-    return <Archive size={14} aria-hidden="true" className="mailbox-nav__icon" />
+    return <Archive size={16} aria-hidden="true" className="mailbox-nav__icon" />
   if (lower === 'trash' || lower === 'deleted' || lower === 'bin')
-    return <Trash2 size={14} aria-hidden="true" className="mailbox-nav__icon" />
+    return <Trash2 size={16} aria-hidden="true" className="mailbox-nav__icon" />
   if (lower === 'junk' || lower === 'spam')
-    return <AlertOctagon size={14} aria-hidden="true" className="mailbox-nav__icon" />
-  return <Folder size={14} aria-hidden="true" className="mailbox-nav__icon" />
+    return <AlertOctagon size={16} aria-hidden="true" className="mailbox-nav__icon" />
+  return <Folder size={16} aria-hidden="true" className="mailbox-nav__icon" />
 }
 
 export const PROTECTED_SYSTEM_MAILBOXES = [

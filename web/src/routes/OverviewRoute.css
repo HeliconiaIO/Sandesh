@@ -1,126 +1,200 @@
-.overview {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--space-5);
+/* --- Hero: the onboarding answer (§5) ----------------------------------- */
+
+.overview-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: center;
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  border: var(--border-width) solid var(--border);
+  background:
+    radial-gradient(120% 140% at 0% 0%, var(--accent-muted) 0%, transparent 55%),
+    var(--bg-surface);
+  box-shadow: var(--shadow-sm);
 }
 
-.overview__inner {
-  max-width: 880px;
-  margin: 0 auto;
+.overview-hero__intro {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-width: 0;
 }
 
-/*
- * Above the three-pane threshold the single 880px column left most of the
- * screen empty. The panels pair up instead: connection details keep the full
- * width because they are what a new developer came for (§5), and Status and
- * Recent sit side by side beneath — two things that are read together rather
- * than stacked a screen apart.
- */
-@media (min-width: 1280px) {
-  .overview__inner {
-    max-width: 1180px;
-    display: grid;
-    /*
-     * `1fr` alone is `minmax(auto, 1fr)`, and `auto` refuses to shrink below a
-     * grid item's content — so one unbreakable string (the data directory path
-     * on the About page) blew a column out to 1019px and pushed its neighbour
-     * off the pane entirely. `minmax(0, 1fr)` is what actually means "half".
-     */
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--space-4);
-    align-items: start;
-  }
-
-  /*
-   * The connection panel spans both columns because it is what a new developer
-   * came for (§5). The About page reuses this shell without that panel, so the
-   * rule simply does not match there — its own panels pair up instead.
-   */
-  .overview__inner > .panel--connect {
-    grid-column: 1 / -1;
-  }
-
-  /*
-   * Five stats in a half-width panel wrapped 4 + 1, stranding the last one on
-   * its own row. Three columns divide them 3 + 2, which reads as a block
-   * rather than as a mistake.
-   */
-  .overview__inner .stats {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.panel {
-  padding: var(--space-4);
-  background: var(--bg-surface);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-lg);
-}
-
-/*
- * The one place the accent is used as a surface rather than a mark: this is
- * the first thing a new developer needs, so it earns the emphasis.
- */
-.panel--connect {
-  border-color: var(--accent-border);
-}
-
-.panel__title {
-  margin: 0 0 var(--space-2);
-  font-family: var(--font-display);
-  font-size: var(--text-title);
+.overview-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: var(--radius-full);
+  font-size: 11.5px;
   font-weight: var(--weight-semibold);
-  letter-spacing: var(--tracking-tight);
+  color: var(--ok);
+  background: var(--ok-muted);
 }
 
-.panel__lede {
+.overview-hero__eyebrow--connecting {
+  color: var(--warn);
+  background: var(--warn-muted);
+}
+
+.overview-hero__eyebrow--disconnected {
+  color: var(--error);
+  background: var(--error-muted);
+}
+
+.overview-hero__eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.overview-hero__title {
   margin: 0;
-  max-width: 62ch;
-  font-size: var(--text-chrome);
+  font-family: var(--font-display);
+  font-size: var(--text-hero);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.025em;
+  line-height: var(--leading-tight);
+}
+
+.overview-hero__lede {
+  margin: 0;
+  max-width: 52ch;
+  font-size: var(--text-body);
   color: var(--text-secondary);
   line-height: var(--leading-normal);
 }
 
-.stats {
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: var(--space-3);
-}
-
-.stat {
+.overview-snippet {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
+  background: var(--bg-base);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  max-width: 100%;
 }
 
-.stat dt {
-  font-size: var(--text-micro);
+.overview-snippet__code {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono);
+  line-height: var(--leading-mono);
+  color: var(--text-primary);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* The endpoints sit as a two-by-two grid of tiles beside the intro. */
+.overview-hero__endpoints .connection-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.overview-hero__endpoints .connection-details__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  column-gap: var(--space-2);
+  row-gap: 2px;
+  padding: var(--space-3);
+  background: var(--bg-raised);
+  border-radius: var(--radius);
+}
+
+.overview-hero__endpoints .connection-details__label {
+  grid-column: 1;
+  width: auto;
+}
+
+.overview-hero__endpoints .connection-details__value,
+.overview-hero__endpoints .connection-details__off {
+  grid-column: 1;
+  grid-row: 2;
+  font-size: 13px;
+}
+
+.overview-hero__endpoints .connection-details__row > .icon-button {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+
+/* --- Status tiles ------------------------------------------------------- */
+
+.overview-stats {
+  margin: 0;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.overview-stat {
+  padding: var(--space-4);
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.overview-stat dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.overview-stat__icon {
   color: var(--text-tertiary);
 }
 
-.stat dd {
+.overview-stat dd {
+  font-size: 22px;
+}
+
+/* --- Recent ------------------------------------------------------------- */
+
+.overview-recent {
+  padding: var(--space-4) var(--space-3) var(--space-3);
+}
+
+.overview-recent__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 0 var(--space-2) var(--space-2);
+}
+
+.overview-recent__header .panel__title {
   margin: 0;
-  font-family: var(--font-mono);
-  font-size: 17px;
-  font-weight: var(--weight-medium);
+}
+
+.overview-recent__all {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-chrome);
+  color: var(--text-secondary);
+}
+
+.overview-recent__all:hover {
   color: var(--text-primary);
-  font-variant-numeric: tabular-nums;
+  text-decoration: none;
 }
 
-.stat--ok {
-  color: var(--ok);
-}
-
-.stat--warn {
-  color: var(--warn);
-}
-
-.stat--error {
-  color: var(--error);
+.overview-recent__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  color: var(--text-tertiary);
 }
 
 .recent {
@@ -132,11 +206,10 @@
 }
 
 .recent__item {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
+  display: flex;
+  align-items: center;
   gap: var(--space-3);
-  align-items: baseline;
-  padding: var(--space-2) var(--space-2);
+  padding: var(--space-2);
   border-radius: var(--radius);
   color: inherit;
   text-decoration: none;
@@ -148,6 +221,14 @@
   text-decoration: none;
 }
 
+.recent__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
 .recent__subject {
   font-size: var(--text-chrome);
   color: var(--text-primary);
@@ -156,13 +237,51 @@
   white-space: nowrap;
 }
 
+.recent__item--unread .recent__subject {
+  font-weight: var(--weight-semibold);
+}
+
 .recent__from {
   font-size: var(--text-micro);
   color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recent__attach {
+  display: inline-flex;
+  color: var(--text-tertiary);
+  flex: none;
 }
 
 .recent__age {
   font-family: var(--font-mono);
   font-size: var(--text-micro);
   color: var(--text-tertiary);
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 1280px) {
+  .overview-hero {
+    gap: var(--space-5);
+    padding: var(--space-5);
+  }
+}
+
+@media (max-width: 768px) {
+  .overview-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .overview-stats {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .overview-hero__endpoints .connection-details {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

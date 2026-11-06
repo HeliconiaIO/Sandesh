@@ -67,20 +67,17 @@ export function WorkspaceSwitcher() {
     <div className="workspace-switcher" ref={containerRef}>
       <button
         type="button"
-        className="workspace-switcher__trigger flex items-center gap-1.5 px-2 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors"
+        className="workspace-switcher__trigger"
         onClick={() => setOpen((prev) => !prev)}
         aria-expanded={open}
         aria-haspopup="true"
         title={`Active workspace: ${activeName} (Click to switch)`}
       >
-        <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0" aria-hidden="true" />
-        <span className="workspace-switcher__name font-label-code-xs text-label-code-xs text-on-surface font-medium">
+        <span className="workspace-switcher__dot" aria-hidden="true" />
+        <span className="workspace-switcher__name">
           {isLoading && !activeWorkspace ? 'Loading...' : activeName}
         </span>
-        <span className="font-label-caps text-label-caps uppercase bg-surface-container-highest text-primary px-1 py-0.5 rounded shrink-0">
-          SQLite
-        </span>
-        <ChevronDown size={12} className={`workspace-switcher__chevron text-outline transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
+        <ChevronDown size={13} className="workspace-switcher__chevron" aria-hidden="true" />
       </button>
 
       {open && (

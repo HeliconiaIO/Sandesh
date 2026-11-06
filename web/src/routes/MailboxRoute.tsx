@@ -677,23 +677,25 @@ export function MailboxRoute() {
       <section className="mail__list" aria-label={mailbox ? `${mailbox.name} messages` : 'Messages'}>
         <header className="mail__list-header">
           <div className="mail__list-header-top">
-            <h1 className="mail__title">{mailbox?.name ?? 'Messages'}</h1>
-            <div className="mail__header-meta flex items-center gap-1.5">
+            <div className="mail__heading">
+              <h1 className="mail__title">{mailbox?.name ?? 'Messages'}</h1>
               {list.data ? (
-                <span className="mail__count">
-                  {(filter.trim() || unreadOnly || attachmentsOnly) && items.length !== loaded.length
-                    ? `${items.length} of ${loaded.length}`
-                    : `${loaded.length} msgs`}
-                  {/* A trailing "+" means more pages exist, not a count we know:
-                      the cursor says whether there is more, never how much. */}
-                  {list.hasNextPage ? '+' : ''}
-                </span>
+                <p className="mail__subtitle">
+                  <span className="mail__count">
+                    {(filter.trim() || unreadOnly || attachmentsOnly) && items.length !== loaded.length
+                      ? `${items.length} of ${loaded.length}`
+                      : `${loaded.length} ${loaded.length === 1 ? 'message' : 'messages'}`}
+                    {/* A trailing "+" means more pages exist, not a count we know:
+                        the cursor says whether there is more, never how much. */}
+                    {list.hasNextPage ? '+' : ''}
+                  </span>
+                  {unreadCount > 0 ? (
+                    <span className="mail__unread">{unreadCount} unread</span>
+                  ) : null}
+                </p>
               ) : null}
-              {unreadCount > 0 ? (
-                <span className="font-label-caps text-label-caps bg-secondary-container/20 text-secondary px-1.5 py-0.5 rounded font-medium">
-                  {unreadCount} unread
-                </span>
-              ) : null}
+            </div>
+            <div className="mail__header-meta">
               {loaded.length > 0 && (
                 <button
                   type="button"
@@ -1209,43 +1211,36 @@ export function MailboxRoute() {
             mailboxId={mailboxId}
           />
         ) : !messageId ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-space-xl max-w-2xl mx-auto my-auto text-center relative select-none">
-            <div className="relative mb-6 flex items-center justify-center">
-              <div className="w-16 h-16 rounded-xl bg-surface-container-low border border-border flex items-center justify-center shadow-md">
-                <Inbox size={32} className="text-primary" aria-hidden="true" />
-              </div>
-              <div className="absolute -bottom-2 -right-3 px-2 py-0.5 rounded bg-surface-container-high text-secondary font-label-code-xs text-label-code-xs shadow-sm flex items-center gap-1 border border-border/50">
-                <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
-                <span>STANDBY</span>
-              </div>
+          <div className="mail__idle">
+            <div className="mail__idle-icon" aria-hidden="true">
+              <Inbox size={26} />
             </div>
-            <h2 className="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight mb-2">
-              No message selected
-            </h2>
-            <p className="font-body-md text-body-md text-on-surface-variant max-w-md mb-8">
-              Choose an email from the stream to inspect MIME multipart structures, raw protocol bytes, or test live SMTP replies.
+            <h2 className="mail__idle-title">No message selected</h2>
+            <p className="mail__idle-text">
+              Pick a message to inspect its rendering, headers, MIME structure, raw bytes and
+              delivery transcript.
             </p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full max-w-md">
-              <div className="p-2.5 rounded bg-surface-container-low border border-border flex flex-col items-center gap-1">
-                <div className="flex items-center gap-1">
-                  <kbd className="font-label-code-xs px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface">j</kbd>
-                  <kbd className="font-label-code-xs px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface">k</kbd>
-                </div>
-                <span className="font-label-code-xs text-on-surface-variant text-[11px]">Navigate</span>
-              </div>
-              <div className="p-2.5 rounded bg-surface-container-low border border-border flex flex-col items-center gap-1">
-                <kbd className="font-label-code-xs px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface">/</kbd>
-                <span className="font-label-code-xs text-on-surface-variant text-[11px]">Filter</span>
-              </div>
-              <div className="p-2.5 rounded bg-surface-container-low border border-border flex flex-col items-center gap-1">
-                <kbd className="font-label-code-xs px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface">c</kbd>
-                <span className="font-label-code-xs text-on-surface-variant text-[11px]">Compose</span>
-              </div>
-              <div className="p-2.5 rounded bg-surface-container-low border border-border flex flex-col items-center gap-1">
-                <kbd className="font-label-code-xs px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface">?</kbd>
-                <span className="font-label-code-xs text-on-surface-variant text-[11px]">Shortcuts</span>
-              </div>
-            </div>
+            <ul className="mail__idle-keys">
+              <li>
+                <span className="mail__idle-keycaps">
+                  <kbd className="kbd">j</kbd>
+                  <kbd className="kbd">k</kbd>
+                </span>
+                Navigate
+              </li>
+              <li>
+                <kbd className="kbd">/</kbd>
+                Filter
+              </li>
+              <li>
+                <kbd className="kbd">c</kbd>
+                Compose
+              </li>
+              <li>
+                <kbd className="kbd">?</kbd>
+                Shortcuts
+              </li>
+            </ul>
           </div>
         ) : message.isPending ? (
           <LoadingState label="Loading message" />

@@ -1,34 +1,39 @@
+/*
+ * The viewer is a size container: how many toolbar labels fit depends on the
+ * width of THIS pane, not of the window — the same 1440px window can give it
+ * 800px beside a list or 1200px with the nav collapsed.
+ */
 .viewer {
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
   background: var(--bg-surface);
+  container: viewer / inline-size;
 }
 
 .viewer__header {
-  padding: var(--space-3);
+  padding: var(--space-3) var(--space-5) var(--space-4);
   border-bottom: var(--border-width) solid var(--border);
   flex: none;
 }
 
 .viewer__headline {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-3);
-  margin-bottom: var(--space-3);
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  min-width: 0;
 }
 
 .viewer__back-btn {
   display: none;
   align-items: center;
   gap: var(--space-1);
-  padding: 6px var(--space-2);
+  height: 30px;
+  padding: 0 var(--space-2);
   border-radius: var(--radius);
-  background: var(--bg-raised);
-  border: var(--border-width) solid var(--border);
-  color: var(--text-primary);
+  color: var(--text-secondary);
   font-size: var(--text-chrome);
   font-weight: var(--weight-medium);
   cursor: pointer;
@@ -37,42 +42,84 @@
 
 .viewer__back-btn:hover {
   background: var(--bg-overlay);
-  color: var(--accent);
-  border-color: var(--accent);
+  color: var(--text-primary);
 }
 
+/*
+ * One row of actions, Reply first. Narrow panes collapse the secondary labels
+ * (below) instead of scrolling the row: a scrolling container would also clip
+ * the Move menu that opens out of it.
+ */
+.viewer__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+}
 
+.viewer__actions > * {
+  flex: none;
+}
+
+.viewer__actions > .viewer__move-wrap {
+  margin-left: auto;
+}
 
 .viewer__subject {
-  margin: 0;
+  margin: 0 0 var(--space-4);
   font-family: var(--font-display);
   font-size: var(--text-display);
   font-weight: var(--weight-semibold);
   line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-tight);
-  /*
-   * `flex: 1` resolves to `flex-basis: 0`, which made the subject start from
-   * nothing and take only what the toolbar left over — so the most important
-   * text on the screen wrapped to two lines while seven buttons sat on one.
-   * A real basis lets it claim its width first and the toolbar shrink instead.
-   */
-  flex: 1 1 24ch;
-  min-width: 0;
+  letter-spacing: -0.02em;
   word-break: break-word;
 }
 
-.viewer__actions {
-  display: flex;
-  gap: var(--space-2);
-  /*
-   * Shrinkable, not fixed: the toolbar wraps its own buttons onto a second row
-   * before it will squeeze the subject beside it. Actions stay reachable and
-   * the subject stays readable, which is the right order of priority.
-   */
-  flex: 0 1 auto;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  align-items: center;
+/* Below this width only the primary action keeps its words; the rest become
+   icon buttons with the same accessible names (the label is clipped, not
+   removed) and a tooltip from `title`. */
+@container viewer (max-width: 720px) {
+  .viewer__actions .button__label:not(.button__label--keep) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .viewer__actions .button:not(:has(.button__label--keep)) {
+    width: 30px;
+    padding: 0;
+  }
+
+  .viewer__header {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+}
+
+@container viewer (max-width: 480px) {
+  .viewer__back-label {
+    display: none;
+  }
+
+  .viewer__back-btn {
+    width: 30px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .viewer__header {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+
+  .viewer__placements {
+    padding-left: 0;
+  }
 }
 
 @media (max-width: 768px) {
@@ -80,44 +127,8 @@
     display: inline-flex;
   }
 
-  .viewer__headline {
-    flex-wrap: wrap;
-  }
-}
-
-/*
- * Seven wrapped buttons cost three rows — about 140px — before any of the
- * message showed, on a tablet as much as on a phone. One scrolling row costs
- * 40px and keeps every action reachable, matching how the tab strip and the
- * filter pills already behave below the three-pane threshold, so the gesture
- * is the same everywhere it is needed.
- */
-@media (max-width: 1280px) {
-  .viewer__headline {
-    flex-wrap: wrap;
-  }
-
-  .viewer__headline > .min-w-0.flex-1 {
-    flex-basis: 100%;
-  }
-
-  .viewer__actions {
-    width: 100%;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 2px;
-    mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
-  }
-
-  .viewer__actions::-webkit-scrollbar {
-    display: none;
-  }
-
-  .viewer__actions > * {
-    flex: none;
+  .viewer__actions > .viewer__move-wrap {
+    margin-left: 0;
   }
 }
 
@@ -141,7 +152,7 @@
   background: var(--bg-surface);
   border: var(--border-width) solid var(--border-strong);
   border-radius: var(--radius-lg);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-lg);
   min-width: 180px;
   max-height: 280px;
   overflow-y: auto;
@@ -230,48 +241,87 @@
   text-align: center;
 }
 
+.viewer__sender {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.viewer__sender > .avatar {
+  margin-top: 1px;
+}
+
+/* From and To take full rows; Date, Size and ID share one quiet meta row. */
 .viewer__envelope {
   margin: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-2) var(--space-4);
-  background: var(--bg-raised);
-  padding: var(--space-2) var(--space-3);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius);
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px var(--space-4);
 }
 
 .viewer__envelope-item {
   display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
+  align-items: center;
+  gap: 6px;
   min-width: 0;
+  max-width: 100%;
 }
 
-.viewer__envelope-item--id {
-  grid-column: 1 / -1;
-  border-top: var(--border-width) solid var(--border);
-  padding-top: var(--space-1);
+.viewer__envelope-item--from,
+.viewer__envelope-item--to {
+  flex-basis: 100%;
+}
+
+.viewer__envelope-item--to {
+  margin-bottom: 6px;
 }
 
 .viewer__envelope dt {
   font-size: var(--text-micro);
   font-weight: var(--weight-medium);
   color: var(--text-tertiary);
-  width: 44px;
   flex: none;
+}
+
+.viewer__envelope-item--from dt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 
 .viewer__envelope dd {
   margin: 0;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1);
   font-family: var(--font-mono);
-  font-size: var(--text-mono);
-  color: var(--text-primary);
+  font-size: var(--text-micro);
+  color: var(--text-secondary);
   min-width: 0;
   overflow: hidden;
+}
+
+.viewer__envelope-item--from dd {
+  font-family: var(--font-ui);
+  font-size: var(--text-body);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+}
+
+.viewer__envelope-item--to dd {
+  font-family: var(--font-ui);
+  font-size: var(--text-chrome);
+}
+
+.viewer__envelope-item--id {
+  flex: 1 1 12rem;
 }
 
 .viewer__addr {
@@ -281,8 +331,8 @@
 }
 
 .viewer__id {
-  color: var(--text-secondary);
-  font-size: var(--text-mono);
+  color: var(--text-tertiary);
+  font-size: var(--text-micro);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -293,6 +343,7 @@
   align-items: center;
   gap: var(--space-2);
   margin-top: var(--space-3);
+  padding-left: calc(38px + var(--space-3));
   flex-wrap: wrap;
 }
 
@@ -308,9 +359,9 @@
   padding: 2px 8px;
   height: 22px;
   font-size: var(--text-micro);
-  background: var(--bg-surface);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius);
+  background: transparent;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-full);
   color: var(--text-secondary);
   font-weight: var(--weight-medium);
 }
@@ -410,18 +461,30 @@
 }
 
 .viewer__tab {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: var(--space-2) var(--space-3);
+  padding: 0 var(--space-3);
   font-size: var(--text-chrome);
-  color: var(--text-secondary);
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
-  transition: all var(--motion-fast) var(--ease);
+  font-weight: var(--weight-medium);
+  color: var(--text-tertiary);
+  transition: color var(--motion-fast) var(--ease);
   white-space: nowrap;
-  min-height: var(--touch-target-dense, 36px);
+  min-height: 40px;
   flex-shrink: 0;
+}
+
+.viewer__tab::after {
+  content: '';
+  position: absolute;
+  left: var(--space-2);
+  right: var(--space-2);
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: transparent;
+  transition: background var(--motion-fast) var(--ease);
 }
 
 .viewer__tab:hover {
@@ -429,19 +492,30 @@
 }
 
 .viewer__tab--active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+}
+
+.viewer__tab--active::after {
+  background: var(--accent);
 }
 
 .viewer__tab-count {
-  padding: 1px 6px;
-  border-radius: 10px;
-  background: var(--bg-raised);
-  font-size: 10px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--bg-overlay);
+  font-size: 10.5px;
   font-family: var(--font-mono);
-  color: var(--text-tertiary);
-  border: var(--border-width) solid var(--border);
+  color: var(--text-secondary);
+}
+
+.viewer__tab--active .viewer__tab-count {
+  background: var(--accent-muted);
+  color: var(--accent);
 }
 
 .viewer__panel {
@@ -568,10 +642,10 @@
 }
 
 .viewport-btn--active {
-  background: var(--bg-surface);
-  color: var(--accent);
+  background: var(--bg-overlay);
+  color: var(--text-primary);
   font-weight: var(--weight-medium);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .viewport-btn--rotate {
@@ -590,12 +664,28 @@
   transition: all var(--motion) var(--ease);
 }
 
+/* The message sits on its own white sheet, framed by app chrome, so where the
+   email ends and Sandesh begins is never ambiguous in the dark theme. */
 .viewer__html-stage--desktop {
   display: flex;
   justify-content: center;
-  background: var(--bg-surface);
+  background: var(--bg-base);
   overflow: hidden;
-  padding: 0;
+  padding: var(--space-4);
+}
+
+.viewer__html-stage--desktop .viewer__html-frame {
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: var(--shadow-md);
+}
+
+@container viewer (max-width: 720px) {
+  .viewer__html-stage--desktop {
+    padding: var(--space-2);
+  }
 }
 
 .viewer__html-stage--tablet,

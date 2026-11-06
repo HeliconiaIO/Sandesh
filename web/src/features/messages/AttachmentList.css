@@ -98,7 +98,7 @@
 
 .attachment__icon-badge--image {
   color: var(--filetype-image);
-  background: rgba(56, 189, 248, 0.1);
+  background: var(--accent-muted);
 }
 
 .attachment__main {

@@ -139,8 +139,8 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-1) var(--space-4);
-  background: rgba(107, 216, 203, 0.08);
-  border-bottom: var(--border-width) solid rgba(107, 216, 203, 0.15);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-bottom: var(--border-width) solid color-mix(in srgb, var(--accent) 15%, transparent);
   font-size: var(--text-micro);
   color: var(--accent);
 }

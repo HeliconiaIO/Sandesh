@@ -7,21 +7,21 @@
  * every pane collapses on one shared scale, so a literal value is a bug that
  * only shows up in the theme — or at the width — its author was not using.
  *
- * The palette is a cool graphite foundation with ONE interaction accent.
- * Semantic colours (ok / warn / error / info) are reserved for meaning — a
- * console that colours decoratively can no longer use colour to signal.
+ * The palette is a near-neutral graphite with ONE interaction accent, a soft
+ * indigo. Semantic colours (ok / warn / error / info) are reserved for
+ * meaning — a console that colours decoratively can no longer use colour to
+ * signal.
  */
 
 :root {
   /* --- Type -------------------------------------------------------------- */
   /*
-   * Three roles, deliberately distinct. The display face is mechanical rather
-   * than neutral: this is an instrument, and its chrome should not read like a
-   * document. Body stays a workhorse grotesque for long prose. Monospace is
-   * used generously — this is a tool for reading protocol data.
+   * Geist carries both chrome and prose; JetBrains Mono carries protocol data
+   * and is used generously, because this is a tool for reading headers, raw
+   * source and transcripts.
    */
-  --font-display: 'Geist Variable', 'Geist', 'Space Grotesk Variable',
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Geist Variable', 'Geist', 'Inter Variable', -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-ui: 'Geist Variable', 'Geist', 'Inter Variable', 'Inter', -apple-system,
     BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace,
@@ -30,9 +30,10 @@
   --text-chrome: 13px;   /* nav, toolbars, labels */
   --text-body: 14px;     /* message content */
   --text-mono: 12.5px;   /* headers, raw, MIME */
-  --text-micro: 11px;    /* badges, counts */
+  --text-micro: 11.5px;  /* badges, counts */
   --text-title: 15px;
-  --text-display: 19px;
+  --text-display: 20px;
+  --text-hero: 24px;
 
   --weight-normal: 400;
   --weight-medium: 500;
@@ -43,13 +44,12 @@
   --leading-mono: 1.6;
 
   /*
-   * Chrome labels are set in the display face, uppercase, with tracking. This
-   * is the one typographic mannerism in the system; it marks structural labels
-   * (section headings, pane titles, table captions) as machine-addressable
-   * rather than prose.
+   * Structural labels (section headings, pane titles, table captions) are
+   * small, uppercase and lightly tracked: they mark a label as
+   * machine-addressable rather than prose.
    */
-  --tracking-label: 0.08em;
-  --tracking-tight: -0.01em;
+  --tracking-label: 0.06em;
+  --tracking-tight: -0.015em;
 
   /* --- Space: an 8px grid, with 4px available for dense controls --------- */
   --space-1: 4px;
@@ -60,17 +60,20 @@
   --space-6: 32px;
   --space-7: 48px;
 
-  /* --- Shape: restrained. Borders and background steps, never shadows. --- */
-  --radius-sm: 3px;
-  --radius: 4px;
-  --radius-lg: 6px;
+  /* --- Shape ------------------------------------------------------------- */
+  --radius-sm: 5px;
+  --radius: 7px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-full: 9999px;
   --border-width: 1px;
 
   /* --- Fixed metrics ----------------------------------------------------- */
   --row-height: 32px;
   --header-height: 48px;
-  --sidebar-width: 256px;
-  --list-width: 380px;
+  --sidebar-width: 244px;
+  --rail-width: 60px;
+  --list-width: 384px;
 
   /* --- Touch & Ergonomics (WCAG 2.5.8) ----------------------------------- */
   --touch-target-min: 44px;
@@ -102,10 +105,6 @@
  * colour alone" (§11), because the icon's glyph and the file's extension both
  * state the type already — the hue only makes the row faster to find.
  *
- * They live here because the same eight values had been copied into three
- * files, and already disagreed: the viewer defined five of the eight, so an
- * attachment could change colour between the list and the preview.
- *
  * Nothing else may use these. A status, a badge or a control takes its colour
  * from the semantic tokens above.
  */
@@ -126,25 +125,20 @@
  * The one legitimate exception to "a component never hardcodes a colour": the
  * theme picker draws a miniature of BOTH themes at once, so it cannot use the
  * live tokens — those only ever resolve to the theme currently applied.
- *
- * They are still defined here rather than in the component, because the whole
- * point of a preview is that it matches the thing it previews. Left in the
- * component they silently kept painting the old palette after the real one
- * changed, and the picker advertised a product that no longer existed.
- * Any edit to the palette above must be mirrored here.
+ * Any edit to the palette below must be mirrored here.
  */
 :root {
-  --swatch-dark-base: #0b1012;
-  --swatch-dark-surface: #10171a;
-  --swatch-dark-raised: #151f23;
-  --swatch-dark-border: #1f2c31;
-  --swatch-dark-accent: #38bec9;
+  --swatch-dark-base: #08090b;
+  --swatch-dark-surface: #0e0f12;
+  --swatch-dark-raised: #16171b;
+  --swatch-dark-border: #24262c;
+  --swatch-dark-accent: #9094f8;
 
-  --swatch-light-base: #ffffff;
-  --swatch-light-surface: #eef2f3;
-  --swatch-light-raised: #e6edee;
-  --swatch-light-border: #d3dcde;
-  --swatch-light-accent: #0c6a77;
+  --swatch-light-base: #f6f6f8;
+  --swatch-light-surface: #ffffff;
+  --swatch-light-raised: #f3f3f5;
+  --swatch-light-border: #e4e4e8;
+  --swatch-light-accent: #4f46e5;
 }
 
 /*
@@ -154,7 +148,8 @@
  * this codebase may use:
  *
  *   >= 1280px   three panes: nav + list + detail
- *   768-1280px  two panes: list + detail, nav as an off-canvas drawer
+ *   768-1280px  two panes: list + detail, nav as an icon rail that expands
+ *               into an off-canvas drawer
  *   < 768px     single pane with stack navigation
  *
  * Two narrower steps exist for chrome only — they thin the header and hide
@@ -175,142 +170,139 @@
  * Dark is the default (§10). Both themes define the same token names, so no
  * component ever branches on the theme.
  *
- * The foundation is a cool graphite with a blue-green cast rather than the
- * blue-violet of a generic "developer dark". Each background step is a real,
- * perceptible level so panes read as stacked planes without a single shadow.
+ * Each background step is a real, perceptible level so panes read as stacked
+ * planes; shadows are reserved for things that genuinely float (menus,
+ * popovers, dialogs).
  */
 :root,
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --bg-base: #0b1326;        /* the window behind everything */
-  --bg-surface: #060e20;     /* panes (surface-container-lowest) */
-  --bg-list: #060e20;
-  --bg-raised: #131b2e;      /* rows, cards, inputs (surface-container-low) */
-  --bg-overlay: #171f33;     /* hover (surface-container) */
-  --bg-selected: #222a3d;    /* selected row (surface-container-high) */
-  --bg-bright: #31394d;
+  --bg-base: #08090b;        /* the window behind everything */
+  --bg-surface: #0e0f12;     /* panes */
+  --bg-list: #0e0f12;
+  --bg-raised: #16171b;      /* cards, inputs */
+  --bg-overlay: #1c1d22;     /* hover */
+  --bg-selected: #23252c;    /* selected row */
+  --bg-bright: #2b2d35;
 
-  --border: #2d3449;         /* hairline dividers (surface-container-highest) */
-  --border-strong: #3d4947;  /* outline-variant */
-  --inverse-surface: #dae2fd;
-  --inverse-on-surface: #283044;
+  --border: #202228;         /* hairline dividers */
+  --border-strong: #2e3038;
+  --inverse-surface: #ededf0;
+  --inverse-on-surface: #16171b;
 
-  --text-primary: #dae2fd;   /* on-surface */
-  --text-secondary: #bcc9c6; /* on-surface-variant */
-  --text-tertiary: #879391;  /* outline */
-  --text-inverse: #0b1326;
-
+  --text-primary: #ededf0;
+  --text-secondary: #a8a9b3;
   /*
-   * The single interaction accent: Precision Deep Teal
+   * Tertiary is the de-emphasised tier, tuned to the WORST case: the hover
+   * background (--bg-overlay), not the pane behind it. It clears 4.5:1 there
+   * while staying visibly quieter than --text-secondary.
    */
-  --accent: #6bd8cb;
-  --accent-hover: #89f5e7;
-  --accent-muted: rgba(107, 216, 203, 0.14);
-  --accent-border: rgba(107, 216, 203, 0.42);
-  --text-on-primary: #003732;
-  --primary-container: #29a195;
-  --on-primary-container: #00302b;
-  --inverse-primary: #006a61;
+  --text-tertiary: #898b96;
+  --text-inverse: #08090b;
 
-  /* Semantic. Precision palette. */
-  --ok: #4edea3;             /* emerald */
-  --ok-muted: rgba(78, 222, 163, 0.14);
-  --text-on-secondary: #003824;
-  --secondary-container: #00a572;
-  --on-secondary-container: #00311f;
-  --warn: #ffb95f;           /* amber */
-  --warn-muted: rgba(255, 185, 95, 0.14);
-  --text-on-tertiary: #472a00;
-  --tertiary-container: #ca8100;
-  --on-tertiary-container: #3e2400;
-  --error: #ffb4ab;          /* crimson */
-  --error-muted: rgba(255, 180, 171, 0.14);
-  --text-on-error: #690005;
-  --error-container: #93000a;
-  --on-error-container: #ffdad6;
-  --info: #6bd8cb;
-  --info-muted: rgba(107, 216, 203, 0.14);
+  /* The single interaction accent: soft indigo. */
+  --accent: #9094f8;
+  --accent-hover: #a8abff;
+  --accent-muted: rgba(144, 148, 248, 0.13);
+  --accent-border: rgba(144, 148, 248, 0.38);
+  --text-on-primary: #08090b;
+  --primary-container: #2a2b52;
+  --on-primary-container: #dcdcff;
+  --inverse-primary: #4f46e5;
+
+  /* Semantic. */
+  --ok: #4ade80;
+  --ok-muted: rgba(74, 222, 128, 0.12);
+  --text-on-secondary: #052e16;
+  --secondary-container: #14532d;
+  --on-secondary-container: #bbf7d0;
+  --warn: #fbbf24;
+  --warn-muted: rgba(251, 191, 36, 0.12);
+  --text-on-tertiary: #451a03;
+  --tertiary-container: #713f12;
+  --on-tertiary-container: #fef3c7;
+  --error: #f87171;
+  --error-muted: rgba(248, 113, 113, 0.12);
+  --text-on-error: #450a0a;
+  --error-container: #7f1d1d;
+  --on-error-container: #fee2e2;
+  /*
+   * Informational is cyan, a different HUE from the accent rather than a
+   * different shade — otherwise "this is interactive" and "this is an
+   * informational signal" are indistinguishable.
+   */
+  --info: #5cc8e4;
+  --info-muted: rgba(92, 200, 228, 0.12);
 
   --focus-ring: var(--accent);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --highlight-top: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 :root[data-theme='light'] {
   color-scheme: light;
 
-  --bg-base: #eef2f3;
+  --bg-base: #f6f6f8;
   --bg-surface: #ffffff;
-  --bg-list: #f4f7f8;
-  --bg-raised: #f4f7f8;
-  --bg-overlay: #e6edee;
-  --bg-selected: #d7eef1;
+  --bg-list: #ffffff;
+  --bg-raised: #f3f3f5;
+  --bg-overlay: #ececef;
+  --bg-selected: #e9e9fb;
   --bg-bright: #ffffff;
 
-  --border: #d3dcde;
-  --border-strong: #b3c0c4;
-  --inverse-surface: #121a1c;
-  --inverse-on-surface: #eef2f3;
+  --border: #e4e4e8;
+  --border-strong: #d2d2d8;
+  --inverse-surface: #16171b;
+  --inverse-on-surface: #f6f6f8;
 
-  --text-primary: #121a1c;
-  --text-secondary: #4d5f64;
-  /*
-   * Tertiary is the de-emphasised tier, and it is tuned to the WORST case: the
-   * hover background (--bg-overlay), not the pane behind it. Both themes had
-   * set it purely by eye and it measured 3.4-4.25:1 against the surfaces it
-   * actually landed on — under the 4.5 floor §11 requires, on every timestamp,
-   * log target and caption in the product. These values clear 4.5 against
-   * every background level while staying visibly quieter than --text-secondary.
-   */
-  --text-tertiary: #596b71;
+  --text-primary: #16171b;
+  --text-secondary: #4e505a;
+  --text-tertiary: #5f616b;
   --text-inverse: #ffffff;
 
   /*
-   * Teal darkens for AA contrast (§11). This is the same hue as the dark
-   * theme's accent, not a different colour with the same name.
-   *
-   * Tuned to the WORST case — the colour's own `--*-muted` tint over
-   * `--bg-raised`, not over white. A status colour is most often painted ON its
-   * tint (`.connection`, log badges, callouts), and that tint sits on a pane
-   * rather than on the page, which costs roughly 0.6 of the ratio rather than
-   * the 0.3 that modelling it against white suggests.
-   *
-   * The previous values were set against white alone. Measured against the
-   * surface they are actually used on, four of the five were below AA — accent
-   * 4.17, ok 4.23, warn 4.28 and error 3.89 — and none of it was visible to
-   * inspection, because white was the only background anyone checked. All five
-   * now clear 4.6:1 there, a deliberate margin so rounding cannot flip one.
-   *
-   * This is the same worst-case rule `--text-tertiary` above already follows,
-   * and `e2e/a11y.spec.ts` measures it in a real engine rather than trusting it.
+   * Status colours darken for AA contrast (§11), tuned to the WORST case — the
+   * colour's own `--*-muted` tint over `--bg-raised`, not over white, because
+   * a status colour is most often painted ON its tint. `e2e/a11y.spec.ts`
+   * measures this in a real engine rather than trusting it.
    */
-  --accent: #0c6a77;
-  --accent-hover: #0a5f6a;
-  --accent-muted: rgba(12, 106, 119, 0.10);
-  --accent-border: rgba(12, 106, 119, 0.40);
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-muted: rgba(79, 70, 229, 0.09);
+  --accent-border: rgba(79, 70, 229, 0.35);
   --text-on-primary: #ffffff;
-  --primary-container: #d7eef1;
-  --on-primary-container: #124c50;
-  --inverse-primary: #6bd8cb;
+  --primary-container: #e0e0fc;
+  --on-primary-container: #2e2a8a;
+  --inverse-primary: #9094f8;
 
-  --ok: #176e2c;
-  --ok-muted: rgba(23, 110, 44, 0.10);
+  --ok: #116b32;
+  --ok-muted: rgba(17, 107, 50, 0.09);
   --text-on-secondary: #ffffff;
-  --secondary-container: #dff4e5;
-  --on-secondary-container: #174a27;
-  --warn: #835800;
-  --warn-muted: rgba(131, 88, 0, 0.10);
+  --secondary-container: #dcfce7;
+  --on-secondary-container: #14532d;
+  --warn: #8a5300;
+  --warn-muted: rgba(138, 83, 0, 0.09);
   --text-on-tertiary: #ffffff;
-  --tertiary-container: #fff0c7;
-  --on-tertiary-container: #4d3500;
-  --error: #b81e29;
-  --error-muted: rgba(184, 30, 41, 0.10);
+  --tertiary-container: #fef3c7;
+  --on-tertiary-container: #713f12;
+  --error: #b91c1c;
+  --error-muted: rgba(185, 28, 28, 0.08);
   --text-on-error: #ffffff;
-  --error-container: #fde0e2;
-  --on-error-container: #6d1017;
-  --info: #1d59c4;
-  --info-muted: rgba(29, 89, 196, 0.10);
+  --error-container: #fee2e2;
+  --on-error-container: #7f1d1d;
+  --info: #0e6f8a;
+  --info-muted: rgba(14, 111, 138, 0.09);
 
   --focus-ring: var(--accent);
+
+  --shadow-sm: 0 1px 2px rgba(16, 17, 20, 0.06);
+  --shadow-md: 0 4px 16px rgba(16, 17, 20, 0.08), 0 0 0 1px rgba(16, 17, 20, 0.05);
+  --shadow-lg: 0 16px 48px rgba(16, 17, 20, 0.14), 0 0 0 1px rgba(16, 17, 20, 0.06);
+  --highlight-top: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 /* Motion is functional, so removing it costs nothing but the flourish. */

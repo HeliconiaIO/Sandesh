@@ -205,14 +205,19 @@
 .mailbox-nav__label {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 10px;
   min-width: 0;
   flex: 1;
 }
 
 .mailbox-nav__icon {
   flex-shrink: 0;
-  opacity: 0.75;
+  color: var(--text-tertiary);
+  transition: color var(--motion-fast) var(--ease);
+}
+
+.nav-item:hover .mailbox-nav__icon {
+  color: var(--text-secondary);
 }
 
 .mailbox-nav__name {
@@ -223,19 +228,20 @@
 }
 
 .mailbox-nav__count {
-  font-size: var(--text-micro);
-  padding: 1px 5px;
-  border-radius: 999px;
-  background: var(--bg-overlay);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
   color: var(--text-tertiary);
   flex-shrink: 0;
-  line-height: 1.6;
+  line-height: 18px;
+  font-variant-numeric: tabular-nums;
 }
 
 .mailbox-nav__count--unseen {
-  background: var(--accent);
-  color: var(--text-inverse);
-  font-weight: var(--weight-medium);
+  background: var(--accent-muted);
+  color: var(--accent);
+  font-weight: var(--weight-semibold);
 }
 
 /* Context menu button & popover ------------------------------------------- */
@@ -286,7 +292,7 @@
   background: var(--bg-surface);
   border: var(--border-width) solid var(--border-strong);
   border-radius: var(--radius-lg);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-lg);
   min-width: 140px;
   padding: 3px;
   display: flex;

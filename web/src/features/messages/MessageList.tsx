@@ -33,6 +33,7 @@ import { Paperclip, TriangleAlert } from 'lucide-react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 
 import type { MessageSummary } from '../../api/client'
+import { Avatar } from '../../components/Avatar'
 import { formatAddressShort, formatAge, formatSize } from '../../lib/format'
 import './MessageList.css'
 
@@ -78,7 +79,7 @@ export function MessageList({
     // measures each mounted row and corrects the spacer, so a row that wraps to
     // a third line (a long subject, a multi-placement chip) is accommodated
     // rather than clipped.
-    estimateSize: () => 64,
+    estimateSize: () => 66,
     // Enough rows above and below the viewport that a fast scroll does not
     // reach unmounted space, and few enough that the DOM stays small.
     overscan: 8,
@@ -241,6 +242,7 @@ function MessageRow({
   setSize: number
 }) {
   const unread = isUnread(message)
+  const sender = formatAddressShort(message.from)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const touchStartPos = useRef<{ x: number; y: number } | null>(null)
 
@@ -306,13 +308,14 @@ function MessageRow({
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchEnd}
     >
-      <span className="message-row__marker" aria-hidden="true" />
+      <span className="message-row__lead" aria-hidden="true">
+        <span className="message-row__marker" />
+        <Avatar name={sender} size="sm" />
+      </span>
 
       <div className="message-row__main">
         <div className="message-row__top">
-          <span className="message-row__from">
-            {formatAddressShort(message.from)}
-          </span>
+          <span className="message-row__from">{sender}</span>
           <time className="message-row__age" dateTime={message.received_at}>
             {formatAge(message.received_at)}
           </time>
