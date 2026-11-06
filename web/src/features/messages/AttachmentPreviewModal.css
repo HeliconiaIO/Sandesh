@@ -64,7 +64,7 @@
 }
 
 .attachment-modal__type-badge--image {
-  background: rgba(56, 189, 248, 0.15);
+  background: var(--accent-muted);
   color: var(--filetype-image);
 }
 

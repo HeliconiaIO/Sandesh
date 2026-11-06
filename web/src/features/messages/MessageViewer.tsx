@@ -16,7 +16,6 @@ import {
   Archive,
   ArrowLeft,
   Binary,
-  Check,
   Circle,
   CircleDot,
   CornerDownRight,
@@ -41,6 +40,7 @@ import {
 
 import { getMailboxIcon, isProtectedMailbox } from '../mailboxes/MailboxNav'
 import type { Attachment, MessageDetail, MimePart } from '../../api/client'
+import { Avatar } from '../../components/Avatar'
 import { CopyButton } from '../../components/CopyButton'
 import { HtmlPreview } from '../../components/HtmlPreview'
 import { ErrorState, LoadingState } from '../../components/States'
@@ -60,7 +60,7 @@ import {
 } from '../../hooks/queries'
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts'
 import { attachments as attachmentsApi, messages as api } from '../../api/resources'
-import { formatAddress, formatFull, formatSize } from '../../lib/format'
+import { formatAddress, formatAddressShort, formatFull, formatSize } from '../../lib/format'
 import { AttachmentList } from './AttachmentList'
 import {
   AttachmentIcon,
@@ -345,23 +345,10 @@ export function MessageViewer({
               title="Back to messages"
             >
               <ArrowLeft size={15} aria-hidden="true" />
-              <span>Back</span>
+              <span className="viewer__back-label">Back</span>
             </button>
           )}
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-space-xs text-outline font-label-code-xs text-label-code-xs mb-1">
-              <span className="text-primary font-medium">RFC 5322</span>
-              <span>•</span>
-              <span>Queue ID: {message.id.slice(0, 8)}</span>
-              <span>•</span>
-              <span className="text-secondary flex items-center gap-0.5">
-                <Check size={11} aria-hidden="true" />
-                Verified Local
-              </span>
-            </div>
-            <h1 className="viewer__subject">{message.subject || '(no subject)'}</h1>
-          </div>
-          <div className="viewer__actions">
+          <div className="viewer__actions" role="toolbar" aria-label="Message actions">
             {isDrafts ? (
               <>
                 <button
@@ -370,8 +357,8 @@ export function MessageViewer({
                   onClick={() => void handleEditDraft()}
                   title="Edit this draft in composer"
                 >
-                  <Edit size={13} aria-hidden="true" />
-                  Edit Draft
+                  <Edit size={14} aria-hidden="true" />
+                  <span className="button__label button__label--keep">Edit Draft</span>
                 </button>
 
                 {entry ? (
@@ -387,8 +374,8 @@ export function MessageViewer({
                     disabled={deleteEntry.isPending}
                     title="Discard and permanently delete draft"
                   >
-                    <Trash2 size={13} aria-hidden="true" />
-                    Discard
+                    <Trash2 size={14} aria-hidden="true" />
+                    <span className="button__label">Discard</span>
                   </button>
                 ) : null}
               </>
@@ -396,12 +383,12 @@ export function MessageViewer({
               <>
                 <button
                   type="button"
-                  className="button"
+                  className="button button--primary"
                   onClick={() => void handleReply()}
-                  title="Reply to sender"
+                  title="Reply to sender (R)"
                 >
-                  <Reply size={13} aria-hidden="true" />
-                  Reply
+                  <Reply size={14} aria-hidden="true" />
+                  <span className="button__label button__label--keep">Reply</span>
                 </button>
 
                 {/* Replay delivers the same bytes again as a new message, so
@@ -416,8 +403,10 @@ export function MessageViewer({
                   disabled={replayMessage.isPending}
                   title="Deliver this message again, as a new message"
                 >
-                  <RotateCw size={13} aria-hidden="true" />
-                  {replayMessage.isPending ? 'Replaying…' : 'Replay'}
+                  <RotateCw size={14} aria-hidden="true" />
+                  <span className="button__label">
+                    {replayMessage.isPending ? 'Replaying…' : 'Replay'}
+                  </span>
                 </button>
 
                 {entry ? (
@@ -434,11 +423,11 @@ export function MessageViewer({
                       disabled={setFlags.isPending}
                     >
                       {unread ? (
-                        <CircleDot size={13} aria-hidden="true" />
+                        <CircleDot size={14} aria-hidden="true" />
                       ) : (
-                        <Circle size={13} aria-hidden="true" />
+                        <Circle size={14} aria-hidden="true" />
                       )}
-                      Mark {unread ? 'read' : 'unread'}
+                      <span className="button__label">Mark {unread ? 'read' : 'unread'}</span>
                     </button>
 
                     {isTrash ? (
@@ -455,8 +444,8 @@ export function MessageViewer({
                           disabled={moveEntry.isPending}
                           title="Restore back to Inbox"
                         >
-                          <Inbox size={13} aria-hidden="true" />
-                          Restore
+                          <Inbox size={14} aria-hidden="true" />
+                          <span className="button__label">Restore</span>
                         </button>
 
                         <button
@@ -471,8 +460,8 @@ export function MessageViewer({
                           disabled={deleteEntry.isPending}
                           title="Permanently remove from database"
                         >
-                          <Trash2 size={13} aria-hidden="true" />
-                          Delete permanently
+                          <Trash2 size={14} aria-hidden="true" />
+                          <span className="button__label">Delete permanently</span>
                         </button>
                       </>
                     ) : isArchive ? (
@@ -489,8 +478,8 @@ export function MessageViewer({
                           disabled={moveEntry.isPending}
                           title="Move back to Inbox"
                         >
-                          <Inbox size={13} aria-hidden="true" />
-                          Move to Inbox
+                          <Inbox size={14} aria-hidden="true" />
+                          <span className="button__label">Move to Inbox</span>
                         </button>
 
                         <button
@@ -505,8 +494,8 @@ export function MessageViewer({
                           disabled={deleteEntry.isPending}
                           title="Move to Trash"
                         >
-                          <Trash2 size={13} aria-hidden="true" />
-                          Trash
+                          <Trash2 size={14} aria-hidden="true" />
+                          <span className="button__label">Trash</span>
                         </button>
                       </>
                     ) : isJunk ? (
@@ -523,8 +512,8 @@ export function MessageViewer({
                           disabled={moveEntry.isPending}
                           title="Mark as not junk and move to Inbox"
                         >
-                          <Inbox size={13} aria-hidden="true" />
-                          Not Junk
+                          <Inbox size={14} aria-hidden="true" />
+                          <span className="button__label">Not Junk</span>
                         </button>
 
                         <button
@@ -539,8 +528,8 @@ export function MessageViewer({
                           disabled={deleteEntry.isPending}
                           title="Move to Trash"
                         >
-                          <Trash2 size={13} aria-hidden="true" />
-                          Trash
+                          <Trash2 size={14} aria-hidden="true" />
+                          <span className="button__label">Trash</span>
                         </button>
                       </>
                     ) : (
@@ -557,8 +546,8 @@ export function MessageViewer({
                           disabled={moveEntry.isPending}
                           title="Move to Archive"
                         >
-                          <Archive size={13} aria-hidden="true" />
-                          Archive
+                          <Archive size={14} aria-hidden="true" />
+                          <span className="button__label">Archive</span>
                         </button>
 
                         <button
@@ -573,8 +562,8 @@ export function MessageViewer({
                           disabled={moveEntry.isPending}
                           title="Mark as Junk"
                         >
-                          <AlertOctagon size={13} aria-hidden="true" />
-                          Junk
+                          <AlertOctagon size={14} aria-hidden="true" />
+                          <span className="button__label">Junk</span>
                         </button>
 
                         <button
@@ -589,8 +578,8 @@ export function MessageViewer({
                           disabled={deleteEntry.isPending}
                           title="Move to Trash"
                         >
-                          <Trash2 size={13} aria-hidden="true" />
-                          Delete
+                          <Trash2 size={14} aria-hidden="true" />
+                          <span className="button__label">Delete</span>
                         </button>
                       </>
                     )}
@@ -630,8 +619,8 @@ export function MessageViewer({
                     }}
                     disabled={moveEntry.isPending}
                   >
-                    <FolderOpen size={13} aria-hidden="true" />
-                    Move to…
+                    <FolderOpen size={14} aria-hidden="true" />
+                    <span className="button__label">Move to…</span>
                   </button>
 
                   {movePickerOpen && (
@@ -736,38 +725,45 @@ export function MessageViewer({
           </div>
         </div>
 
-        <dl className="viewer__envelope">
-          <div className="viewer__envelope-item">
-            <dt>From</dt>
-            <dd>
-              <span className="viewer__addr">{formatAddress(message.from)}</span>
-              {message.from ? (
-                <CopyButton value={message.from.address} label="the sender address" />
-              ) : null}
-            </dd>
-          </div>
-          <div className="viewer__envelope-item">
-            <dt>To</dt>
-            <dd>
-              <span className="viewer__addr">{message.to.length > 0 ? message.to.map(formatAddress).join(', ') : '—'}</span>
-            </dd>
-          </div>
-          <div className="viewer__envelope-item">
-            <dt>Date</dt>
-            <dd>{formatFull(message.received_at)}</dd>
-          </div>
-          <div className="viewer__envelope-item">
-            <dt>Size</dt>
-            <dd>{formatSize(message.size)}</dd>
-          </div>
-          <div className="viewer__envelope-item viewer__envelope-item--id">
-            <dt>ID</dt>
-            <dd>
-              <span className="viewer__id mono">{message.id}</span>
-              <CopyButton value={message.id} label="the message id" />
-            </dd>
-          </div>
-        </dl>
+        <h1 className="viewer__subject">{message.subject || '(no subject)'}</h1>
+
+        <div className="viewer__sender">
+          <Avatar name={formatAddressShort(message.from)} size="lg" />
+          <dl className="viewer__envelope">
+            <div className="viewer__envelope-item viewer__envelope-item--from">
+              <dt>From</dt>
+              <dd>
+                <span className="viewer__addr">{formatAddress(message.from)}</span>
+                {message.from ? (
+                  <CopyButton value={message.from.address} label="the sender address" />
+                ) : null}
+              </dd>
+            </div>
+            <div className="viewer__envelope-item viewer__envelope-item--to">
+              <dt>To</dt>
+              <dd>
+                <span className="viewer__addr">
+                  {message.to.length > 0 ? message.to.map(formatAddress).join(', ') : '—'}
+                </span>
+              </dd>
+            </div>
+            <div className="viewer__envelope-item">
+              <dt>Date</dt>
+              <dd>{formatFull(message.received_at)}</dd>
+            </div>
+            <div className="viewer__envelope-item">
+              <dt>Size</dt>
+              <dd>{formatSize(message.size)}</dd>
+            </div>
+            <div className="viewer__envelope-item viewer__envelope-item--id">
+              <dt>ID</dt>
+              <dd>
+                <span className="viewer__id mono">{message.id}</span>
+                <CopyButton value={message.id} label="the message id" />
+              </dd>
+            </div>
+          </dl>
+        </div>
 
         {/* Placements: one message can live in several mailboxes (§23). */}
         {message.entries.length > 0 ? (

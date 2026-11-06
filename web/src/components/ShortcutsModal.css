@@ -68,7 +68,7 @@
   width: 32px;
   height: 32px;
   border-radius: var(--radius-sm, 4px);
-  background: rgba(107, 216, 203, 0.1);
+  background: var(--accent-muted);
   color: var(--accent);
 }
 

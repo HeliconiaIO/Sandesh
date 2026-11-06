@@ -113,7 +113,7 @@
 /* --- Active Workspace Hero Card ---------------------------------------- */
 
 .active-ws-card {
-  background: rgba(107, 216, 203, 0.04);
+  background: color-mix(in srgb, var(--accent) 4%, transparent);
   border: 1px solid var(--accent);
   border-radius: var(--radius-lg);
   padding: var(--space-4) var(--space-5);
@@ -174,10 +174,10 @@
   font-weight: 600;
   font-family: var(--font-mono);
   color: var(--accent);
-  background: rgba(107, 216, 203, 0.12);
+  background: var(--accent-muted);
   padding: 2px 8px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(107, 216, 203, 0.25);
+  border: 1px solid var(--accent-border);
 }
 
 .active-ws-card__badge-dot {
@@ -185,13 +185,13 @@
   height: 6px;
   border-radius: 50%;
   background: var(--ok);
-  box-shadow: 0 0 0 3px rgba(78, 222, 163, 0.2);
+  box-shadow: 0 0 0 3px var(--ok-muted);
   animation: badge-dot-ping 2s ease infinite;
 }
 
 @keyframes badge-dot-ping {
-  0%, 100% { box-shadow: 0 0 0 3px rgba(78, 222, 163, 0.2); }
-  50% { box-shadow: 0 0 0 5px rgba(78, 222, 163, 0.08); }
+  0%, 100% { box-shadow: 0 0 0 3px var(--ok-muted); }
+  50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--ok) 6%, transparent); }
 }
 
 .active-ws-card__desc {

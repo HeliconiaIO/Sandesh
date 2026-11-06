@@ -1,13 +1,19 @@
 .shell {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
   background: var(--bg-base);
+  color: var(--text-primary);
 }
 
 /* --- Header ------------------------------------------------------------- */
 
 .shell__header {
+  position: relative;
+  z-index: calc(var(--z-banner) + 1);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -23,19 +29,29 @@
   min-width: 0;
 }
 
+.shell__header-start {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
 .shell__brand {
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  padding: 0 var(--space-1);
+  flex: none;
+  user-select: none;
 }
 
 .shell__logo-img {
-  height: 26px;
+  height: 24px;
   width: auto;
   display: block;
   flex: none;
   object-fit: contain;
-  vertical-align: middle;
 }
 
 :root[data-theme='light'] .shell__logo-img--dark {
@@ -56,42 +72,34 @@
   display: none;
 }
 
-.shell__mark {
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
-  background: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-}
-
-.shell__mark-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 1px;
-  background: var(--text-inverse);
-}
-
-/*
- * The wordmark is the one place the display face runs at full size. Space
- * Grotesk's flat terminals and squared bowls read as instrument labelling
- * rather than as a brand, which is the register the console wants.
- */
 .shell__name {
   font-family: var(--font-display);
   font-size: var(--text-title);
   font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-tight);
+}
+
+.shell__version {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-tertiary);
+  padding: 1px 6px;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-full);
+  line-height: 1.4;
+}
+
+.shell__divider {
+  width: 1px;
+  height: 18px;
+  background: var(--border-strong);
   flex: none;
 }
 
 .shell__search-container {
   flex: 1 1 auto;
   min-width: 0;
-  max-width: 440px;
-  margin: 0 var(--space-4);
+  max-width: 520px;
   display: flex;
   align-items: center;
 }
@@ -102,23 +110,23 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 0 var(--space-3);
+  padding: 0 6px 0 10px;
   background: var(--bg-raised);
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius);
   transition: border-color var(--motion-fast) var(--ease),
-    background var(--motion-fast) var(--ease);
+    background var(--motion-fast) var(--ease),
+    box-shadow var(--motion-fast) var(--ease);
 }
 
 .shell__search:hover {
-  border-color: var(--text-tertiary);
-  background: var(--bg-overlay);
+  border-color: var(--border-strong);
 }
 
 .shell__search:focus-within {
-  border-color: var(--accent);
+  border-color: var(--accent-border);
   background: var(--bg-surface);
-  box-shadow: 0 0 0 1px var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-muted);
 }
 
 .shell__search-icon {
@@ -127,45 +135,29 @@
 }
 
 .shell__search-input {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   height: 100%;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
+  border: none;
+  outline: none;
+  background: transparent;
   font-size: var(--text-chrome);
   color: var(--text-primary);
-  padding: 0 !important;
-  margin: 0 !important;
+  padding: 0;
+  margin: 0;
   -webkit-appearance: none;
+}
+
+.shell__search-input:focus-visible {
+  outline: none;
 }
 
 .shell__search-input::placeholder {
   color: var(--text-tertiary);
-  font-size: var(--text-chrome);
-}
-
-.shell__search-shortcuts {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  flex: none;
 }
 
 .shell__search-kbd {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 18px;
-  padding: 0 4px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: var(--weight-medium);
-  color: var(--text-tertiary);
-  background: var(--bg-surface);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-sm);
-  line-height: 1;
+  flex: none;
   pointer-events: none;
 }
 
@@ -173,14 +165,13 @@
   display: none;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   flex: none;
   border-radius: var(--radius);
-  border: var(--border-width) solid transparent;
-  background: none;
   color: var(--text-secondary);
   cursor: pointer;
+  transition: background var(--motion-fast) var(--ease), color var(--motion-fast) var(--ease);
 }
 
 .shell__nav-toggle:hover {
@@ -202,41 +193,37 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--radius);
   color: var(--text-secondary);
-  border: var(--border-width) solid var(--border);
-  background: var(--bg-raised);
-  box-sizing: border-box;
+  background: transparent;
   flex: none;
   cursor: pointer;
-  transition: all var(--motion-fast) var(--ease);
+  transition: background var(--motion-fast) var(--ease), color var(--motion-fast) var(--ease);
 }
 
 .theme-toggle:hover {
   color: var(--text-primary);
   background: var(--bg-overlay);
-  border-color: var(--accent-border);
 }
 
 .endpoint {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 6px;
   height: 28px;
-  padding: 0 var(--space-2);
+  padding: 0 4px 0 10px;
   background: var(--bg-raised);
   border: var(--border-width) solid var(--border);
-  border-radius: var(--radius);
-  box-sizing: border-box;
+  border-radius: var(--radius-full);
   flex: none;
   min-width: 0;
 }
 
 .endpoint__label {
-  font-size: var(--text-micro);
-  font-weight: var(--weight-medium);
+  font-size: 10.5px;
+  font-weight: var(--weight-semibold);
   color: var(--text-tertiary);
   letter-spacing: var(--tracking-label);
   line-height: 1;
@@ -244,7 +231,7 @@
 
 .endpoint__value {
   font-family: var(--font-mono);
-  font-size: var(--text-mono);
+  font-size: 12px;
   color: var(--text-primary);
   line-height: 1;
   /* Truncates rather than pushing its neighbours off the row. The full value
@@ -255,26 +242,30 @@
   min-width: 0;
 }
 
+.endpoint .icon-button {
+  border-radius: var(--radius-full);
+}
+
 /* --- Connection indicator ----------------------------------------------- */
 
 .connection {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 7px;
   height: 28px;
-  padding: 0 var(--space-2);
-  border-radius: var(--radius);
-  font-size: var(--text-micro);
-  font-weight: var(--weight-medium);
+  padding: 0 10px;
+  border-radius: var(--radius-full);
+  font-size: 11.5px;
+  font-weight: var(--weight-semibold);
   border: var(--border-width) solid transparent;
-  box-sizing: border-box;
   flex: none;
   line-height: 1;
 }
 
 .connection__dot {
-  width: 6px;
-  height: 6px;
+  position: relative;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: currentColor;
   flex: none;
@@ -283,11 +274,17 @@
 .connection--connected {
   color: var(--ok);
   background: var(--ok-muted);
+  border-color: color-mix(in srgb, var(--ok) 22%, transparent);
 }
 
 /* The pulse is meaningful feedback that the pipe is live, not decoration. */
-.connection--connected .connection__dot {
-  animation: connection-pulse 2.4s ease-in-out infinite;
+.connection--connected .connection__dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: currentColor;
+  animation: connection-ping 2.4s var(--ease) infinite;
 }
 
 .connection--connecting {
@@ -298,37 +295,61 @@
 .connection--disconnected {
   color: var(--error);
   background: var(--error-muted);
-  border-color: var(--error);
+  border-color: color-mix(in srgb, var(--error) 45%, transparent);
 }
 
-@keyframes connection-pulse {
-  0%,
-  100% {
-    opacity: 1;
+@keyframes connection-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
   }
-  50% {
-    opacity: 0.35;
+  70%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
   }
 }
 
 /* --- Body --------------------------------------------------------------- */
 
 .shell__body {
+  position: relative;
   display: flex;
   flex: 1;
   min-height: 0;
+  overflow: hidden;
 }
 
 .shell__nav {
   width: var(--sidebar-width);
   flex: none;
-  padding: var(--space-3) var(--space-2);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   background: var(--bg-surface);
   border-right: var(--border-width) solid var(--border);
+  z-index: var(--z-banner);
+}
+
+.shell__nav-top {
+  padding: var(--space-3) var(--space-3) var(--space-2);
+  flex: none;
+}
+
+.shell__nav-scroll {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  padding: var(--space-1) var(--space-2) var(--space-3);
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+}
+
+.shell__nav-footer {
+  flex: none;
+  padding: var(--space-2);
+  border-top: var(--border-width) solid var(--border);
 }
 
 .nav-section {
@@ -338,8 +359,9 @@
 }
 
 .nav-heading {
-  margin: 0 0 var(--space-1) var(--space-2);
-  font-size: var(--text-micro);
+  margin: 0 0 var(--space-1);
+  padding: 0 var(--space-2);
+  font-size: 11px;
   font-weight: var(--weight-semibold);
   font-family: var(--font-display);
   text-transform: uppercase;
@@ -350,42 +372,53 @@
 .shell__compose-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: var(--space-2);
   width: 100%;
-  height: 30px;
-  padding: 0 var(--space-3);
-  margin-bottom: var(--space-2);
+  height: 34px;
+  padding: 0 var(--space-2) 0 var(--space-3);
   border-radius: var(--radius);
   background: var(--accent);
-  color: var(--text-inverse);
+  color: var(--text-on-primary);
   font-size: var(--text-chrome);
-  font-weight: var(--weight-medium);
-  border: var(--border-width) solid var(--accent);
+  font-weight: var(--weight-semibold);
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
   transition: background var(--motion-fast) var(--ease),
-    border-color var(--motion-fast) var(--ease),
     transform var(--motion-fast) var(--ease);
 }
 
 .shell__compose-btn:hover {
   background: var(--accent-hover);
-  border-color: var(--accent-hover);
 }
 
 .shell__compose-btn:active {
   transform: translateY(1px);
 }
 
+.shell__compose-label {
+  flex: 1;
+  text-align: left;
+}
+
+.shell__compose-kbd {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--text-on-primary) 14%, transparent);
+  color: var(--text-on-primary);
+}
+
 .nav-item {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 10px;
   padding: 0 var(--space-2);
-  height: 28px;
+  height: 30px;
   border-radius: var(--radius);
   color: var(--text-secondary);
+  font-size: var(--text-chrome);
   text-decoration: none;
   transition: background var(--motion-fast) var(--ease),
     color var(--motion-fast) var(--ease);
@@ -398,9 +431,33 @@
 }
 
 .nav-item.active {
-  background: var(--accent-muted);
-  color: var(--accent);
+  background: var(--bg-selected);
+  color: var(--text-primary);
   font-weight: var(--weight-medium);
+}
+
+.nav-item.active .nav-item__icon,
+.nav-item.active .mailbox-nav__icon {
+  color: var(--accent);
+  opacity: 1;
+}
+
+.nav-item__icon {
+  flex: none;
+  color: var(--text-tertiary);
+  transition: color var(--motion-fast) var(--ease);
+}
+
+.nav-item:hover .nav-item__icon {
+  color: var(--text-secondary);
+}
+
+.nav-item__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .shell__main {
@@ -408,6 +465,7 @@
   min-width: 0;
   display: flex;
   overflow: hidden;
+  background: var(--bg-base);
 }
 
 .shell__main > * {
@@ -429,8 +487,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   padding: 0;
   border: none;
   background: transparent;
@@ -451,71 +509,16 @@
   color: var(--ok);
 }
 
-/*
- * Responsive collapse (§8, UI_UX_DIRECTION §4). The target is a developer
- * workstation, so the breakpoints only prevent unusability at narrower widths
- * rather than building a separate mobile product.
- */
-/*
- * Responsive layout & Mobile drawer (WCAG 2.5.8 & Modern Web Layout).
- */
-@media (max-width: 1280px) {
-  .shell__nav {
-    width: 180px;
-  }
-}
-
-@media (max-width: 1280px) {
-  .shell__nav-toggle {
-    display: inline-flex;
-    width: 36px;
-    height: 36px;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .shell__nav {
-    position: fixed;
-    top: var(--header-height);
-    left: 0;
-    bottom: 0;
-    height: calc(100dvh - var(--header-height));
-    z-index: var(--z-banner);
-    width: min(18rem, 84vw);
-    transform: translateX(-100%);
-    transition: transform var(--motion) var(--ease);
-    border-right: var(--border-width) solid var(--border-strong);
-    background: var(--bg-surface);
-    overflow-y: auto;
-    padding-bottom: calc(var(--space-5) + var(--safe-area-bottom));
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
-  }
-
-  .shell__nav--open {
-    transform: translateX(0);
-  }
-
-  .shell__nav-overlay {
-    position: fixed;
-    top: var(--header-height);
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: calc(100dvh - var(--header-height));
-    z-index: calc(var(--z-banner) - 1);
-    background: rgb(0 0 0 / 60%);
-    backdrop-filter: blur(2px);
-    animation: drawer-backdrop-fade var(--motion-fast) var(--ease);
-  }
-
-  .nav-item {
-    min-height: 36px;
-    padding: 0 var(--space-3);
-  }
-
-  .endpoint__label {
-    display: none;
-  }
+.shell__nav-overlay {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: calc(var(--z-banner) - 1);
+  background: rgb(0 0 0 / 50%);
+  backdrop-filter: blur(2px);
+  animation: drawer-backdrop-fade var(--motion-fast) var(--ease);
 }
 
 @keyframes drawer-backdrop-fade {
@@ -524,6 +527,161 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+/*
+ * Responsive collapse (UI_UX_DIRECTION §4).
+ *
+ * Below the three-pane threshold the sidebar becomes an icon rail rather than
+ * vanishing: every destination stays one click away, and the toggle expands
+ * the same element into a full drawer over the content. The rail is the SAME
+ * DOM as the full sidebar — labels are clipped, not removed — so each link
+ * keeps its accessible name and no destination is duplicated.
+ */
+@media (max-width: 1280px) {
+  .shell__nav-toggle {
+    display: inline-flex;
+  }
+
+  .shell__search-container {
+    max-width: 420px;
+  }
+
+  .endpoint {
+    display: none;
+  }
+
+  .shell__nav {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+    transition: width var(--motion) var(--ease), transform var(--motion) var(--ease),
+      box-shadow var(--motion) var(--ease);
+  }
+
+  .shell__nav--open {
+    width: min(18rem, 84vw);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1280px) {
+  .shell__body {
+    padding-left: var(--rail-width);
+  }
+
+  .shell__nav:not(.shell__nav--open) {
+    width: var(--rail-width);
+  }
+
+  .shell__nav:not(.shell__nav--open) .shell__nav-top {
+    padding: var(--space-3) var(--space-2) var(--space-2);
+  }
+
+  .shell__nav:not(.shell__nav--open) .shell__compose-btn {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .shell__nav:not(.shell__nav--open) .nav-item {
+    justify-content: center;
+    padding: 0;
+    height: 36px;
+  }
+
+  .shell__nav:not(.shell__nav--open) .nav-heading {
+    height: 1px;
+    margin: 0 var(--space-2) var(--space-2);
+    padding: 0;
+    background: var(--border);
+    overflow: hidden;
+    color: transparent;
+  }
+
+  /* Clipped rather than `display: none`, so links keep their names. */
+  .shell__nav:not(.shell__nav--open) .nav-item__label,
+  .shell__nav:not(.shell__nav--open) .shell__compose-label,
+  .shell__nav:not(.shell__nav--open) .mailbox-nav__name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .shell__nav:not(.shell__nav--open) .shell__compose-kbd,
+  .shell__nav:not(.shell__nav--open) .mailbox-nav__ctx-wrap,
+  .shell__nav:not(.shell__nav--open) .mailbox-nav__custom-header,
+  .shell__nav:not(.shell__nav--open) .mailbox-nav__add-btn,
+  .shell__nav:not(.shell__nav--open) .mailbox-nav__account-header {
+    display: none;
+  }
+
+  /* An unread count becomes a corner badge on the folder icon. */
+  .shell__nav:not(.shell__nav--open) .mailbox-nav__count {
+    position: absolute;
+    top: 3px;
+    right: 6px;
+    min-width: 16px;
+    padding: 0 4px;
+    font-size: 9.5px;
+    line-height: 16px;
+    text-align: center;
+  }
+
+  .shell__nav:not(.shell__nav--open) .mailbox-nav__count:not(.mailbox-nav__count--unseen) {
+    display: none;
+  }
+
+  .shell__nav:not(.shell__nav--open) .mailbox-nav__item-wrapper {
+    padding-left: 0 !important;
+  }
+
+  .shell__nav:not(.shell__nav--open) .mailbox-nav__branch {
+    display: none;
+  }
+
+  .shell__nav:not(.shell__nav--open) .mailbox-nav__label {
+    justify-content: center;
+    flex: none;
+  }
+
+  .shell__nav:not(.shell__nav--open) .shell__nav-scroll {
+    padding: var(--space-1) var(--space-2) var(--space-3);
+    scrollbar-width: none;
+  }
+
+  .shell__nav:not(.shell__nav--open) .shell__nav-scroll::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .shell__body {
+    padding-left: 0;
+  }
+
+  .shell__nav {
+    width: min(18rem, 84vw);
+    transform: translateX(-100%);
+    padding-bottom: var(--safe-area-bottom);
+  }
+
+  .shell__nav--open {
+    transform: translateX(0);
+  }
+
+  .nav-item {
+    min-height: 38px;
+    padding: 0 var(--space-3);
+  }
+
+  .shell__divider,
+  .shell__version {
+    display: none;
   }
 }
 
@@ -554,15 +712,8 @@
     gap: var(--space-1);
   }
 
-  .endpoint {
-    max-width: 7.5rem;
-    height: 28px;
-    padding: 0 var(--space-1);
-  }
-
-  .theme-toggle {
-    width: 28px;
-    height: 28px;
+  .workspace-switcher {
+    display: none;
   }
 }
 
@@ -570,15 +721,23 @@
  * Small mobile screens (< 480px).
  */
 @media (max-width: 480px) {
-  .endpoint {
-    display: none;
-  }
-
   .shell__search {
     padding: 0 var(--space-2);
   }
 
   .shell__search-input::placeholder {
     font-size: var(--text-micro);
+  }
+
+  .connection__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .connection {
+    padding: 0 9px;
   }
 }

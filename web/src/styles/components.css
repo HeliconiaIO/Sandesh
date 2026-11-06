@@ -1,0 +1,283 @@
+/*
+ * Shared controls.
+ *
+ * Loaded from `base.css` so a control's appearance never depends on which
+ * code-split route happened to mount first. `.button` had been defined twice,
+ * in `States.css` and `SettingsRoute.css`, with different padding, heights and
+ * danger styles — so a button changed shape depending on navigation history.
+ */
+
+/* --- Buttons ------------------------------------------------------------ */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 var(--space-3);
+  font-size: var(--text-chrome);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--text-primary);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm), var(--highlight-top);
+  cursor: pointer;
+  transition: background var(--motion-fast) var(--ease),
+    border-color var(--motion-fast) var(--ease),
+    color var(--motion-fast) var(--ease);
+}
+
+.button:hover {
+  background: var(--bg-overlay);
+  border-color: var(--border-strong);
+  text-decoration: none;
+}
+
+.button:active {
+  background: var(--bg-selected);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.button svg {
+  flex: none;
+}
+
+.button--sm {
+  height: 26px;
+  padding: 0 var(--space-2);
+  font-size: var(--text-micro);
+  border-radius: var(--radius-sm);
+}
+
+.button--icon {
+  width: 30px;
+  padding: 0;
+}
+
+.button--sm.button--icon {
+  width: 26px;
+}
+
+.button--primary {
+  background: var(--accent);
+  border-color: transparent;
+  color: var(--text-on-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.button--primary:hover {
+  background: var(--accent-hover);
+  border-color: transparent;
+  color: var(--text-on-primary);
+}
+
+.button--secondary {
+  background: var(--bg-overlay);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.button--secondary:hover {
+  background: var(--bg-selected);
+}
+
+.button--ghost {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  color: var(--text-secondary);
+}
+
+.button--ghost:hover {
+  background: var(--bg-overlay);
+  border-color: transparent;
+  color: var(--text-primary);
+}
+
+.button--danger {
+  color: var(--error);
+}
+
+.button--danger:hover {
+  background: var(--error-muted);
+  border-color: color-mix(in srgb, var(--error) 40%, transparent);
+  color: var(--error);
+}
+
+/* --- Keyboard hints ----------------------------------------------------- */
+
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  color: var(--text-secondary);
+  background: var(--bg-overlay);
+  border: var(--border-width) solid var(--border-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* --- Cards -------------------------------------------------------------- */
+
+.card {
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* --- Content pages ------------------------------------------------------ */
+
+/*
+ * The scrolling single-column page used by Overview, About, Guide and the API
+ * console. Shared rather than route-owned for the same reason as `.button`:
+ * these routes are code-split, and a panel must not lose its styling because
+ * the route that happened to define it has not been visited yet.
+ */
+.overview {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6) var(--space-5) var(--space-7);
+}
+
+.overview__inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.panel {
+  padding: var(--space-5);
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+}
+
+.panel__title {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-title);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+}
+
+.panel__lede {
+  margin: 0;
+  max-width: 64ch;
+  font-size: var(--text-chrome);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+}
+
+.stats {
+  margin: var(--space-3) 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--space-2);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-3);
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  min-width: 0;
+}
+
+.stat dt {
+  font-size: var(--text-micro);
+  color: var(--text-tertiary);
+}
+
+.stat dd {
+  margin: 0;
+  font-size: 18px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat--ok {
+  color: var(--ok) !important;
+}
+
+.stat--warn {
+  color: var(--warn) !important;
+}
+
+.stat--error {
+  color: var(--error) !important;
+}
+
+@media (max-width: 768px) {
+  .overview {
+    padding: var(--space-4) var(--space-3) var(--space-6);
+  }
+
+  .panel {
+    padding: var(--space-4);
+  }
+}
+
+/* --- Avatars ------------------------------------------------------------ */
+
+/*
+ * A sender's initial, on a neutral disc. Deliberately not colour-coded per
+ * sender: colour is reserved for meaning (§10), and a rainbow of avatars down
+ * the list would drown the unread and warning signals.
+ */
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--bg-overlay);
+  border: var(--border-width) solid var(--border-strong);
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  font-weight: var(--weight-semibold);
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.avatar--sm {
+  width: 26px;
+  height: 26px;
+  font-size: 11px;
+}
+
+.avatar--lg {
+  width: 38px;
+  height: 38px;
+  font-size: 14px;
+}

@@ -23,12 +23,13 @@
 .search-pill {
   display: inline-flex;
   align-items: center;
-  padding: 2px 7px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-raised);
-  border: var(--border-width) solid var(--border);
+  height: 22px;
+  padding: 0 9px;
+  border-radius: var(--radius-full);
+  background: transparent;
+  border: var(--border-width) solid var(--border-strong);
   font-family: var(--font-mono);
-  font-size: var(--text-micro);
+  font-size: 11px;
   color: var(--text-secondary);
   cursor: pointer;
   user-select: none;
@@ -42,9 +43,9 @@
 }
 
 .search-pill--active {
-  background: rgba(107, 216, 203, 0.16);
+  background: var(--accent-muted);
   color: var(--accent);
-  border-color: var(--accent);
+  border-color: var(--accent-border);
   font-weight: 500;
 }
 

@@ -18,6 +18,7 @@
 
 @import './tailwind.css';
 @import './tokens.css';
+@import './components.css';
 @import './pills.css';
 
 *,

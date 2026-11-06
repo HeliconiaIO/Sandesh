@@ -16,29 +16,37 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  height: 28px;
+  height: 30px;
   padding: 0 var(--space-2);
-  background: var(--bg-raised);
-  border: var(--border-width) solid var(--border);
+  background: transparent;
+  border: var(--border-width) solid transparent;
   border-radius: var(--radius);
   color: var(--text-primary);
   font-family: var(--font-ui);
   font-size: var(--text-chrome);
   cursor: pointer;
   box-sizing: border-box;
-  transition: all var(--motion-fast) var(--ease);
-  max-width: 200px;
+  transition: background var(--motion-fast) var(--ease),
+    border-color var(--motion-fast) var(--ease);
+  max-width: 240px;
 }
 
 .workspace-switcher__trigger:hover {
   background: var(--bg-overlay);
-  border-color: var(--accent-border);
 }
 
 .workspace-switcher__trigger[aria-expanded='true'] {
-  background: var(--bg-surface);
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent);
+  background: var(--bg-overlay);
+  border-color: var(--border-strong);
+}
+
+.workspace-switcher__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: var(--ok);
+  box-shadow: 0 0 0 3px var(--ok-muted);
+  flex: none;
 }
 
 .workspace-switcher__icon {
@@ -77,13 +85,13 @@
 .workspace-switcher__dropdown {
   position: absolute;
   top: calc(100% + var(--space-1));
-  right: 0;
+  left: 0;
   width: 280px;
   max-height: 360px;
   background: var(--bg-surface);
   border: var(--border-width) solid var(--border-strong);
   border-radius: var(--radius-lg);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-lg);
   z-index: var(--z-modal);
   display: flex;
   flex-direction: column;
