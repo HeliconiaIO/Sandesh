@@ -259,7 +259,7 @@ impl EventBus {
         // The window must contain the event *after* `after_seq`. If the oldest
         // retained seq is further along than that, the events in between were
         // evicted and the caller cannot be made whole.
-        if after_seq + 1 < oldest {
+        if after_seq < oldest.saturating_sub(1) {
             return Err(ReplayGap {
                 oldest_seq: Some(oldest),
             });

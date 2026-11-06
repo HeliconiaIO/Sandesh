@@ -95,7 +95,8 @@ impl WebhookClient {
             .body(Full::new(Bytes::from(payload.to_owned())))
             .map_err(|e| DeliveryError::Transport(e.to_string()))?;
 
-        let response = tokio::time::timeout(ATTEMPT_TIMEOUT, self.http.request(request))
+        let deadline = tokio::time::Instant::now() + ATTEMPT_TIMEOUT;
+        let response = tokio::time::timeout_at(deadline, self.http.request(request))
             .await
             .map_err(|_| DeliveryError::Transport("timed out".to_owned()))?
             .map_err(|e| DeliveryError::Transport(e.to_string()))?;
@@ -104,8 +105,11 @@ impl WebhookClient {
 
         // The body is drained and discarded. Not doing so leaves the connection
         // unusable for the pool, which turns every delivery into a fresh
-        // handshake against an endpoint we are likely to post to again.
-        let _ = response.into_body().collect().await;
+        // handshake against an endpoint we are likely to post to again. The
+        // drain shares the attempt's deadline: an endpoint that trickles or
+        // never ends its body must not stall the delivery worker. The status is
+        // already known, so a timed-out drain does not change the outcome.
+        let _ = tokio::time::timeout_at(deadline, response.into_body().collect()).await;
 
         if status.is_success() {
             Ok(())

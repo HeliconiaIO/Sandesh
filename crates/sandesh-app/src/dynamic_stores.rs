@@ -304,8 +304,10 @@ impl AccountStore for DynamicAccountStore {
             return Ok(Some(account));
         }
 
-        let bundle = self.router.active_bundle().await?;
+        // Read the active id once: a workspace switch between two reads would
+        // look the account up in one workspace and cache it under another.
         let active_id = self.router.manager.active_id().await;
+        let bundle = self.router.bundle_for(&active_id).await?;
         let res = bundle.repos.accounts.get_by_username(username).await?;
         if let Some(ref account) = res {
             self.router
