@@ -122,6 +122,9 @@ export function MessageList({
   )
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLUListElement>) => {
+    // Chorded keys belong to the app or the browser: Ctrl/⌘+K focuses
+    // search and must not also step to the previous message.
+    if (event.ctrlKey || event.metaKey || event.altKey) return
     switch (event.key) {
       case 'ArrowDown':
       case 'j':

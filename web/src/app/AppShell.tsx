@@ -85,6 +85,22 @@ function NavItem({ to, label, icon: Icon, end, badge }: NavEntry) {
   )
 }
 
+/**
+ * `g` + key jumps for every top-level page. The mailbox jumps (g i/s/d/t/a)
+ * and g / for Search are defined inline below; these keys avoid those.
+ */
+const PAGE_CHORDS: ReadonlyArray<readonly [key: string, path: string, label: string]> = [
+  ['o', '/', 'Overview'],
+  ['r', '/traces', 'Traces'],
+  ['l', '/logs', 'Logs'],
+  ['c', '/api', 'API Console'],
+  ['w', '/webhooks', 'Webhooks'],
+  ['e', '/transfer', 'Import / Export'],
+  ['h', '/guide', 'Setup Guide'],
+  ['b', '/workspaces', 'Workspaces & DB'],
+  [',', '/settings', 'Settings'],
+]
+
 export function AppShell() {
   const connection = useConnectionState()
   const { data: info } = useInfo()
@@ -225,6 +241,14 @@ export function AppShell() {
         navigate('/search')
       },
     },
+    // One `g` chord per page, so nothing depends on finding it in the sidebar.
+    // The `?` shortcuts help lists these from their descriptions.
+    ...PAGE_CHORDS.map(([key, path, label]) => ({
+      chord: ['g', key],
+      description: `Jump to ${label}`,
+      category: 'Global & Navigation' as const,
+      action: () => navigate(path),
+    })),
   ])
 
   const handleHeaderSearchSubmit = (e: React.FormEvent) => {

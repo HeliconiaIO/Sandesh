@@ -405,7 +405,19 @@ impl MessageStore for SqliteMessageStore {
             .await?
             .ok_or_else(|| CoreError::not_found(EntityKind::Entry, entry_id))?;
 
-        let mut tx = self.pool.begin().await.map_err(StorageError::from)?;
+        // IMMEDIATE takes the write lock before the source is re-checked, so a
+        // concurrent expunge, move or orphan sweep cannot remove it between the
+        // check and the insert below.
+        let mut tx = self.begin_immediate().await?;
+        let still_there: Option<i64> =
+            sqlx::query_scalar("SELECT 1 FROM message_entries WHERE id = ?")
+                .bind(&entry_id.as_bytes()[..])
+                .fetch_optional(&mut *tx)
+                .await
+                .map_err(StorageError::from)?;
+        if still_there.is_none() {
+            return Err(CoreError::not_found(EntityKind::Entry, entry_id));
+        }
         let uid = crate::mailbox_repo::allocate_uid(&mut tx, target_mailbox).await?;
         let mod_seq = crate::mailbox_repo::allocate_mod_seq(&mut tx, target_mailbox).await?;
 
@@ -450,7 +462,19 @@ impl MessageStore for SqliteMessageStore {
             return Ok(source);
         }
 
-        let mut tx = self.pool.begin().await.map_err(StorageError::from)?;
+        // IMMEDIATE takes the write lock before the source is re-checked, so a
+        // concurrent expunge, move or orphan sweep cannot remove it between the
+        // check and the insert below.
+        let mut tx = self.begin_immediate().await?;
+        let still_there: Option<i64> =
+            sqlx::query_scalar("SELECT 1 FROM message_entries WHERE id = ?")
+                .bind(&entry_id.as_bytes()[..])
+                .fetch_optional(&mut *tx)
+                .await
+                .map_err(StorageError::from)?;
+        if still_there.is_none() {
+            return Err(CoreError::not_found(EntityKind::Entry, entry_id));
+        }
         let uid = crate::mailbox_repo::allocate_uid(&mut tx, target_mailbox).await?;
         let mod_seq = crate::mailbox_repo::allocate_mod_seq(&mut tx, target_mailbox).await?;
 
@@ -466,11 +490,16 @@ impl MessageStore for SqliteMessageStore {
         };
         insert_entry(&mut tx, &new_entry).await?;
 
-        sqlx::query("DELETE FROM message_entries WHERE id = ?")
+        let deleted = sqlx::query("DELETE FROM message_entries WHERE id = ?")
             .bind(&entry_id.as_bytes()[..])
             .execute(&mut *tx)
             .await
-            .map_err(StorageError::from)?;
+            .map_err(StorageError::from)?
+            .rows_affected();
+        if deleted != 1 {
+            // Dropping `tx` rolls back the insert: never leave two placements.
+            return Err(CoreError::not_found(EntityKind::Entry, entry_id));
+        }
 
         tx.commit().await.map_err(StorageError::from)?;
 

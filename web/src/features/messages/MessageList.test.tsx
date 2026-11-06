@@ -72,6 +72,27 @@ describe('MessageList', () => {
     expect(onSelect).toHaveBeenCalledWith('wanted', expect.anything())
   })
 
+  it('leaves modified keys alone, so Ctrl/⌘+K reaches search without moving', () => {
+    const onSelect = vi.fn()
+    render(
+      <MessageList
+        messages={[summary({ id: 'a' }), summary({ id: 'b' })]}
+        selectedId="b"
+        onSelect={onSelect}
+      />,
+    )
+
+    const list = screen.getByRole('listbox')
+    fireEvent.keyDown(list, { key: 'k', ctrlKey: true })
+    fireEvent.keyDown(list, { key: 'k', metaKey: true })
+    fireEvent.keyDown(list, { key: 'j', ctrlKey: true })
+    expect(onSelect).not.toHaveBeenCalled()
+
+    // The plain key still navigates.
+    fireEvent.keyDown(list, { key: 'k' })
+    expect(onSelect).toHaveBeenCalledWith('a')
+  })
+
   it('moves the selection with the arrow keys', () => {
     const onSelect = vi.fn()
     render(
