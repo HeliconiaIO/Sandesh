@@ -560,7 +560,7 @@ The sidebar is always visible on desktop. On mobile it slides in as a drawer.
 
 ### 3.1 Overview Page
 
-![Overview Page: Three panels — Send mail here, Status metrics, Recent messages](images/overview-page.png)
+![Overview Page: Send mail here with the protocol addresses and an SMTP snippet, status tiles, and recent messages](images/overview-page.png)
 
 **Purpose:** The landing page. Answers: *Where do I send mail? Is Sandesh healthy? What just arrived?*
 
@@ -653,7 +653,7 @@ The sidebar is always visible on desktop. On mobile it slides in as a drawer.
 
 ### 3.3 Message Inspector
 
-![Message Inspector: Tab bar with Headers, Body, MIME, Raw, Transcript, Links, Attachments](images/message-inspector-tabs.png)
+![Message Inspector: Action toolbar, sender block, and tabs for Preview, Headers, MIME, Links, Raw, Attachments and Delivery](images/message-inspector-tabs.png)
 
 **Purpose:** A complete diagnostic view of a single email, accessible from multiple angles via tabs.
 
