@@ -303,7 +303,7 @@ export function AppShell() {
               aria-hidden="true"
             />
             <span className="shell__name">Sandesh</span>
-            <span className="shell__version">v{info?.version ?? '0.2.0'}</span>
+            <span className="shell__version">v{info?.version ?? '0.3.0'}</span>
           </div>
 
           <span className="shell__divider" aria-hidden="true" />

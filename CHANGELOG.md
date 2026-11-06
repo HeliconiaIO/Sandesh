@@ -7,6 +7,30 @@ how versions are chosen and published.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-06
+
+### Added
+
+- `g` shortcuts for every page: `g o` Overview, `g r` Traces, `g l` Logs, `g c` API Console,
+  `g w` Webhooks, `g e` Import/Export, `g h` Setup Guide, `g b` Workspaces & DB, `g ,` Settings.
+
+### Changed
+
+- The web console is restyled: a dark-first palette with a light theme, grouped navigation
+  that collapses to an icon rail between 768px and 1280px, an Overview with a copyable SMTP
+  snippet and stat tiles, sender avatars in the message list, and an inspector with a single
+  action toolbar.
+
+### Fixed
+
+- A concurrent IMAP `MOVE` or `COPY` racing an expunge could leave a message in two mailboxes.
+- A webhook endpoint that sent its headers but never finished its body stalled every delivery.
+- An event-stream resume with an out-of-range sequence number could crash the server.
+- Switching workspace during a request could file an account under the wrong workspace.
+- With the message list focused, Ctrl/⌘+K also jumped to another message.
+- The search icon overlapped its placeholder text, and moving several messages at once
+  opened an unstyled popover.
+
 ## [0.2.0] - 2026-10-30
 
 ### Added
@@ -85,6 +109,7 @@ The first public release.
   the `mail-parser` dependency; Sandesh now stores such a message as unparseable instead.
 - Dependencies are checked against RustSec and npm advisories and a licence allowlist in CI.
 
-[Unreleased]: https://github.com/HeliconiaIO/Sandesh/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/HeliconiaIO/Sandesh/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/HeliconiaIO/Sandesh/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/HeliconiaIO/Sandesh/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/HeliconiaIO/Sandesh/releases/tag/v0.1.0
