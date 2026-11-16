@@ -131,3 +131,6 @@ deny = [
 unknown-registry = "deny"
 unknown-git = "deny"
 allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+# Temporary: sqlx patched from git for RUSTSEC-2026-0459. Remove with the
+# [patch.crates-io] block in Cargo.toml once sqlx 0.9.1 is released.
+allow-git = ["https://github.com/launchbadge/sqlx"]

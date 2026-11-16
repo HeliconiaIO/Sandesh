@@ -227,3 +227,14 @@ panic = "deny"
 [profile.dev]
 # Storage tests create many small SQLite databases; opt-level 1 keeps them brisk.
 opt-level = 1
+
+# RUSTSEC-2026-0459 (CVE-2026-119375): sqlx-sqlite 0.9.0 caps libsqlite3-sys
+# below 0.38, so the bundled SQLite cannot reach the patched 3.54. sqlx main
+# allows <0.40. Pinned to a reviewed commit; remove this block once sqlx 0.9.1
+# (or later) is on crates.io, and drop the matching `allow-git` in deny.toml.
+[patch.crates-io]
+sqlx = { git = "https://github.com/launchbadge/sqlx", rev = "987b8c5a74b6da8b71da6b5549925a7f6e59aac9" }
+sqlx-core = { git = "https://github.com/launchbadge/sqlx", rev = "987b8c5a74b6da8b71da6b5549925a7f6e59aac9" }
+sqlx-macros = { git = "https://github.com/launchbadge/sqlx", rev = "987b8c5a74b6da8b71da6b5549925a7f6e59aac9" }
+sqlx-macros-core = { git = "https://github.com/launchbadge/sqlx", rev = "987b8c5a74b6da8b71da6b5549925a7f6e59aac9" }
+sqlx-sqlite = { git = "https://github.com/launchbadge/sqlx", rev = "987b8c5a74b6da8b71da6b5549925a7f6e59aac9" }
