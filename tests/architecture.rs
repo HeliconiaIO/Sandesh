@@ -212,9 +212,11 @@ fn parse_metadata(json: &str) -> Graph {
 ///
 /// * registry packages — `registry+<url>#<name>@<version>`
 /// * path packages — `path+file:///<dir>/<name>#<version>`
+/// * git packages — `git+<url>?rev=<sha>#<name>@<version>`, or
+///   `git+<url>/<name>?rev=<sha>#<version>` when the name matches the URL
 ///
-/// For the path form the name is the final directory component, not the text
-/// after `#` (which is the bare version).
+/// For the bare-version forms the name is the final URL path segment, not the
+/// text after `#`, and any `?query` must be dropped first.
 fn package_name(id: &str) -> String {
     let Some(hash) = id.rfind('#') else {
         return id.to_owned();
@@ -230,7 +232,9 @@ fn package_name(id: &str) -> String {
     if !after.starts_with(|c: char| c.is_ascii_digit()) {
         return after.to_owned();
     }
-    // Path form: the name is the last path segment before the '#'.
+    // Path or git form: the name is the last path segment before the '#',
+    // ignoring a git `?rev=...` query.
+    let before = before.split_once('?').map_or(before, |(path, _query)| path);
     before
         .trim_end_matches('/')
         .rsplit('/')
@@ -1120,6 +1124,16 @@ mod id_parsing {
         assert_eq!(
             package_name("path+file:///home/user/proj#renamed@0.1.0"),
             "renamed"
+        );
+        // Git packages carry a `?rev=` query; when the crate name matches the
+        // repo name cargo omits it after `#`, so the query must be stripped.
+        assert_eq!(
+            package_name("git+https://github.com/launchbadge/sqlx?rev=987b8c5#0.9.0"),
+            "sqlx"
+        );
+        assert_eq!(
+            package_name("git+https://github.com/launchbadge/sqlx?rev=987b8c5#sqlx-core@0.9.0"),
+            "sqlx-core"
         );
     }
 }
