@@ -243,6 +243,16 @@ export function MessageComposer({ isOpen, initialValues, onClose }: MessageCompo
       return
     }
 
+    const checkValidEmail = (addr: string) => {
+      // RFC-permissive regex allowing standard or local dev domains
+      return /^[^\s@]+@[^\s@]+$/.test(addr)
+    }
+
+    if (!checkValidEmail(from.trim())) {
+      setError(`"${from.trim()}" is not a valid sender email address.`)
+      return
+    }
+
     const recipients = to
       .split(/[,;]/)
       .map((s) => s.trim())
@@ -253,15 +263,33 @@ export function MessageComposer({ isOpen, initialValues, onClose }: MessageCompo
       return
     }
 
+    const invalidTo = recipients.find((r) => !checkValidEmail(r))
+    if (invalidTo) {
+      setError(`Recipient "${invalidTo}" is not a valid email address.`)
+      return
+    }
+
     const ccRecipients = cc
       .split(/[,;]/)
       .map((s) => s.trim())
       .filter(Boolean)
 
+    const invalidCc = ccRecipients.find((r) => !checkValidEmail(r))
+    if (invalidCc) {
+      setError(`Cc recipient "${invalidCc}" is not a valid email address.`)
+      return
+    }
+
     const bccRecipients = bcc
       .split(/[,;]/)
       .map((s) => s.trim())
       .filter(Boolean)
+
+    const invalidBcc = bccRecipients.find((r) => !checkValidEmail(r))
+    if (invalidBcc) {
+      setError(`Bcc recipient "${invalidBcc}" is not a valid email address.`)
+      return
+    }
 
     setError(null)
 
@@ -458,7 +486,15 @@ export function MessageComposer({ isOpen, initialValues, onClose }: MessageCompo
             <form className="composer-form" onSubmit={(e) => void handleSend(e)}>
           {error ? (
             <div className="composer-error" role="alert">
-              {error}
+              <span>{error}</span>
+              <button
+                type="button"
+                className="composer-error-dismiss"
+                onClick={() => setError(null)}
+                aria-label="Dismiss error"
+              >
+                <X size={13} aria-hidden="true" />
+              </button>
             </div>
           ) : null}
 
@@ -492,15 +528,20 @@ export function MessageComposer({ isOpen, initialValues, onClose }: MessageCompo
                 placeholder="recipient@example.com (comma separated)"
                 required
               />
-              {!showCcBcc ? (
-                <button
-                  type="button"
-                  className="composer-toggle-btn"
-                  onClick={() => setShowCcBcc(true)}
-                >
-                  Cc / Bcc
-                </button>
-              ) : null}
+              <button
+                type="button"
+                className="composer-toggle-btn"
+                onClick={() => {
+                  setShowCcBcc(!showCcBcc)
+                  if (showCcBcc) {
+                    setCc('')
+                    setBcc('')
+                  }
+                }}
+                title={showCcBcc ? 'Hide Cc / Bcc fields' : 'Show Cc / Bcc fields'}
+              >
+                {showCcBcc ? 'Hide Cc/Bcc' : 'Cc / Bcc'}
+              </button>
             </div>
 
             {showCcBcc ? (

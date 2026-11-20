@@ -25,6 +25,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { EmptyState, ErrorState } from '../components/States'
+import { Select } from '../components/Select'
 import { logs as logsApi } from '../api/resources'
 import type { LogLine } from '../api/client'
 import './LogsRoute.css'
@@ -157,21 +158,21 @@ export function LogsRoute() {
   return (
     <div className="logs">
       <div className="logs__toolbar">
-        <label className="logs__control">
-          <span className="logs__control-label">Level</span>
-          <select
-            className="logs__select"
-            onChange={(event) => setLevel(event.target.value)}
+        <div className="logs__control">
+          <label className="logs__control-label" htmlFor="logs-level-select">
+            Level
+          </label>
+          <Select
+            id="logs-level-select"
+            aria-label="Level"
             value={level}
-          >
-            <option value="">All</option>
-            {LEVELS.map((name) => (
-              <option key={name} value={name}>
-                {name} and above
-              </option>
-            ))}
-          </select>
-        </label>
+            onChange={setLevel}
+            options={[
+              { value: '', label: 'All' },
+              ...LEVELS.map((name) => ({ value: name, label: `${name} and above` })),
+            ]}
+          />
+        </div>
 
         <label className="logs__control">
           <span className="logs__control-label">Target</span>

@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Lock, Unlock, Users } from 'lucide-react'
 import { CopyButton } from '../components/CopyButton'
+import { Select } from '../components/Select'
 import { useInfo, useWorkspaces } from '../hooks/queries'
 import './GuideRoute.css'
 import './SettingsRoute.css'
@@ -50,18 +51,16 @@ export function GuideRoute() {
             <label htmlFor="guide-ws-select" className="guide__workspace-label">
               Configuring Workspace:
             </label>
-            <select
+            <Select
               id="guide-ws-select"
-              className="guide__workspace-select"
+              aria-label="Configuring Workspace"
               value={wsId}
-              onChange={(e) => setSelectedWsId(e.target.value)}
-            >
-              {workspaces.map((ws) => (
-                <option key={ws.id} value={ws.id}>
-                  {ws.name} ({ws.id}){ws.is_active ? ' — Active' : ''}
-                </option>
-              ))}
-            </select>
+              onChange={setSelectedWsId}
+              options={workspaces.map((ws) => ({
+                value: ws.id,
+                label: `${ws.name} (${ws.id})${ws.is_active ? ' — Active' : ''}`,
+              }))}
+            />
           </div>
 
           <div className="guide__workspace-auth-col">

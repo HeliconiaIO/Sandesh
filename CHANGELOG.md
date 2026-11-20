@@ -7,6 +7,17 @@ how versions are chosen and published.
 
 ## [Unreleased]
 
+### Added
+
+- Accessible custom `Select` dropdown component with full keyboard navigation, popover listbox, checkmark indicators, option grouping, and synchronized underlying native form controls.
+- Custom styled form controls in `components.css` for checkboxes, radio buttons, and select fallbacks matching the graphite dark/light theme.
+- Comprehensive BreakIT UI/UX test suite (`web/e2e/breakit.spec.ts`) and visual verification suite (`web/e2e/visual-deep.spec.ts`).
+
+### Changed
+
+- Replaced unstyled native `<select>` dropdowns across Logs (`Level` filter), Transfer (`Format`, `Destination Mailbox`, `Account`, `Mailbox`), Guide (Workspace switcher), Settings (Workspace switcher), and Connect Client modal with the custom `Select` component.
+- Improved Composer resilience with defensive bounds checks, draft corruption recovery, and HTML content isolation.
+
 ## [0.3.0] - 2026-11-06
 
 ### Added
