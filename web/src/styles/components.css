@@ -281,3 +281,98 @@
   height: 38px;
   font-size: 14px;
 }
+
+/* --- Form controls (Modern Checkboxes & Radios) ------------------------- */
+
+input[type='checkbox'],
+input[type='radio'] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  display: inline-grid;
+  place-content: center;
+  background: var(--bg-raised);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  vertical-align: middle;
+  transition: background var(--motion-fast) var(--ease),
+    border-color var(--motion-fast) var(--ease),
+    box-shadow var(--motion-fast) var(--ease);
+}
+
+input[type='radio'] {
+  border-radius: var(--radius-full);
+}
+
+input[type='checkbox']:hover,
+input[type='radio']:hover {
+  border-color: var(--accent);
+  background: var(--bg-overlay);
+}
+
+input[type='checkbox']:focus-visible,
+input[type='radio']:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+input[type='checkbox']:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+input[type='checkbox']:checked::before {
+  content: '';
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid var(--text-on-primary);
+  border-bottom: 2px solid var(--text-on-primary);
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+
+input[type='radio']:checked {
+  border-color: var(--accent);
+  background: var(--bg-raised);
+}
+
+input[type='radio']:checked::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* --- Modern baseline for native select elements ------------------------- */
+
+select:not([multiple]):not([aria-hidden='true']) {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 5px 28px 5px 10px;
+  font-family: var(--font-ui);
+  font-size: var(--text-chrome);
+  color: var(--text-primary);
+  background-color: var(--bg-raised);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23898b96' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: border-color var(--motion-fast) var(--ease),
+    background-color var(--motion-fast) var(--ease);
+}
+
+select:not([multiple]):not([aria-hidden='true']):hover {
+  background-color: var(--bg-overlay);
+  border-color: var(--accent);
+}
+
+select:not([multiple]):not([aria-hidden='true']):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -1px;
+}

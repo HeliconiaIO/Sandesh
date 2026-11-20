@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import type { Workspace } from '../../api/client'
 import { CopyButton } from '../../components/CopyButton'
+import { Select } from '../../components/Select'
 import {
   useAccounts,
   useActivateWorkspace,
@@ -376,19 +377,18 @@ Email Address: ${baseUsername}@${workspace.id}.local`,
                   <div className="connect-modal__field-label">
                     <span>Username</span>
                     {accounts.length > 1 && (
-                      <select
+                      <Select
                         id="connect-acc-select"
                         name="account_id"
-                        value={selectedAccountId ?? primaryAccount?.id}
-                        onChange={(e) => setSelectedAccountId(e.target.value)}
+                        value={selectedAccountId ?? primaryAccount?.id ?? ''}
+                        onChange={(val) => setSelectedAccountId(val)}
+                        size="sm"
                         className="connect-modal__acc-select"
-                      >
-                        {accounts.map((a) => (
-                          <option key={a.id} value={a.id}>
-                            {a.username} {a.is_catch_all ? '(Catch-all)' : ''}
-                          </option>
-                        ))}
-                      </select>
+                        options={accounts.map((a) => ({
+                          value: a.id,
+                          label: `${a.username}${a.is_catch_all ? ' (Catch-all)' : ''}`,
+                        }))}
+                      />
                     )}
                   </div>
                   <div className="connect-modal__field-input-wrap">

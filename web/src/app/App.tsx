@@ -102,13 +102,20 @@ function NotFound() {
 
   // A stale bookmark should not strand the user on a dead end.
   useEffect(() => {
-    const timer = setTimeout(() => navigate('/', { replace: true }), 2500)
+    const timer = setTimeout(() => navigate('/', { replace: true }), 3500)
     return () => clearTimeout(timer)
   }, [navigate])
 
   return (
     <EmptyState title="That page does not exist">
-      <p>Returning you to the overview.</p>
+      <p style={{ marginBottom: '1rem' }}>Returning you to the overview automatically, or click below:</p>
+      <button
+        type="button"
+        className="button button--primary"
+        onClick={() => navigate('/', { replace: true })}
+      >
+        Return to Overview
+      </button>
     </EmptyState>
   )
 }

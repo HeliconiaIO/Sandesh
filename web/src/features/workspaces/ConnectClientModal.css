@@ -319,12 +319,7 @@
 }
 
 .connect-modal__acc-select {
-  padding: 2px 6px;
-  font-size: 11px;
-  background: var(--bg-raised);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
+  min-width: 120px;
 }
 
 .connect-modal__field-input-wrap {

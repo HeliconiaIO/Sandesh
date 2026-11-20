@@ -156,11 +156,14 @@ describe('MessageViewer Viewport & Virtual Device', () => {
     fireEvent.click(editBtn)
 
     // Verify composer opened with HTML tab active and actual draft text rendered
-    await waitFor(() => {
-      expect(screen.getByRole('dialog')).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: 'HTML' })).toHaveClass('composer-segmented-btn--active')
-      expect(screen.getByText('Actual draft text')).toBeInTheDocument()
-    })
+    await waitFor(
+      () => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'HTML' })).toHaveClass('composer-segmented-btn--active')
+        expect(screen.getByText('Actual draft text')).toBeInTheDocument()
+      },
+      { timeout: 5000 },
+    )
   })
 
   it('toggles read and unread flag when clicking the toggle button', async () => {

@@ -203,6 +203,27 @@
   border: var(--border-width) solid var(--error);
   color: var(--error);
   font-size: var(--text-chrome);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.composer-error-dismiss {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 2px;
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.8;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.15s ease;
+}
+
+.composer-error-dismiss:hover {
+  opacity: 1;
 }
 
 .composer-fields {

@@ -37,6 +37,7 @@ import { useAccounts, useActivateWorkspace, useInfo, useMailboxes, usePatchAccou
 import { useTheme, type ThemePreference } from '../hooks/useTheme'
 import type { Account } from '../api/client'
 import { CopyButton } from '../components/CopyButton'
+import { Select } from '../components/Select'
 import { AccountModal } from '../features/settings/AccountModal'
 import { DeleteAccountDialog } from '../features/settings/DeleteAccountDialog'
 import './SettingsRoute.css'
@@ -297,11 +298,11 @@ export function SettingsRoute() {
                     Active Workspace:
                   </span>
                   {workspaces.length > 1 ? (
-                    <select
+                    <Select
                       className="settings-workspace-select"
+                      size="sm"
                       value={activeWorkspace?.id || 'default'}
-                      onChange={(e) => {
-                        const targetId = e.target.value
+                      onChange={(targetId) => {
                         void activateWorkspace.mutate(targetId)
                         setSearchParams(
                           (prev) => {
@@ -312,15 +313,12 @@ export function SettingsRoute() {
                           { replace: true },
                         )
                       }}
-                      title="Switch workspace to view and manage its accounts"
                       aria-label="Switch active workspace"
-                    >
-                      {workspaces.map((w) => (
-                        <option key={w.id} value={w.id}>
-                          {w.name} ({w.id}){w.is_active ? ' • Active' : ''}
-                        </option>
-                      ))}
-                    </select>
+                      options={workspaces.map((w) => ({
+                        value: w.id,
+                        label: `${w.name} (${w.id})${w.is_active ? ' • Active' : ''}`,
+                      }))}
+                    />
                   ) : (
                     <strong>{activeWorkspace?.name || 'default'}</strong>
                   )}
