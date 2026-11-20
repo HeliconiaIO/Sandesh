@@ -91,6 +91,7 @@ tmp/
 web/.e2e/
 web/test-results/
 web/playwright-report/
+web/e2e-screenshots/
 
 # Fuzzing. The build directory and the evolving corpora are generated: libFuzzer
 # rewrites the corpus on every run, so committing it would mean thousands of

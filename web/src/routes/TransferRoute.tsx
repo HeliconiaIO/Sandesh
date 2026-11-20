@@ -17,11 +17,12 @@
  * one does not.
  */
 
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { ArrowLeftRight, Download, FolderInput, FolderOutput, Upload } from 'lucide-react'
 
 import { ApiError, type ImportResponse } from '../api/client'
 import { transfer } from '../api/resources'
+import { Select, type SelectItem } from '../components/Select'
 import { useAccounts, useImportMessages, useMailboxes } from '../hooks/queries'
 import './TransferRoute.css'
 
@@ -59,6 +60,96 @@ export function TransferRoute() {
   const availableMailboxes = selectedAccountId
     ? (mailboxesByAccount.get(selectedAccountId) ?? [])
     : mailboxes
+
+  const accountOptions: SelectItem[] = useMemo(
+    () => [
+      { value: '', label: 'Every account' },
+      ...accounts.map((account) => {
+        const email = account.addresses?.[0]
+        return {
+          value: account.id,
+          label: `${account.username.toUpperCase()}${
+            account.is_catch_all ? ' (Catch-all)' : email ? ` (${email})` : ''
+          }`,
+        }
+      }),
+    ],
+    [accounts],
+  )
+
+  const mailboxOptions: SelectItem[] = useMemo(() => {
+    if (accounts.length > 1) {
+      if (selectedAccountId) {
+        return [
+          {
+            value: '',
+            label: `All folders in ${selectedAccount?.username.toUpperCase() ?? 'account'}`,
+          },
+          ...availableMailboxes.map((mailbox) => ({
+            value: mailbox.id,
+            label: `${mailbox.name}${mailbox.total ? ` (${mailbox.total})` : ''}`,
+          })),
+        ]
+      }
+      const groups: SelectItem[] = [
+        { value: '', label: 'Every mailbox across all accounts' },
+      ]
+      for (const acc of accounts) {
+        const accMailboxes = mailboxesByAccount.get(acc.id) ?? []
+        if (accMailboxes.length === 0) continue
+        groups.push({
+          label: `${acc.username.toUpperCase()}${acc.is_catch_all ? ' (Catch-all)' : ''}`,
+          options: accMailboxes.map((mailbox) => ({
+            value: mailbox.id,
+            label: `${mailbox.name}${mailbox.total ? ` (${mailbox.total})` : ''}`,
+          })),
+        })
+      }
+      return groups
+    }
+
+    return [
+      { value: '', label: 'Every mailbox' },
+      ...mailboxes.map((mailbox) => ({
+        value: mailbox.id,
+        label: `${mailbox.name}${mailbox.total ? ` (${mailbox.total})` : ''}`,
+      })),
+    ]
+  }, [accounts, selectedAccountId, selectedAccount, availableMailboxes, mailboxesByAccount, mailboxes])
+
+  const formatOptions: SelectItem[] = useMemo(
+    () => [
+      { value: 'mbox', label: 'mbox — many messages' },
+      { value: 'eml', label: '.eml — one message' },
+    ],
+    [],
+  )
+
+  const importMailboxOptions: SelectItem[] = useMemo(() => {
+    const defaultOption = { value: '', label: 'Auto-deliver to recipient Inbox (Default)' }
+    if (accounts.length > 1) {
+      const groups: SelectItem[] = [defaultOption]
+      for (const acc of accounts) {
+        const accMailboxes = mailboxesByAccount.get(acc.id) ?? []
+        if (accMailboxes.length === 0) continue
+        groups.push({
+          label: `${acc.username.toUpperCase()}${acc.is_catch_all ? ' (Catch-all)' : ''}`,
+          options: accMailboxes.map((mailbox) => ({
+            value: mailbox.id,
+            label: mailbox.name,
+          })),
+        })
+      }
+      return groups
+    }
+    return [
+      defaultOption,
+      ...mailboxes.map((mailbox) => ({
+        value: mailbox.id,
+        label: mailbox.name,
+      })),
+    ]
+  }, [accounts, mailboxesByAccount, mailboxes])
 
   const handleAccountChange = (accountId: string) => {
     setSelectedAccountId(accountId)
@@ -148,88 +239,26 @@ export function TransferRoute() {
                 <label className="transfer__label" htmlFor="transfer-account">
                   Account
                 </label>
-                <select
+                <Select
                   id="transfer-account"
-                  className="transfer__select"
                   value={selectedAccountId}
-                  onChange={(event) => handleAccountChange(event.target.value)}
-                >
-                  <option value="">Every account</option>
-                  {accounts.map((account) => {
-                    const email = account.addresses?.[0]
-                    return (
-                      <option key={account.id} value={account.id}>
-                        {account.username.toUpperCase()}
-                        {account.is_catch_all
-                          ? ' (Catch-all)'
-                          : email
-                            ? ` (${email})`
-                            : ''}
-                      </option>
-                    )
-                  })}
-                </select>
+                  onChange={handleAccountChange}
+                  options={accountOptions}
+                  fullWidth
+                />
               </>
             ) : null}
 
             <label className="transfer__label" htmlFor="transfer-mailbox">
               Mailbox
             </label>
-            <select
+            <Select
               id="transfer-mailbox"
-              className="transfer__select"
               value={selectedMailboxId}
-              onChange={(event) => handleMailboxChange(event.target.value)}
-            >
-              {accounts.length > 1 ? (
-                selectedAccountId ? (
-                  <>
-                    <option value="">
-                      All folders in {selectedAccount?.username.toUpperCase() ?? 'account'}
-                    </option>
-                    {availableMailboxes.map((mailbox) => (
-                      <option key={mailbox.id} value={mailbox.id}>
-                        {mailbox.name}
-                        {mailbox.total ? ` (${mailbox.total})` : ''}
-                      </option>
-                    ))}
-                  </>
-                ) : (
-                  <>
-                    <option value="">Every mailbox across all accounts</option>
-                    {accounts.map((acc) => {
-                      const accMailboxes = mailboxesByAccount.get(acc.id) ?? []
-                      if (accMailboxes.length === 0) return null
-                      return (
-                        <optgroup
-                          key={acc.id}
-                          label={`${acc.username.toUpperCase()}${
-                            acc.is_catch_all ? ' (Catch-all)' : ''
-                          }`}
-                        >
-                          {accMailboxes.map((mailbox) => (
-                            <option key={mailbox.id} value={mailbox.id}>
-                              {mailbox.name}
-                              {mailbox.total ? ` (${mailbox.total})` : ''}
-                            </option>
-                          ))}
-                        </optgroup>
-                      )
-                    })}
-                  </>
-                )
-              ) : (
-                <>
-                  <option value="">Every mailbox</option>
-                  {mailboxes.map((mailbox) => (
-                    <option key={mailbox.id} value={mailbox.id}>
-                      {mailbox.name}
-                      {mailbox.total ? ` (${mailbox.total})` : ''}
-                    </option>
-                  ))}
-                </>
-              )}
-            </select>
+              onChange={handleMailboxChange}
+              options={mailboxOptions}
+              fullWidth
+            />
 
             <a
               className="button button--primary transfer__action"
@@ -265,53 +294,24 @@ export function TransferRoute() {
             <label className="transfer__label" htmlFor="transfer-format">
               Format
             </label>
-            <select
+            <Select
               id="transfer-format"
-              className="transfer__select"
               value={importFormat}
-              onChange={(event) => setImportFormat(event.target.value as Format)}
-            >
-              <option value="mbox">mbox — many messages</option>
-              <option value="eml">.eml — one message</option>
-            </select>
+              onChange={(val) => setImportFormat(val as Format)}
+              options={formatOptions}
+              fullWidth
+            />
 
             <label className="transfer__label" htmlFor="import-mailbox">
               Destination Mailbox
             </label>
-            <select
+            <Select
               id="import-mailbox"
-              className="transfer__select"
               value={importMailboxId}
-              onChange={(event) => setImportMailboxId(event.target.value)}
-            >
-              <option value="">Auto-deliver to recipient Inbox (Default)</option>
-              {accounts.length > 1 ? (
-                accounts.map((acc) => {
-                  const accMailboxes = mailboxesByAccount.get(acc.id) ?? []
-                  if (accMailboxes.length === 0) return null
-                  return (
-                    <optgroup
-                      key={acc.id}
-                      label={`${acc.username.toUpperCase()}${
-                        acc.is_catch_all ? ' (Catch-all)' : ''
-                      }`}
-                    >
-                      {accMailboxes.map((mailbox) => (
-                        <option key={mailbox.id} value={mailbox.id}>
-                          {mailbox.name}
-                        </option>
-                      ))}
-                    </optgroup>
-                  )
-                })
-              ) : (
-                mailboxes.map((mailbox) => (
-                  <option key={mailbox.id} value={mailbox.id}>
-                    {mailbox.name}
-                  </option>
-                ))
-              )}
-            </select>
+              onChange={setImportMailboxId}
+              options={importMailboxOptions}
+              fullWidth
+            />
 
             <input
               ref={fileInput}
