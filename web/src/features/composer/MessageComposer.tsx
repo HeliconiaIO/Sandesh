@@ -243,7 +243,10 @@ export function MessageComposer({ isOpen, initialValues, onClose }: MessageCompo
       return
     }
 
-    const checkValidEmail = (addr: string) => {
+    const checkValidEmail = (entry: string) => {
+      // Extract email address if wrapped in display name angle brackets: `Name <addr@domain>`
+      const match = entry.match(/<([^>]+)>/)
+      const addr = (match?.[1] ?? entry).trim()
       // RFC-permissive regex allowing standard or local dev domains
       return /^[^\s@]+@[^\s@]+$/.test(addr)
     }

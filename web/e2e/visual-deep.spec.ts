@@ -25,7 +25,7 @@ test.describe('Deep Browser Verification - Custom UI Controls & Routes', () => {
     await page.waitForLoadState('networkidle')
 
     // Find the custom select container & trigger for Level filter
-    const levelTrigger = page.locator('#logs-level-select-trigger')
+    const levelTrigger = page.locator('#logs-level-select')
     await expect(levelTrigger).toBeVisible()
     await expect(levelTrigger).toHaveText(/All/i)
 
@@ -101,7 +101,7 @@ test.describe('Deep Browser Verification - Custom UI Controls & Routes', () => {
     await page.waitForLoadState('networkidle')
 
     // 1. Verify Format custom select
-    const formatTrigger = page.locator('#transfer-format-trigger')
+    const formatTrigger = page.locator('#transfer-format')
     await expect(formatTrigger).toBeVisible()
     await expect(formatTrigger).toContainText('mbox — many messages')
 
@@ -119,7 +119,7 @@ test.describe('Deep Browser Verification - Custom UI Controls & Routes', () => {
     await expect(formatTrigger).toContainText('.eml — one message')
 
     // 2. Verify Destination Mailbox custom select
-    const destTrigger = page.locator('#import-mailbox-trigger')
+    const destTrigger = page.locator('#import-mailbox')
     await expect(destTrigger).toBeVisible()
     await destTrigger.click()
     const destDropdown = page.locator('.select-dropdown')
@@ -128,7 +128,7 @@ test.describe('Deep Browser Verification - Custom UI Controls & Routes', () => {
     await page.keyboard.press('Escape')
 
     // 3. Verify Export Mailbox custom select
-    const mailboxTrigger = page.locator('#transfer-mailbox-trigger')
+    const mailboxTrigger = page.locator('#transfer-mailbox')
     await expect(mailboxTrigger).toBeVisible()
     await mailboxTrigger.click()
     await expect(page.locator('.select-dropdown')).toBeVisible()
@@ -148,7 +148,7 @@ test.describe('Deep Browser Verification - Custom UI Controls & Routes', () => {
     await page.goto('/guide')
     await page.waitForLoadState('networkidle')
 
-    const wsTrigger = page.locator('#guide-ws-select-trigger')
+    const wsTrigger = page.locator('#guide-ws-select')
     await expect(wsTrigger).toBeVisible()
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '07-guide-view.png') })
 
@@ -179,7 +179,7 @@ test.describe('Deep Browser Verification - Custom UI Controls & Routes', () => {
       await page.screenshot({ path: path.join(SCREENSHOT_DIR, '09-connect-modal.png') })
 
       // Check account select if multiple accounts exist or credentials grid
-      const accSelectTrigger = page.locator('#connect-acc-select-trigger')
+      const accSelectTrigger = page.locator('#connect-acc-select')
       if (await accSelectTrigger.isVisible()) {
         await accSelectTrigger.click()
         await expect(page.locator('.select-dropdown')).toBeVisible()
@@ -211,7 +211,7 @@ test.describe('Deep Browser Verification - Custom UI Controls & Routes', () => {
       await page.goto('/logs')
       await page.waitForLoadState('networkidle')
 
-      const levelTrigger = page.locator('#logs-level-select-trigger')
+      const levelTrigger = page.locator('#logs-level-select')
       await expect(levelTrigger).toBeVisible()
       await levelTrigger.click()
       await expect(page.locator('.select-dropdown')).toBeVisible()
@@ -223,5 +223,19 @@ test.describe('Deep Browser Verification - Custom UI Controls & Routes', () => {
       await page.keyboard.press('Escape')
       await expect(page.locator('.select-dropdown')).toBeHidden()
     }
+  })
+
+  test('Accessibility: Clicking a <label> focuses and opens the custom Select dropdown', async ({ page }) => {
+    await page.goto('/logs')
+    await page.waitForLoadState('networkidle')
+
+    const label = page.locator('label[for="logs-level-select"]')
+    await expect(label).toBeVisible()
+    await label.click()
+
+    const dropdown = page.locator('.select-dropdown')
+    await expect(dropdown).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(dropdown).toBeHidden()
   })
 })
