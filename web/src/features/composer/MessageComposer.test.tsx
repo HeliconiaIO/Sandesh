@@ -182,4 +182,48 @@ describe('MessageComposer & RichTextEditor', () => {
       expect(onClose).toHaveBeenCalled()
     })
   })
+
+  it('accepts sender and recipient addresses with display names (RFC 5322)', async () => {
+    const sendSpy = vi.spyOn(resources.messages, 'send').mockResolvedValue({
+      id: 'msg-123',
+    } as any)
+
+    render(<MessageComposer isOpen={true} onClose={() => {}} />, { wrapper })
+
+    fireEvent.change(screen.getByLabelText('From'), {
+      target: { value: 'Alice Smith <alice@sandesh.test>' },
+    })
+    fireEvent.change(screen.getByLabelText('To'), {
+      target: { value: 'Bob Builder <bob@example.com>, carol@example.com' },
+    })
+    fireEvent.change(screen.getByLabelText('Subject'), {
+      target: { value: 'Testing display names' },
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /^send$/i }))
+
+    await waitFor(() => {
+      expect(sendSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          from: 'Alice Smith <alice@sandesh.test>',
+          to: ['Bob Builder <bob@example.com>', 'carol@example.com'],
+          subject: 'Testing display names',
+        }),
+      )
+    })
+  })
+
+  it('rejects email addresses without @ symbol', () => {
+    render(<MessageComposer isOpen={true} onClose={() => {}} />, { wrapper })
+
+    fireEvent.change(screen.getByLabelText('From'), {
+      target: { value: 'alice@sandesh.test' },
+    })
+    fireEvent.change(screen.getByLabelText('To'), {
+      target: { value: 'invalid-address-without-at' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: /^send$/i }))
+
+    expect(screen.getByRole('alert')).toHaveTextContent('not a valid email address')
+  })
 })

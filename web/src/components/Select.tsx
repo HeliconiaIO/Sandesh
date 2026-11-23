@@ -117,6 +117,22 @@ export function Select({
     [onChange],
   )
 
+  // Listen for synthetic/native change events dispatched directly on the trigger (e.g. testing-library fireEvent.change)
+  useEffect(() => {
+    const el = triggerRef.current
+    if (!el) return undefined
+    const handleNativeChange = (e: Event) => {
+      const val = (e.target as unknown as { value?: string }).value
+      if (typeof val === 'string') {
+        onChange(val)
+      }
+    }
+    el.addEventListener('change', handleNativeChange)
+    return () => {
+      el.removeEventListener('change', handleNativeChange)
+    }
+  }, [onChange])
+
   const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
     if (disabled) return
 
@@ -161,7 +177,7 @@ export function Select({
       <button
         ref={triggerRef}
         type="button"
-        id={`${id}-trigger`}
+        id={id}
         className={`select-trigger ${size === 'sm' ? 'select-trigger--sm' : ''} ${
           isOpen ? 'select-trigger--open' : ''
         }`}
@@ -170,6 +186,7 @@ export function Select({
         onKeyDown={handleKeyDown}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
+        aria-label={ariaLabel}
         aria-labelledby={ariaLabelledby}
       >
         <span className="select-trigger__label">
@@ -184,7 +201,7 @@ export function Select({
           className="select-dropdown"
           role="listbox"
           tabIndex={-1}
-          aria-labelledby={ariaLabelledby ?? `${id}-trigger`}
+          aria-labelledby={ariaLabelledby ?? id}
         >
           {options.map((item, idx) => {
             if (isGroup(item)) {
@@ -243,14 +260,14 @@ export function Select({
         </div>
       )}
 
-      {/* Accessible native select for testing-library, screen readers, and form bindings */}
+      {/* Synchronized accessible native select for form submissions and queries */}
       <select
-        id={id}
+        id={`${id}-native`}
         name={name}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         tabIndex={-1}
-        aria-label={ariaLabel}
+        aria-label={placeholder}
         style={{
           position: 'absolute',
           width: '1px',
